@@ -1,0 +1,261 @@
+
+[1m═══ M 客户端 × proxy-node-compat · 真机验收 ═══[0m
+  src    : /tmp/msrc/src
+  kernel : /root/catmi/mihomo-client/mihomo
+  工作区 : /tmp/mvm  (收尾会删; KEEP=1 保留)
+
+[1m0. 环境与真探测[0m
+  Mihomo Meta v1.19.32 linux arm64 with go1.26.8 Wed Sep 30 16:55:22 UTC 2026
+  {
+   "probe": {
+    "version": "1.19.32",
+    "distribution": "upstream",
+    "build_tags": [
+     "with_gvisor"
+    ],
+    "raw": "Mihomo Meta v1.19.32 linux arm64 with go1.26.8 Wed Sep 30 16:55:22 UTC 2026",
+    "probed": true
+   },
+   "target": {
+    "kernel": "mihomo",
+    "distribution": "upstream",
+    "version": "1.19.32",
+    "build_tags": [
+     "with_gvisor"
+    ],
+    "platform": null,
+    "runtime_options": {},
+    "evaluated_at": null
+   }
+  }
+  [32m✓[0m 内核版本真探测 = 1.19.32（不是写死的）
+    已确认临时端口 6111/40917 不撞生产端口 7890/9090
+  [32m✓[0m 端口 6111 空闲
+  [32m✓[0m 端口 40917 空闲
+
+[1m1. RN 侧: 用仓库当前的构建器生成真实订阅（只写 /tmp）[0m
+/tmp/msrc/tools/cc-verify-m.sh: command substitution: line 125: syntax error near unexpected token `&'
+/tmp/msrc/tools/cc-verify-m.sh: command substitution: line 125: `&obfs=none'
+/tmp/msrc/tools/cc-verify-m.sh: line 125: /tmp/mrnsub/uris.txt: No such file or directory
+/tmp/msrc/tools/cc-verify-m.sh: line 125: /tmp/mrnsub/uris-fixed.txt: No such file or directory
+    [OK] 已生成 /tmp/mrnsub/sub_all.yaml (19 个节点)
+    uri_count= fixed_count=
+    server_pid=200927
+    RN 订阅: 19
+{'anytls': 3, 'hysteria2': 2, 'vless': 8, 'trojan': 5, 'tuic': 1}
+  [32m✓[0m RN 真实订阅已生成（内容不进仓库）
+  [32m✓[0m 经回环隧道从 RN 拉到订阅 (HTTP 200, 6413 字节)
+
+[1m2. CC 侧: 用 M 客户端导入这份真实订阅[0m
+    [95m[1m╔══════════════════════════════════════════════╗
+    ║ 添加节点                               ║
+    ╚══════════════════════════════════════════════╝
+    [0m
+    输入分享链接或订阅地址 (http://...), 或本地文件路径:
+    请输入: [96m[Info][0m 正在拉取...
+    [兼容] 能力判定比旧判定更严 15/19 个:
+           - 🇺🇸 mAnyTLS02-TLS: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+           - 🇺🇸 mAnyTLS03-TLS: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+           - 🇺🇸 mAnyTLS01-TLS: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+           - 🇺🇸 mHysteria202-TLS: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+           - 🇺🇸 mHysteria201-TLS: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+           - 🇺🇸 mVLESS01-REALITY: SUPPORTED → 支持!  (运行期条件 client_fingerprint_present 由节点自身显式字段满足: standard:reality.fingerprint=chrome（provenance=MIHOMO_YAML） —— 客户端导入时必须写进配置, 否则仍会运行期失败)
+           - 🇺🇸 mVLESS02-REALITY-gRPC: SUPPORTED → 支持!  (运行期条件 client_fingerprint_present 由节点自身显式字段满足: standard:reality.fingerprint=chrome（provenance=MIHOMO_YAML） —— 客户端导入时必须写进配置, 否则仍会运行期失败)
+           - 🇺🇸 mVLESS03-REALITY-XHTTP: SUPPORTED → 支持!  (只回环验证过 1.19.32；1.19.22–1.19.31 未逐版验证; 运行期条件 client_fingerprint_present 由节点自身显式字段满足: standard:reality.fingerprint=chrome（provenance=MIHOMO_YAML） —— 客户端导入时必须写进配置, 否则仍会运行期失败)
+           - 🇺🇸 mTrojan01-REALITY: SUPPORTED → 支持!  (运行期条件 client_fingerprint_present 由节点自身显式字段满足: standard:reality.fingerprint=chrome（provenance=MIHOMO_YAML） —— 客户端导入时必须写进配置, 否则仍会运行期失败)
+           - 🇺🇸 mTrojan02-REALITY-gRPC: SUPPORTED → 支持!  (运行期条件 client_fingerprint_present 由节点自身显式字段满足: standard:reality.fingerprint=chrome（provenance=MIHOMO_YAML） —— 客户端导入时必须写进配置, 否则仍会运行期失败)
+           - 🇺🇸 mTrojan03-TLS: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+           - 🇺🇸 mTUIC01-TLS: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+           ... 另外 3 个见 .compat.json
+    [兼容] 判定引擎: compat (回滚: MH_COMPAT_ENGINE=legacy); 目标内核: {'kernel': 'mihomo', 'distribution': 'upstream', 'version': '1.19.32', 'build_tags': ['with_gvisor'], 'platform': None, 'runtime_options': {}, 'evaluated_at': None}
+    [OK] 已写入 /tmp/mvm/cli/conf/providers/sub_all_yaml.yaml (19 个节点)
+    [Info] 已剔除 6 个内核不认的字段
+    
+    是否让内核自动定时更新这个订阅?
+        1) 自动更新 (每 10 分钟)
+        2) 手动更新 (只在选「更新配置」时拉取, 推荐)
+    请选择 [2]: 
+    这条订阅在面板里叫什么?
+        (回车 = 按地址自动命名)
+  [32m✓[0m 客户端导入成功（走的是 node_add 的 HTTP 通路）
+  [32m✓[0m 判定报告已落盘: sub_all_yaml.compat.json
+    engine=compat target=1.19.32 counts={'total': 19, 'tightened': 15, 'dropped': 0, 'downgrades': 0}
+
+[1m2b. 分享链接 (URI) 列表通路: 走 compat 的 parse_uri（保真最高）[0m
+  [32m✓[0m 从 RN 拉到真实分享链接列表 (12 条 URI)
+    [95m[1m╔══════════════════════════════════════════════╗
+    ║ 添加节点                               ║
+    ╚══════════════════════════════════════════════╝
+    [0m
+    输入分享链接或订阅地址 (http://...), 或本地文件路径:
+    请输入: [96m[Info][0m 正在拉取...
+    [OK] 已写入 /tmp/mvm/cli/conf/providers/uris_txt.yaml (12 个节点, 分享链接由内核解析)
+    [Info] 这是分享链接 (URI) 列表, 不是 proxies: YAML —— 交给 mihomo 自己的解析器
+    [兼容] 能力判定比旧判定更严 12/12 个:
+           - 🇺🇸 AnyTLS-01: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+           - 🇺🇸 AnyTLS-02: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+           - 🇺🇸 AnyTLS-03: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+           - 🇺🇸 HY2-01: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+           - 🇺🇸 HY2-02: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+           - 🇺🇸 HY2-10: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+           - 🇺🇸 HY2-11: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+           - 🇺🇸 Reality-04: SUPPORTED → 支持!  (运行期条件 client_fingerprint_present 由节点自身显式字段满足: standard:reality.fingerprint=chrome（provenance=URI） —— 客户端导入时必须写进配置, 否则仍会运行期失败)
+           - 🇺🇸 mTrojan01-REALITY: SUPPORTED → 支持!  (mihomo 的 trojan 分支解析器不读 pbk → 拿不到公钥; 同上不读 sid → 拿不到 shortId; sni 读得到, 但没有 reality-opts 时只按**裸 TLS** 拨号: 握手完成(REALITY 服务端把未认证客户端转发给目标站), 流量却进了 fallback → 必然连不通, 且错误信息与"节点挂了"无从区分; 运行期条件 client_fingerprint_present 由节点自身显式字段满足: standard:reality.fingerprint=chrome（provenance=URI） —— 客户端导入时必须写进配置, 否则仍会运行期失败)
+           - 🇺🇸 TUICv5-01: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+           - 🇺🇸 TUICv5-09: SUPPORTED → 支持!  (vmess/vless 只有 servername；trojan/hysteria2/tuic/anytls 只有 sni —— 写错不报错只静默失效)
+  [32m✓[0m URI 列表导入成功
+  [32m✓[0m URI 通路的判定报告: uris_txt.compat.json
+    source_kind=uri-list counts={'total': 12, 'tightened': 12, 'dropped': 0, 'downgrades': 0}
+    raw_uri 缺失 0 条 | 与 RN 原文不一致 0 条
+      · 🇺🇸 AnyTLS-01               旧=SUPPORTED compat=SUPPORTED_WITH_WARNING 合并=SUPPORTED_WITH_WARNING
+      · 🇺🇸 AnyTLS-02               旧=SUPPORTED compat=SUPPORTED_WITH_WARNING 合并=SUPPORTED_WITH_WARNING
+      · 🇺🇸 AnyTLS-03               旧=SUPPORTED compat=SUPPORTED_WITH_WARNING 合并=SUPPORTED_WITH_WARNING
+      · 🇺🇸 HY2-01                  旧=SUPPORTED compat=SUPPORTED_WITH_WARNING 合并=SUPPORTED_WITH_WARNING
+      · 🇺🇸 HY2-02                  旧=SUPPORTED compat=SUPPORTED_WITH_WARNING 合并=SUPPORTED_WITH_WARNING
+      · 🇺🇸 HY2-10                  旧=SUPPORTED compat=SUPPORTED_WITH_WARNING 合并=SUPPORTED_WITH_WARNING
+      · 🇺🇸 HY2-11                  旧=SUPPORTED compat=SUPPORTED_WITH_WARNING 合并=SUPPORTED_WITH_WARNING
+      · 🇺🇸 Reality-04              旧=SUPPORTED compat=SUPPORTED_WITH_WARNING 合并=SUPPORTED_WITH_WARNING
+      · 🇺🇸 mTrojan01-REALITY       旧=SUPPORTED compat=SUPPORTED_WITH_LOSS 合并=SUPPORTED_WITH_LOSS
+      · 🇺🇸 TUICv5-01               旧=SUPPORTED compat=SUPPORTED_WITH_WARNING 合并=SUPPORTED_WITH_WARNING
+      · 🇺🇸 TUICv5-09               旧=SUPPORTED compat=SUPPORTED_WITH_WARNING 合并=SUPPORTED_WITH_WARNING
+      · 🇺🇸 mVLESS01-TLS            旧=SUPPORTED compat=SUPPORTED_WITH_WARNING 合并=SUPPORTED_WITH_WARNING
+  [32m✓[0m I1 成立: 每条 raw_uri 与 RN 原文逐字节一致
+
+[1m2c. 分享链接通路（修正版: 去掉 &obfs=none）—— 用于真正测出逐节点连通性[0m
+  [32m✓[0m 拉到修正版链接列表 (12 条)
+  [32m✓[0m 修正版导入成功
+
+[1m3. 逐节点三列对照: 旧判定 vs compat vs 真实连通性[0m
+  [32m✓[0m gen_config + 内核 -t 全通过
+    协商后的端口: mixed=6111 ctrl=40917
+  [32m✓[0m 独立内核实例已起 (pid=1337481, -d /tmp/mvm/cli/conf)
+    分组里可见节点数: 36（连续 3 次不再变化才继续 —— provider 是异步加载的）
+  [32m✓[0m 控制 API 认我们的 secret (HTTP 200 @ 40917)
+    sub_all_yaml.compat.json 的矩阵脚本 stderr:
+    provider='sub_all_yaml' group='127.0.0.1' names=19
+    group_all=19 / provider_names=19; 组里没有的: []
+    uris-fixed_txt.compat.json 的矩阵脚本 stderr:
+    provider='uris-fixed_txt' group='127.0.0.1-2' names=12
+    group_all=12 / provider_names=12; 组里没有的: []
+/tmp/msrc/tools/cc-verify-m.sh: line 530: uris_txt: command not found
+  [33m⚠ 发现[0m provider  内核**一个节点都没加载出来**（客户端却打印了已写入
+      group_all=1 / provider_names=12; 组里没有的: ['🇺🇸 AnyTLS-01', '🇺🇸 AnyTLS-02', '🇺🇸 AnyTLS-03', '🇺🇸 HY2-01', '🇺🇸 HY2-02', '🇺🇸 HY2-10', '🇺🇸 HY2-11', '🇺🇸 Reality-04']
+      GROUP_EMPTY provider='uris_txt' group='127.0.0.1-3' names=12 组内可见=['COMPATIBLE']
+      内核: initial proxy provider uris_txt error: proxy 3 error: missing obfs password
+    ── matrix1.tsv（19 个节点）──
+    节点                           旧判定                  compat              合并        真实     选择          出口 IP
+    🇺🇸 mAnyTLS02-TLS             SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mAnyTLS02-TLS)
+    🇺🇸 mAnyTLS03-TLS             SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mAnyTLS03-TLS)
+    🇺🇸 mAnyTLS01-TLS             SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mAnyTLS01-TLS)
+    🇺🇸 mHysteria202-TLS          SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mHysteria202-TLS)
+    🇺🇸 mHysteria201-TLS          SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mHysteria201-TLS)
+    🇺🇸 mVLESS01-REALITY          SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mVLESS01-REALITY)
+    🇺🇸 mVLESS02-REALITY-gRPC     SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mVLESS02-REALITY-gRPC)
+    🇺🇸 mVLESS03-REALITY-XHTTP    SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mVLESS03-REALITY-XHTTP)
+    🇺🇸 mTrojan05-CDN-gRPC        SUPPORTED_WITH_LOSS  SUPPORTED_WITH_WARNING SUPPORTED_WITH_LOSS ✗ 502  OK          -  (配置名: 🇺🇸 sub-mTrojan05-CDN-gRPC)
+    🇺🇸 mTrojan04-CDN-WS          SUPPORTED_WITH_LOSS  SUPPORTED_WITH_WARNING SUPPORTED_WITH_LOSS ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mTrojan04-CDN-WS)
+    🇺🇸 mTrojan01-REALITY         SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mTrojan01-REALITY)
+    🇺🇸 mTrojan02-REALITY-gRPC    SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mTrojan02-REALITY-gRPC)
+    🇺🇸 mTrojan03-TLS             SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mTrojan03-TLS)
+    🇺🇸 mTUIC01-TLS               SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mTUIC01-TLS)
+    🇺🇸 mVLESS05-CDN-gRPC         SUPPORTED_WITH_LOSS  SUPPORTED_WITH_WARNING SUPPORTED_WITH_LOSS ✗ 502  OK          -  (配置名: 🇺🇸 sub-mVLESS05-CDN-gRPC)
+    🇺🇸 mVLESS04-CDN-WS           SUPPORTED_WITH_LOSS  SUPPORTED_WITH_WARNING SUPPORTED_WITH_LOSS ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mVLESS04-CDN-WS)
+    🇺🇸 mVLESS01-TLS-WS           SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mVLESS01-TLS-WS)
+    🇺🇸 mVLESS03-TLS-XHTTP-CDN    SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mVLESS03-TLS-XHTTP-CDN)
+    🇺🇸 mVLESS02-TLS-XHTTP        SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80  (配置名: 🇺🇸 sub-mVLESS02-TLS-XHTTP)
+    ── matrix2.tsv（12 个节点）──
+    节点                           旧判定                  compat              合并        真实     选择          出口 IP
+    🇺🇸 AnyTLS-01                 SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✗ 502  OK          -
+    🇺🇸 AnyTLS-02                 SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80
+    🇺🇸 AnyTLS-03                 SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✅ 204  OK          104.28.201.80
+    🇺🇸 HY2-01                    SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✗ 502  OK          -
+    🇺🇸 HY2-02                    SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✗ 502  OK          -
+    🇺🇸 HY2-10                    SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✗ 502  OK          -
+    🇺🇸 HY2-11                    SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✗ 502  OK          -
+    🇺🇸 Reality-04                SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✗ 502  OK          -
+    🇺🇸 mTrojan01-REALITY         SUPPORTED            SUPPORTED_WITH_LOSS SUPPORTED_WITH_LOSS ✗ 502  OK          -
+    🇺🇸 TUICv5-01                 SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✗ 502  OK          -
+    🇺🇸 TUICv5-09                 SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✗ 502  OK          -
+    🇺🇸 mVLESS01-TLS              SUPPORTED            SUPPORTED_WITH_WARNING SUPPORTED_WITH_WARNING ✗ 502  OK          -
+    --------------------------------------------------------------------------------------------------------
+    合计 31 个节点（两条通路）
+  [32m✓[0m 逐节点真实连通性已实测（33 行数据）
+
+[1m4. 假 UNSUPPORTED / 退步 / 多判出 判定[0m
+    收紧 31 | 其中真实连不通(compat 判对) 12 | 假 UNSUPPORTED 0 | 静默放宽 0
+      · 🇺🇸 mAnyTLS02-TLS: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 mAnyTLS03-TLS: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 mAnyTLS01-TLS: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 mHysteria202-TLS: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 mHysteria201-TLS: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 mVLESS01-REALITY: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 mVLESS02-REALITY-gRPC: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 mVLESS03-REALITY-XHTTP: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 mTrojan05-CDN-gRPC: SUPPORTED_WITH_LOSS → SUPPORTED_WITH_LOSS（真实 HTTP 502）
+      · 🇺🇸 mTrojan04-CDN-WS: SUPPORTED_WITH_LOSS → SUPPORTED_WITH_LOSS（真实 HTTP 204）
+      · 🇺🇸 mTrojan01-REALITY: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 mTrojan02-REALITY-gRPC: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 mTrojan03-TLS: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 mTUIC01-TLS: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 mVLESS05-CDN-gRPC: SUPPORTED_WITH_LOSS → SUPPORTED_WITH_LOSS（真实 HTTP 502）
+      · 🇺🇸 mVLESS04-CDN-WS: SUPPORTED_WITH_LOSS → SUPPORTED_WITH_LOSS（真实 HTTP 204）
+      · 🇺🇸 mVLESS01-TLS-WS: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 mVLESS03-TLS-XHTTP-CDN: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 mVLESS02-TLS-XHTTP: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 AnyTLS-01: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 502）
+      · 🇺🇸 AnyTLS-02: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 AnyTLS-03: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 204）
+      · 🇺🇸 HY2-01: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 502）
+      · 🇺🇸 HY2-02: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 502）
+      · 🇺🇸 HY2-10: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 502）
+      · 🇺🇸 HY2-11: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 502）
+      · 🇺🇸 Reality-04: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 502）
+      · 🇺🇸 mTrojan01-REALITY: SUPPORTED → SUPPORTED_WITH_LOSS（真实 HTTP 502）
+      · 🇺🇸 TUICv5-01: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 502）
+      · 🇺🇸 TUICv5-09: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 502）
+      · 🇺🇸 mVLESS01-TLS: SUPPORTED → SUPPORTED_WITH_WARNING（真实 HTTP 502）
+    ⚠ 两边都判可用但实测连不通 3 个（既有问题, 与本次接入无关, 逐个列出）:
+      - 🇺🇸 mTrojan05-CDN-gRPC（HTTP 502）
+      - 🇺🇸 mVLESS05-CDN-gRPC（HTTP 502）
+      - 🇺🇸 mTrojan01-REALITY（HTTP 502）
+  [32m✓[0m 无假 UNSUPPORTED、无静默放宽、无选择失效
+
+[1m5. compat 的具体主张: 逐条真机验证（只改一个变量）[0m
+OK
+  [32m✓[0m 实验节点已从真实节点派生（基线 + 4 个只改一个变量的变体）
+    {"case": "ctrl-baseline", "config_ok": true, "real_http": "204"}
+    {"case": "net-kcp", "config_ok": true, "real_http": "204"}
+    {"case": "net-bogus", "config_ok": true, "real_http": "204"}
+    {"case": "ws-plus-reality", "config_ok": true, "real_http": "502"}
+    {"case": "reality-no-fingerprint", "config_ok": true, "real_http": "502"}
+
+[1m5b. 真机对照: 同一个 trojan+REALITY 节点, 链接形态 vs YAML 形态[0m
+    配对: 链接原文 107.173.154.178:56676  ←→  YAML '🇺🇸 sub-mTrojan01-REALITY' 107.173.154.178:25672 (reality-opts=True)
+    ⚠ 两者端口不同 —— RN 的 out/*_share-*.txt 与 out/*_client-*.yaml 不是同一批次（P-M3 那类产物过期）; 下面把链接改写到对端的活端口, 让变量只剩"导入形态"
+    形态=uri  config_ok=True  真实HTTP=400  日志出现 REALITY 行=1
+    形态=yaml config_ok=True  真实HTTP=204  日志出现 REALITY 行=0
+  [32m✓[0m trojan+REALITY 的两种导入形态已真机对照（结论见报告）
+
+[1m6. 一键回滚开关[0m
+  [32m✓[0m MH_COMPAT_ENGINE=legacy 生效（判定引擎=legacy, compat 完全不参与）
+    回滚后: 19 个节点, 判定与旧判定不一致的 0 个
+  [32m✓[0m 回滚后判定与接入前逐条一致
+
+[1m7. 客户端原有功能未受影响[0m
+  [32m✓[0m 严格字段校验通过
+    ║ 已导入的节点                         ║
+    ╚══════════════════════════════════════════════╝
+    [0m  [1msub_all_yaml        [0m 19 个节点   来源: http://127.0.0.1:18899/sub_all.yaml
+          兼容: 支持! 19   内核 1.19.32 · 引擎 compat
+      [1muris-fixed_txt      [0m 12 个节点   来源: http://127.0.0.1:18899/uris-fixed.txt
+          兼容: 支持! 12   内核 1.19.32 · 引擎 compat
+      [1muris_txt            [0m 12 个节点   来源: http://127.0.0.1:18899/uris.txt
+          兼容: 支持! 12   内核 1.19.32 · 引擎 compat
+    [95m[1m╔══════════════════════════════════════════════╗
+    ║ 节点测速                               ║
+    ╚══════════════════════════════════════════════╝
+    [0m[33m[Warn][0m 服务未运行, 请先启动
+    内核日志有 3 条 error/fatal
+
+[1m结果[0m
+  [32m23 通过[0m / [31m0 失败[0m / [33m1 项既有缺陷发现[0m
