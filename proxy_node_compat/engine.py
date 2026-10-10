@@ -253,6 +253,23 @@ def evaluate(profile: NodeProfile, target: Target,
     # ---------------- 3. URI 表达力（独立第三张表）
     _apply_uri_rules(profile, scheme, acc, registry)
 
+    # ---------------- 3.4 未知命名空间的 feature: 必须 UNKNOWN
+    covered = set()
+    for r in matched:
+        sel = r.selector or {}
+        for key in ("feature", "protocol"):
+            if sel.get(key):
+                covered.add(sel[key])
+        covered.update(sel.get("all_of_features") or [])
+    for fid in sorted(feat_ids):
+        ns = fid.split(":", 1)[0]
+        if ns in ("standard",) or fid in covered:
+            continue
+        acc.set_levels("UNKNOWN", KERNEL_LEVELS)
+        acc.reason("UNKNOWN_CAPABILITY")
+        acc.note_unknown(f"feature {fid}",
+                         "该扩展 feature 没有任何能力规则（未知 ≠ 不支持）")
+
     # ---------------- 3.5 R1: 推断证据不得单独支撑 SUPPORTED
     for rid in acc.rules:
         rule = next((r for r in registry.rules if r.rule_id == rid), None)

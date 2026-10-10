@@ -60,7 +60,8 @@ PARAM_OWNER = {
     "vcn": "standard:ech",
     "sni": "standard:tls", "servername": "standard:tls", "alpn": "standard:tls",
     "fp": "standard:tls", "allowInsecure": "standard:tls", "insecure": "standard:tls",
-    "flow": "standard:flow", "obfs": "standard:hysteria2.obfs",
+    "flow": "standard:flow",
+    "allowInsecure": "standard:tls.allow_insecure", "insecure": "standard:tls.allow_insecure", "obfs": "standard:hysteria2.obfs",
     "obfs-password": "standard:hysteria2.obfs", "pinSHA256": "standard:tls",
     "plugin": "standard:shadowsocks.plugin",
 }
@@ -159,6 +160,9 @@ def parse_uri(uri: str) -> NodeProfile:
             profile.add_feature(Feature(id="standard:tls", presence=Presence.DEFAULTED,
                                         provenance=Provenance.INFERRED,
                                         note=f"{proto_id} 默认走 TLS"))
+    if q.get("allowInsecure") or q.get("insecure"):
+        profile.add_feature(Feature(id="standard:tls.allow_insecure",
+                                    presence=Presence.EXPLICIT, provenance=Provenance.URI))
     if q.get("flow"):
         profile.add_feature(Feature(id="standard:flow", presence=Presence.EXPLICIT,
                                     provenance=Provenance.URI))
