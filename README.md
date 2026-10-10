@@ -68,18 +68,23 @@ Runtime Support       该版本内核运行时是否真的生效（可能静默�
 
 | 文件 | 内容 |
 |---|---|
-| `docs/00-design-principles.md` | 绑定的设计纪律（本项目的宪法，改代码前先读） |
-| `docs/01-architecture.md` | 分层架构与模块边界 |
-| `docs/02-node-profile.md` | Universal Node Profile（内核无关数据模型） |
-| `docs/03-capability-registry.md` | Kernel Capability Registry（含版本维度） |
-| `docs/04-compatibility-engine.md` | 判定引擎与状态机 |
-| `docs/05-api.md` | Python API / CLI / 预留 HTTP API |
+| `docs/00-design-principles.md` | 绑定的设计纪律（本项目的宪法） |
+| `docs/universal-node-profile.md` | **Phase 2**：Universal Node Profile（presence/provenance/feature 命名空间） |
+| `docs/kernel-capability-registry.md` | **Phase 3**：能力规则（证据决定精度，禁止伪造版本边界） |
+| `docs/uri-representation.md` | **Phase 3**：URI 表达力独立表（内核支持 ≠ URI 能表达） |
+| `docs/compatibility-evaluation.md` | **Phase 3**：判定引擎（四维输入 / 分层结论 / losses） |
+| `docs/evidence-model.md` | **Phase 3**：证据模型（类型 / 置信度 / 三条硬规则） |
+| `docs/examples/` | **14 个真实案例**验收（含"版本边界未知 → UNKNOWN"） |
+| `docs/06-oss-landscape.md` | Phase 1.5：开源生态调研与架构再定位 |
+| `docs/07-version-and-failure-model.md` | Phase 1：版本维度与失败模式模型 |
 | `research/` | Phase 1 研究：三家官方文档与源码能力清单 |
 | `research/empirical/` | 真内核实测证据（配置校验 + 语义回环） |
 
 ## 状态
 
-Phase 1（研究）进行中。本阶段**只做研究、证据与数据模型**，不接入任何内核项目。
+Phase 1（研究）✅ ｜ Phase 2 + Phase 3（设计）✅ ｜ **Phase 4 未开始**。
+
+设计文档已就绪，等架构确认后再进入实现。不接入任何内核项目。
 
 接入方式（Phase 7 之后才讨论）：三个客户端各自只告诉 compat「我是哪个 Kernel、哪个 Version」，
 把节点交给 compat，拿到结果后自行决定 UI 行为。
