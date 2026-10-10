@@ -741,23 +741,17 @@
       },
       "segments": [
         {
-          "range": ">= 26.3.27",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED"
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 26.3.27",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "mihomo.support.tls",
@@ -770,23 +764,17 @@
       },
       "segments": [
         {
-          "range": ">= 1.19.32",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED"
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.19.32",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "singbox.support.tls",
@@ -799,23 +787,17 @@
       },
       "segments": [
         {
-          "range": ">= 1.14.2",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED"
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.14.2",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "xray.support.transport_ws",
@@ -828,23 +810,17 @@
       },
       "segments": [
         {
-          "range": ">= 26.3.27",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED"
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 26.3.27",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "singbox.support.transport_ws",
@@ -857,23 +833,17 @@
       },
       "segments": [
         {
-          "range": ">= 1.14.2",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED"
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.14.2",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "mihomo.support.transport_ws",
@@ -886,23 +856,17 @@
       },
       "segments": [
         {
-          "range": ">= 1.19.32",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED"
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.19.32",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "xray.support.transport_grpc",
@@ -915,23 +879,17 @@
       },
       "segments": [
         {
-          "range": ">= 26.3.27",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED"
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 26.3.27",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "mihomo.support.transport_grpc",
@@ -944,23 +902,17 @@
       },
       "segments": [
         {
-          "range": ">= 1.19.32",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED"
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.19.32",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "singbox.support.transport_grpc",
@@ -973,23 +925,17 @@
       },
       "segments": [
         {
-          "range": ">= 1.14.2",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED"
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.14.2",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "mihomo.support.transport_httpupgrade",
@@ -1002,23 +948,17 @@
       },
       "segments": [
         {
-          "range": ">= 1.19.32",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED"
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.19.32",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "singbox.support.transport_httpupgrade",
@@ -1031,23 +971,17 @@
       },
       "segments": [
         {
-          "range": ">= 1.14.2",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED"
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.14.2",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "mihomo.support.reality",
@@ -1263,7 +1197,7 @@
       },
       "segments": [
         {
-          "range": ">= 26.3.27",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1271,16 +1205,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 26.3.27",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "xray.protocol.vmess",
@@ -1293,7 +1221,7 @@
       },
       "segments": [
         {
-          "range": ">= 26.3.27",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1301,16 +1229,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 26.3.27",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "xray.protocol.trojan",
@@ -1323,7 +1245,7 @@
       },
       "segments": [
         {
-          "range": ">= 26.3.27",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1331,16 +1253,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 26.3.27",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "xray.protocol.shadowsocks",
@@ -1353,7 +1269,7 @@
       },
       "segments": [
         {
-          "range": ">= 26.3.27",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1361,16 +1277,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 26.3.27",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "mihomo.protocol.vless",
@@ -1383,7 +1293,7 @@
       },
       "segments": [
         {
-          "range": ">= 1.19.32",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1391,16 +1301,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.19.32",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "mihomo.protocol.vmess",
@@ -1413,7 +1317,7 @@
       },
       "segments": [
         {
-          "range": ">= 1.19.32",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1421,16 +1325,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.19.32",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "mihomo.protocol.trojan",
@@ -1443,7 +1341,7 @@
       },
       "segments": [
         {
-          "range": ">= 1.19.32",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1451,16 +1349,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.19.32",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "mihomo.protocol.shadowsocks",
@@ -1473,7 +1365,7 @@
       },
       "segments": [
         {
-          "range": ">= 1.19.32",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1481,16 +1373,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.19.32",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "mihomo.protocol.hysteria2",
@@ -1503,7 +1389,7 @@
       },
       "segments": [
         {
-          "range": ">= 1.19.32",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1511,16 +1397,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.19.32",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "mihomo.protocol.tuic",
@@ -1533,7 +1413,7 @@
       },
       "segments": [
         {
-          "range": ">= 1.19.32",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1541,16 +1421,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.19.32",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "mihomo.protocol.anytls",
@@ -1563,7 +1437,7 @@
       },
       "segments": [
         {
-          "range": ">= 1.19.32",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1571,16 +1445,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.19.32",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "singbox.protocol.vless",
@@ -1593,7 +1461,7 @@
       },
       "segments": [
         {
-          "range": ">= 1.14.2",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1601,16 +1469,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.14.2",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "singbox.protocol.vmess",
@@ -1623,7 +1485,7 @@
       },
       "segments": [
         {
-          "range": ">= 1.14.2",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1631,16 +1493,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.14.2",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "singbox.protocol.trojan",
@@ -1653,7 +1509,7 @@
       },
       "segments": [
         {
-          "range": ">= 1.14.2",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1661,16 +1517,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.14.2",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "singbox.protocol.shadowsocks",
@@ -1683,7 +1533,7 @@
       },
       "segments": [
         {
-          "range": ">= 1.14.2",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1691,16 +1541,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.14.2",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "singbox.protocol.hysteria2",
@@ -1713,7 +1557,7 @@
       },
       "segments": [
         {
-          "range": ">= 1.14.2",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1721,16 +1565,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.14.2",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "singbox.protocol.tuic",
@@ -1743,7 +1581,7 @@
       },
       "segments": [
         {
-          "range": ">= 1.14.2",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1751,16 +1589,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.14.2",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "singbox.protocol.anytls",
@@ -1773,7 +1605,7 @@
       },
       "segments": [
         {
-          "range": ">= 1.14.2",
+          "range": "*",
           "verdict": {
             "config": "SUPPORTED",
             "runtime": "SUPPORTED",
@@ -1781,16 +1613,10 @@
           }
         }
       ],
-      "transition": "UNKNOWN",
-      "unknown_range": [
-        {
-          "range": "< 1.14.2",
-          "why": "未逐版验证"
-        }
-      ],
       "evidence": [
         "e-probe-suite"
-      ]
+      ],
+      "version_independent": true
     },
     {
       "rule_id": "xray.protocol.hysteria2.never",
