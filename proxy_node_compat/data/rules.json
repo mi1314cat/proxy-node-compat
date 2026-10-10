@@ -2138,15 +2138,7 @@
       "spec_added_at": null,
       "note": "encryption 是 #716 规范里的 VLESS 必填字段（默认 none）, vless:// 能完整表达; 但后量子取值 mlkem768x25519plus… 的确切进规范时间未核实 → spec_added_at 留 null（UNKNOWN, 不猜）。老客户端按 SIP002 精神静默忽略不认识的取值 → 加密能力降级, 而不是 URI 表达不了。",
       "evidence": [
-        "e-xray-sharelink-encryption"
-      ]
-    },
-    {
-      "uri_rule_id": "uri.vless.encryption",
-      "scheme": "vless",
-      "feature": "standard:vless.encryption",
-      "representation": "FULL",
-      "evidence": [
+        "e-xray-sharelink-encryption",
         "e-vlessenc-runtime"
       ]
     }
