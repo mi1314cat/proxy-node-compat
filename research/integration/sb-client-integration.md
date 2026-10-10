@@ -78,7 +78,7 @@ sing-box ─┴─ 原样（自家 share） ──────┘   check_node(p
   与 `Tags:` 行；**`Tags` 行不存在时给 `None`（未知）而不是 `[]`（确定没有）** —— 后者会让 Reality 被判 `BUILD_NOT_ENABLED`。
   探测不到就 version=None → compat 判 UNKNOWN → 自动回退旧判定。
 * **回滚**：`SB_COMPAT_ENGINE=legacy`（不改代码、不改文件）；`SB_COMPAT_DISABLE=1` 关掉整条闸门；适配层异常一律落回旧判定。
-* **必须带出的字段**：`raw_uri` / `losses` / `unknowns` / `warnings` / `extensions` / `client_losses` / `downgrades` / `shims` / `target`，
+* **必须带出的字段**：`raw_uri` / `losses` / `unknowns` / `warnings` / `extensions` / `client_losses` / `downgrades` / `target`，
   由 `--compat-report` 落到 `share-state/.compat-last.json`，`client.sh` 打印摘要。
   **绝不把 compat 的键写进 `node-*.json`** —— 内核 DisallowUnknownFields，会直接拒绝整份配置。
 
@@ -106,15 +106,19 @@ RN 的分享链接是**一次性**的（`max_uses=1`），CC 上那条订阅的 
 * `out/sb_client-all.json`（13 个出站，覆盖 anytls/hysteria2/naive/shadowtls/vless/vmess/trojan/tuic/ss）
 * `out/sb_share-*.txt`（**13 条真实分享链接**，RN 服务端自己生成的）
 
-### 3.3 三次导入的节点数（同一份真实链接，只有引擎不同）
+### 3.3 三次导入的节点数（同一份真实链接；`9b73cc9` 复跑值）
 
 ```
-绕行开（默认）       → 8 个节点
-绕行关（SB_COMPAT_NO_SHIMS=1）→ 6 个节点   ← 差的 2 个就是"假 UNSUPPORTED"
-回滚（SB_COMPAT_ENGINE=legacy）→ 9 个节点  ← 差的那 1 个是服务端链接写错的坏链接
-[绕行开 - 回滚]  rn vmess02-REALITY       → compat 判死、旧判定会放进来；实测该链接**真的连不通**（§3.6）
-[绕行开 - 绕行关] rn reality01-REALITY / rn vless01-TLS-CDN → 真实可用（都是 204），假 UNSUPPORTED
+canonical 9b73cc9（已删绕行）  → 8 个节点
+旧快照 7009d93（带绕行）       → 8 个节点   ← 与上一行**逐条相同**，这就是"删绕行后行为不变"
+回滚 SB_COMPAT_ENGINE=legacy   → 9 个节点   ← 差的那 1 个是服务端链接写错的坏链接
+[canonical - 回滚]  rn vmess02-REALITY      → compat 判死、旧判定会放进来；实测该链接**真的连不通**（§3.6）
 ```
+
+> 初版（`3a75ba5` + 绕行）的对照是 `绕行开 8 / 绕行关 6 / 回滚 9`：`绕行关` 那 2 个差额就是假 UNSUPPORTED。
+> canonical 从判定层修掉根因后，**不再存在"绕行关"这一档**（`SB_COMPAT_NO_SHIMS` 分支已从适配层删除），
+> 现在的等价性证明换成了**旧快照（带绕行）vs canonical（无绕行）**：节点名单逐条一致（8/8），
+> 13 条链接的判定表 **legacy / compat / merged / reason_codes 四项全等, 差异 0 条**（`cc-run-canonical.log` §4b/§6b）。
 
 ### 3.4 逐节点三方对比
 
@@ -172,26 +176,30 @@ rn-vmess02-REALITY   vmess       204  1.14s  104.28.201.80
 * 真读：上面 17/18 个 tag 是从 `sing-box version` 的 `Tags:` 行解析出来的（不是写死的表）。
 * 反向验证（门禁里钉住）：把 `build_tags` 说成 `[]` → Reality 立刻 `BUILD_NOT_ENABLED`（`singbox.reality.build_tags` 要求 `with_utls`）；
   **探测不到 tags 时给 `None`** → 只记 UNKNOWN、不判死。
-* **规则缺口（未改 compat，只记录）**：`with_quic`（hysteria2/tuic 需要）与 `with_naive_outbound`（naive 出站需要）
-  在 singbox 规则里**没有任何 `requires_build_tags`** —— 在缺这两个 tag 的自编译内核上 compat 会判 SUPPORTED 而内核起不来。
-  CC/RN 的官方构建两者都有，所以本次实测不受影响（记 UNKNOWN/GAP，见 §7 U3）。
+* **规则缺口：初版有、canonical `9b73cc9` 已补上**。初版快照里 `with_quic`（hysteria2/tuic 需要）与
+  `with_naive_outbound`（naive 出站需要）**没有任何 `requires_build_tags`** —— 在缺这两个 tag 的自编译内核上 compat 会判 SUPPORTED 而内核起不来。
+  canonical 已给出三条规则（`singbox.protocol.{hysteria2,tuic,naive}` 各带 `requires_build_tags`），门禁里用合成 Target 钉住：
+  `with_quic` 缺 → hy2/tuic `UNSUPPORTED` + `BUILD_NOT_ENABLED`；`with_naive_outbound` 缺 → naive 同样。
+  CC/RN 官方构建两者都有，所以线上实测不受影响（真实二进制上的端到端仍是 UNKNOWN，见 §7 U3）。
 
 ---
 
 ## 4. 新方案比旧的多判出了什么
 
-### 4.1 【假 UNSUPPORTED，已绕行】`encryption=none` 被当成 VLESS Encryption
+### 4.1 【假 UNSUPPORTED：初版绕行 → canonical 根修 → 绕行已删，行为逐条不变】
 
 | | |
 |---|---|
-| 触发 | `vless://…?encryption=none&security=…` —— **VLESS 分享链接规范里的哨兵值**，v2rayN/Xray 一律会写；RN 服务端自己生成的 `sb_share-reality01-REALITY.txt` 就是 |
-| 原因 | compat `uri.py:310`：`if proto_id == "standard:vless" and q.get("encryption") not in (None, "")` —— 只要非空就算"VLESS Encryption" feature → 命中 `singbox.vless.encryption.never` → `KERNEL_NEVER_SUPPORTED` |
+| 触发 | `vless://…?encryption=none&security=…` —— **VLESS 分享链接规范里的哨兵值**（#716），v2rayN/Xray 一律会写；RN 服务端自己生成的 `sb_share-reality01-REALITY.txt` 就是 |
+| 原因（初版 `3a75ba5`） | compat `uri.py:310`：`if proto_id == "standard:vless" and q.get("encryption") not in (None, "")` —— 只要非空就算"VLESS Encryption" feature → 命中 `singbox.vless.encryption.never` → `KERNEL_NEVER_SUPPORTED` |
 | 后果（实测） | CC 上 13 条真实链接里 **2 条**（`reality01-REALITY`、`vless01-TLS-CDN`，都是**实测 204 的可用节点**）被判死；整个客户端只要遇到带 `encryption=none` 的 vless 链接就丢节点 —— 现实里这几乎是**全部** vless 链接 |
-| 处理 | 适配层加**一条**解析层绕行（`_apply_shims`）：`encryption` 的值明确是 `none` 时，把那个 feature 从 **profile** 里摘掉（不是改 compat、不是加能力规则），结果里带 `shims[]` + 文案留痕；`SB_COMPAT_NO_SHIMS=1` 可复现原判 |
-| 证据 | 门禁语料钉死两条：`encryption=none` → SUPPORTED；`encryption=mlkem768x25519plus…` / `encryption=aes-128-gcm` → **仍然 UNSUPPORTED**（真 VLESS Encryption 不受影响） |
+| 初版处理 | 适配层加**一条**解析层绕行（`_apply_shims`）：`none` 时把那个 feature 从 **profile** 里摘掉（不是改 compat、不是加能力规则），结果带 `shims[]` 留痕、`SB_COMPAT_NO_SHIMS=1` 可复现原判 |
+| **canonical 处理** | `9b73cc9` 在 `uri.py` 里判 `encryption=none` 是哨兵值 → **不建 feature**（`generate_uri` 逐字回写、真 `mlkem…` 判定不变）⇒ 判定层自己修好了，适配层的绕行**已删除** |
+| 删绕行后的等价性（CC 实跑） | ① 导入节点数 `canonical 8` = `旧快照(带绕行) 8`，**名单逐条相同**；② 13 条真实链接的 `legacy/compat/merged/reason_codes` **逐条相等，差异 0 条**；③ 表 A 小计不变（一致 12 / 收紧 1 / 放松 0 / 回退旧判定 4）；④ 表 B 不变（63/12/0/0）；⑤ 上游工作区里已经没有 `SB_COMPAT_NO_SHIMS` 这个开关（删除而非空转） |
+| 证据（钉在门禁里） | `encryption=none` → SUPPORTED；`encryption=mlkem768x25519plus…` / `encryption=aes-128-gcm` → **仍然 UNSUPPORTED**（真 VLESS Encryption 不受影响）；结果里**不允许**再出现 `shims` 字段 |
 
-> 这是**必须修**的：不绕行就是 2/13 真实可用节点被丢 = 真退步。绕行不是"放宽能力判定"——`none` 的语义就是"不加密"，
-> 摘掉它让 profile **更忠实**于链接本意。compat 侧修好 `uri.py` 之后应删除这段（门禁里有回归盯着）。
+> 这一步是"把绕行还给判定层"：绕行本来只是等 canonical 修好前的临时手段，根因修好后留在适配层就是**第二处判定**，
+> 所以删除而不是保留。删之前先证明了删前删后逐条一致（上面 ①②），没有出现新的假 UNSUPPORTED。
 
 ### 4.2 【新判出来】`to_sb.py` 给"没有 `security=` 的 trojan 链接"不写 TLS
 
@@ -243,10 +251,12 @@ compat 对它判 UNSUPPORTED（对链接而言是**正确**的），但**根因�
 | 问题 | 结论 | 证据 |
 |---|---|---|
 | 旧"不支持" → 新"支持"（静默放宽） | **0 条** | 13 条真实链接 + 12 条语料，`放松 = 0`；合并层机械取更差者 + `downgrades` 留痕 |
-| 假 UNSUPPORTED | **有，1 类，已绕行**：`encryption=none` 的 vless（真实影响 2/13 条链接，且是**全网 vless 链接的常态**） | §4.1；`SB_COMPAT_NO_SHIMS=1` 前后 8 → 6 个节点 |
+| 假 UNSUPPORTED | 初版**有 1 类**（`encryption=none` 的 vless，真实影响 2/13 条链接，是**全网 vless 链接的常态**）→ canonical `9b73cc9` 根修、适配层绕行**已删除**；删后复跑**没有出现新的假 UNSUPPORTED** | §4.1；旧快照(8 节点) vs canonical(8 节点) 名单逐条一致 + 13 条判定全等 |
 | compat 判死的其余节点 | **无假阳性**：`vmess02-REALITY`（链接写错）实测 000；`xhttp`/`mkcp`/`ss+reality` 是内核从来就没有的能力 | §3.6 E；门禁语料；§5.7 |
 | JSON 路径判死 | **0 个**（75 个真实出站） | 表 B |
-| 真实可用节点被丢 | **0**（绕行开时 13 个实测 204 的节点全部保留；`rn vmess02-REALITY` 的真实节点走 JSON 路径，也保留） | §3.4/§3.5 |
+| 真实可用节点被丢 | **0**（13 个实测 204 的节点全部保留；`rn vmess02-REALITY` 的真实节点走 JSON 路径，也保留） | §3.4/§3.5 |
+| 对角线（SB 分享 → SB 客户端） | 未倒退：13 节点全部导入 + `sing-box check` 通过（完整 conf 目录）+ 13/13 真连 204 | `cc-run-canonical.log` §3/§7 |
+| 删绕行引入的新判定 | **0**：同一份数据、同一个 `to_sb.py`，只换 `compat2.py`+`lib/`，13 条链接判定差异 0 条 | `cc-run-canonical.log` §6b |
 | 导入行为变化 | 只多、不少：`to_sb` 转换闸门只在 compat 明确 UNSUPPORTED 时丢；自家 share JSON 路径以前**完全不判**，现在逐节点判 | §3.3 |
 | 单节点 JSON 闸门误伤 | 0：`selector/urltest/direct` 原样保留，只过滤真出站 | 门禁 §7（`filter-json` 用例） |
 | 生产服务 | 未触碰 | 实测前后 PID 1444214 都在；改动全在 `/tmp/sbc-verify` |
@@ -265,7 +275,7 @@ cd src/client
 python3 compat2.py version
 python3 compat2.py selftest
 python3 compat2.py compare 'vless://…@host:443?encryption=none&security=reality&pbk=…&sid=…&type=tcp'
-SB_COMPAT_NO_SHIMS=1 python3 compat2.py compare '<同一条>'      # 复现 compat 原判
+#    （encryption=none 是哨兵值: canonical 起不再判死, 适配层也没有绕行 —— 判定全在 compat 里）
 
 # 3) 单份订阅的 compat 视图（逐出站）
 python3 compat2.py check-json <profile.json>
@@ -286,14 +296,14 @@ SB_COMPAT_DISABLE=1 sb-client add <订阅URL>
 
 | # | 事项 | 为什么没结论 |
 |---|---|---|
-| U1 | `encryption=none` 的**根因**修在 compat 侧（`uri.py:310`）之后本绕行是否可删 | 本任务边界是"只改 sing-box-core、compat 不改语义"，所以只做了 profile 侧绕行；绕行点已在代码与门禁里标死 |
+| ~~U1~~ | ~~`encryption=none` 根因修好后绕行是否可删~~ | **已结**：canonical `9b73cc9` 修好 → 绕行删除 → CC 复跑证明删前删后逐条一致（§4.1），无新假 UNSUPPORTED |
 | U2 | `to_sb` 的 trojan 无 `security=` 不写 TLS | 只做了因果实测（000 vs 204），未改（属转换器语义，另立任务更合适） |
-| U3 | 缺 `with_quic` / `with_naive_outbound` 的内核上 hysteria2/tuic/naive 的真实行为 | compat 规则里没有这两条 `requires_build_tags`（GAP，未改 compat）；CC/RN 官方构建都有，没法用现成二进制反证；CC 有 go1.22 但**没有 sing-box 源码**（RN 的 `src-upstream` 是面板源码不是上游），无法自编译验证 → 记 GAP |
+| U3 | 缺 `with_quic` / `with_naive_outbound` 的**真实内核二进制**上 hysteria2/tuic/naive 的行为 | 规则侧缺口**已由 canonical `9b73cc9` 补上**（三条规则都配了 `requires_build_tags`，门禁里用合成 Target 钉住：缺 tag → `BUILD_NOT_ENABLED` → UNSUPPORTED）。但**仍然没有**缺这两个 tag 的真实二进制可端到端实测（CC/RN 官方构建都带；CC 有 go1.22 但无上游源码，无法自编译）→ 结论来自规则 + 合成 Target, 不是端到端 |
 | U4 | `with_purego`（RN 有、CC 没有）对能力的影响 | 该 tag 只影响 Go 运行时（cgo/pure-go DNS 解析），未逐项验证 |
 | U5 | 真实 CDN 订阅（CC 上 `cadacac.onecatmi.dpdns.org`）里的 30 个节点 | 实测 `HTTP 522`（源站不可达）→ 本次表 B 里的 `der-*`/`cf-*` 是**此前已落盘**的真实出站，未重新拉取 |
 | U6 | `mux` 在真实节点上的性能/连通影响 | 只做了 shadowtls 一对对照（都 204），单样本不足以给结论 |
-| U7 | `naive`/`shadowtls` 协议在 compat 注册表里的能力 | singbox 规则里**没有**这两条协议规则 → compat 判 UNKNOWN（不判死，回退旧判定）；未补规则（不改 compat） |
-| U8 | 上游 `proxy-node-compat` 工作区里在途的 mihomo `uri_rule(target_kernel)` 改动 | vendored 快照钉在**提交版** `3a75ba5`；在途改动未纳入（对 singbox 无影响：那些行都带 `target_kernel: mihomo`） |
+| U7 | `shadowtls` 协议在 compat 注册表里的能力 | `singbox.protocol.naive` 已由 canonical 补上；`shadowtls` 仍**没有**协议规则（判 UNKNOWN → 回退旧判定，不判死）。另外 `naive+https://` 这种 scheme 在 compat 的 `SCHEMES` 里仍不识别（走 `unknown:` feature → UNKNOWN）—— 对 SB 客户端无实际影响：`to_sb` 本来就转不出 naive/shadowtls 链接 |
+| U8 | ~~在途的 mihomo `uri_rule(target_kernel)` 改动~~ | **已结**：那批改动后来进了 canonical（`0f973fe`），`9b73cc9` 整体重新 vendored。对 singbox 判定无影响（带 `target_kernel` 的行只对 mihomo 生效，`uri_rule()` 不带 kernel 时会跳过它们） |
 
 ---
 
@@ -302,8 +312,9 @@ SB_COMPAT_DISABLE=1 sb-client add <订阅URL>
 * `src/conf/share.sh` / `share_client.py` / `lib.sh` / `vmess.sh` / `hysteria2.sh` **同时在改**（不是我改的）。
   门禁只校验"这些文件的 diff 里没有本任务的标记"，输出为 `✓ conf/share.sh / share_client.py 的改动与本任务无关（另一个 agent 的）`。
 * **`src/client/to_sb.py` 被两个任务同时改**（我在接 compat 闸门，另一个任务在改 vmess `ps`/`uuid`、`tls=reality`、`obfs=none`）。
-  本次提交用**逐 hunk 暂存**只提交了我的部分（+106/-7 行），对方那 2 个 hunk（+31/-5）留在工作区未提交 → **提交内容不含对方代码**。
-* `tools/` 目录两边都新建了脚本：我的 `tools/check_compat_wiring.sh`，对方的 `tools/check_share_links.sh`（未暂存、未提交）。
+  第一次提交用**逐 hunk 暂存**只提交了我的部分（`7009d93` 不含对方代码）；对方随后把自己的部分提交并推送（`4fccbc6`/`fe47df8`/`406afcc`），
+  两个改动在 `406afcc` 上自然合并 —— 本次收尾的门禁与 CC 复跑都跑在这个合并后的 HEAD 上。
+* `tools/` 目录两边各有一个脚本：我的 `tools/check_compat_wiring.sh`、对方的 `tools/check_share_links.sh`（后者已由对方提交）。
 * 我在 `client.sh` 里**没有**碰 `conf/share.sh` / `share_client.py`；`conf/outbound_uri.py` 只被适配层**只读调用**（作为"面板侧旧判定"的参照，不参与合并）。
 * **生产路径观察（不是我写的）**：实测期间 CC 的 `/opt/sb-client` 有过改动 —— `share-state/__pycache__/to_sb.cpython-312.pyc`（23:20:09）、
   `subscriptions.json` 与 `conf/90-outbounds.json`（23:24:02）。这两个时间点**早于本次实测的第一次运行**（本地日志 `cc-run.log` 起始 23:26），
@@ -317,7 +328,11 @@ SB_COMPAT_DISABLE=1 sb-client add <订阅URL>
 
 | 仓库 | 结果 |
 |---|---|
-| `sing-box-core` | ✅ 已推送：`7009d93` → `origin/main`（`c0a5c19..7009d93`）。仓库里**没有**任何一次提交包含另一个 agent 的代码（逐 hunk 暂存）。此后另一个 agent 又推了 `4fccbc6`/`fe47df8`/`406afcc`（conf/ 分享层 + `to_sb.py` 的 vmess/obfs 修正），`origin/main` 现为 `406afcc`；在这个最终 HEAD 上重跑门禁仍是 **通过 19 / 失败 0** |
-| `proxy-node-compat`（本仓库） | ⚠️ **已提交、未推送**：`a9383ff`（只含本报告 + evidence，未动 `proxy_node_compat/**`）。推送被 GitHub 拒绝：`403 Permission to mi1314cat/proxy-node-compat.git denied to mi1314cat` —— 给的是一次性凭据, 只对 `sing-box-core` 有写权限。本仓库工作区里另有**在途未提交**改动（`engine.py`/`registry.py`/`rules.json` 的 mihomo `uri_rule(target_kernel)`），不是我的，未纳入本次提交 |
+| `sing-box-core`（初版） | ✅ `7009d93 接入: 逐节点兼容性判定（proxy-node-compat vendored）+ 双跑保险丝 + 一键回滚` → 已推送（`c0a5c19..7009d93`）。这次提交用**逐 hunk 暂存**，**不含**另一个 agent 当时未提交的 `to_sb.py` 改动（vmess `ps`/`uuid`、`tls=reality`、`obfs=none`） |
+| `sing-box-core`（收尾） | ✅ `2c209b0 收尾: 重新 vendor canonical 9b73cc9 + 删掉 encryption=none 绕行（附等价性证明）` → 已推送（`46105c0..2c209b0`）。含: vendored 快照整体替换、`compat2.py` 删绕行、门禁更新（快照钉 `9b73cc9` + build tags 规则回归）。**门禁在这个 HEAD 上 `通过 19 / 失败 0`** |
+| `sing-box-core` 期间别人的提交 | `4fccbc6` / `fe47df8` / `406afcc` / `46105c0`（conf/ 分享层 + `to_sb.py` vmess/obfs + `tools/check_share_links.sh`）—— 与我的改动在 `406afcc`/`46105c0` 上自然合并，收尾的门禁与 CC 复跑都跑在合并后的 HEAD 上 |
+| `proxy-node-compat`（本仓库） | ✅ 报告与 evidence 已被推到 `origin/main`（`f32531c` 起；canonical `9b73cc9` 也把本次初版报告与 evidence 一并收录）。本次收尾新增 `evidence/sb-cc-run-canonical.log` + `evidence/sb-cc-out/{tri-uri-old.json,tags-old.txt,tags-new.txt}`，并刷新了 harness 脚本 —— 这几件在本仓库**已提交为 `e1cb340`**（未推送: 一次性凭据只对 `sing-box-core` 有写权限, 复推仍是 `403 denied`，需要有权限的一方推） |
 
-证据文件：`research/integration/evidence/sb-cc-run.log`、`evidence/sb-cc-out/`、`evidence/sb-harness/`（CC 验收台脚本，沙箱只在 `/tmp` 做事）。
+证据文件：`research/integration/evidence/sb-cc-run.log`（初版）、`evidence/sb-cc-run-canonical.log`（收尾复跑）、
+`evidence/sb-cc-out/`（逐节点三方对比 / 真实连通性 / 三态导入名单 / 新旧快照对比）、`evidence/sb-harness/`（CC 验收台脚本，沙箱只在 `/tmp` 做事）。
+CC 验收台复现：`ssh CC 'bash /tmp/sbc-verify/verify.sh'`（脚本见 `evidence/sb-harness/verify.sh`；沙箱与产物已在实测后清理）。

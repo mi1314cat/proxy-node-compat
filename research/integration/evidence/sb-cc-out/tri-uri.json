@@ -150,9 +150,7 @@
   "merged": "SUPPORTED",
   "src": "compat",
   "rc": [],
-  "msg": [
-   "走了一条已知缺陷绕行: encryption='none' 是 VLESS 链接的「不加密」哨兵值, 不是 VLESS Encryption; 已从 profile 摘除（uri.py:310 的已知缺陷, 非能力规则）"
-  ],
+  "msg": [],
   "losses": [],
   "unknowns": [
    {
@@ -352,9 +350,7 @@
   "merged": "SUPPORTED",
   "src": "compat",
   "rc": [],
-  "msg": [
-   "走了一条已知缺陷绕行: encryption='none' 是 VLESS 链接的「不加密」哨兵值, 不是 VLESS Encryption; 已从 profile 摘除（uri.py:310 的已知缺陷, 非能力规则）"
-  ],
+  "msg": [],
   "losses": [],
   "unknowns": [
    {

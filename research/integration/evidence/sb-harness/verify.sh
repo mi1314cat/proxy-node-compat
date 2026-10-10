@@ -37,9 +37,10 @@ printf 'off' > "$V/client/share-state/proxy-mode"       # 非交互: 下载通�
 cat > "$V/client/conf/00-mixed.json" <<'EOF'
 {"inbounds":[{"type":"mixed","tag":"mixed-in","listen":"127.0.0.1","listen_port":12080}]}
 EOF
-cat > "$V/client/conf/02-dns.json" <<'EOF'
-{"dns":{"servers":[{"type":"local","tag":"local-dns"}]}}
-EOF
+# DNS 用**生产那份的只读副本**: RN 的 profile 里带 domain_resolver=doh-main,
+# 沙箱自己编一个 local-dns 会让 sing-box check 报 "default domain resolver not found"
+# —— 那是沙箱的锅, 不是客户端的锅。对角线要验的是"导入 13 个节点后 check 通过"。
+cp /opt/sb-client/conf/02-dns.json "$V/client/conf/02-dns.json"
 echo '{"outbounds":[]}' > "$V/client/conf/90-outbounds.json"
 echo "沙箱: $V/client  (生产 /opt/sb-client 未触碰)"
 
@@ -57,22 +58,44 @@ echo $! > "$V/http.pid"
 sleep 1
 curl -s -o /dev/null -w "镜像 HTTP: http=%{http_code}\n" http://127.0.0.1:18081/rn-profile.json
 
-log "3 · 真 sb-client 导入 · 自家 share JSON 路径（compat 闸门）"
+log "3 · 对角线: SB 分享 → SB 客户端（自家 share JSON 路径）"
 reset_nodes
 sbx add http://127.0.0.1:18081/rn-profile.json 2>&1 | tail -20
 echo "--- 落盘节点数: $(nodes)  (RN profile 里 13 个出站 + 1 个 shadowtls helper)"
+if CHKOUT=$("$KERNEL" check -D "$V/client/conf" -C "$V/client/conf" 2>&1); then
+    echo "--- sing-box check: 通过（13 节点 + 完整 conf 目录）"
+else
+    echo "--- sing-box check: **失败**"; printf '%s\n' "$CHKOUT" | tail -3
+fi
 cp "$V/client/share-state/.compat-last.json" "$OUT/report-json.json" 2>/dev/null || true
 
 log "4 · 真 sb-client 导入 · 外部 share URI 路径（to_sb.py + compat）"
 reset_nodes
 SB_SUBS_PREFIX=rnurl sbx add http://127.0.0.1:18081/rn-links.txt 2>&1 | tail -20
-N_SHIM=$(nodes); tags > "$OUT/tags-shim.txt"; echo "--- 落盘节点数(绕行开): $N_SHIM"
+N_NEW=$(nodes); tags > "$OUT/tags-new.txt"; echo "--- 落盘节点数(canonical): $N_NEW"
 cp "$V/client/share-state/.compat-last.json" "$OUT/report-uri.json" 2>/dev/null || true
 
-log "4b · 对照: 关掉已知缺陷绕行（SB_COMPAT_NO_SHIMS=1）"
-reset_nodes
-SB_SUBS_PREFIX=noshim SB_COMPAT_NO_SHIMS=1 sbx add http://127.0.0.1:18081/rn-links.txt 2>&1 | tail -14
-N_NOSHIM=$(nodes); tags > "$OUT/tags-noshim.txt"; echo "--- 落盘节点数(绕行关): $N_NOSHIM"
+log "4b · 对照: 旧快照（7009d93 = 3a75ba5 副本 + encryption=none 绕行）"
+# 只换 compat2.py 与 lib/ 两样, to_sb.py / client.sh 完全相同 —— 单一变量
+rm -rf "$V/client-old"; mkdir -p "$V/client-old"/{conf,nodes,share-state,core,ui}
+cp "$V/client/client.sh" "$V/client-old/client.sh"
+cp "$V/client/share-state/to_sb.py" "$V/client-old/share-state/to_sb.py"
+cp "$V/client/share-state/compat2.py" "$V/client-old/share-state/compat2.py"
+cp -r "$V/client/share-state/lib" "$V/client-old/share-state/lib"
+tar xzf /tmp/sb-compat-old.tgz -C /tmp        # compat2-old.py + lib-old/
+cp /tmp/compat2-old.py "$V/client-old/share-state/compat2.py"
+rm -rf "$V/client-old/share-state/lib"; cp -r /tmp/lib-old "$V/client-old/share-state/lib"
+cp "$V/client/conf/00-mixed.json" "$V/client/conf/02-dns.json" "$V/client-old/conf/"
+echo '{"outbounds":[]}' > "$V/client-old/conf/90-outbounds.json"
+ln -sf "$KERNEL" "$V/client-old/core/sing-box"
+printf 'off' > "$V/client-old/share-state/proxy-mode"
+old_old_root="$CLIENT_ROOT"; export CLIENT_ROOT="$V/client-old"
+SB_SUBS_PREFIX=rnurl bash "$V/client-old/client.sh" add http://127.0.0.1:18081/rn-links.txt 2>&1 | tail -10
+N_OLD=$(ls "$V/client-old/nodes"/node-*.json 2>/dev/null | wc -l)
+ls "$V/client-old/nodes"/node-*.json 2>/dev/null | sed 's|.*/node-||;s|\.json$||' \
+  | sed -E 's/^(rnurl|noshim|legacy)-//' | sort > "$OUT/tags-old.txt"
+export CLIENT_ROOT="$old_old_root"
+echo "--- 落盘节点数(旧快照): $N_OLD"
 
 log "5 · 回滚开关（SB_COMPAT_ENGINE=legacy）"
 reset_nodes
@@ -80,17 +103,44 @@ SB_SUBS_PREFIX=legacy SB_COMPAT_ENGINE=legacy sbx add http://127.0.0.1:18081/rn-
 N_LEGACY=$(nodes); tags > "$OUT/tags-legacy.txt"
 echo "--- 落盘节点数(回滚): $N_LEGACY"
 echo
-echo ">>> 节点数:  绕行开=$N_SHIM  绕行关=$N_NOSHIM  回滚=$N_LEGACY"
-echo "    三者不必相等 —— 差异必须能一一对上（下面列出来）:"
-echo "    [绕行开 - 回滚]  = 只有 compat 判死、旧判定会放进来（每条都要能解释）:"
-comm -23 "$OUT/tags-shim.txt" "$OUT/tags-legacy.txt" | sed 's/^/       - /'
-echo "    [回滚 - 绕行开]  只应是 legacy 能转但 compat 判死的:"
-comm -13 "$OUT/tags-shim.txt" "$OUT/tags-legacy.txt" | sed 's/^/       + /'
-echo "    [绕行开 - 绕行关]  就是**假 UNSUPPORTED**（关掉绕行会丢掉的真实可用节点）:"
-comm -23 "$OUT/tags-shim.txt" "$OUT/tags-noshim.txt" | sed 's/^/       ! /' 
+echo ">>> 节点数:  canonical(删 shim)=$N_NEW   旧快照(带 shim)=$N_OLD   回滚=$N_LEGACY"
+echo "    ① 删 shim 后行为不变 ⇒ 前两个必须相等（逐条比, 不是只比个数）:"
+if diff -q "$OUT/tags-new.txt" "$OUT/tags-old.txt" >/dev/null; then
+    echo "       ✓ 节点名单逐条一致（$(wc -l < "$OUT/tags-new.txt") 条）"
+else
+    echo "       ✗ 节点名单不一致:"; diff "$OUT/tags-old.txt" "$OUT/tags-new.txt" | sed 's/^/         /'
+fi
+echo "    ② canonical 比回滚少的那 1 个, 只应是 compat 判死、旧判定会放进来的坏链接:"
+comm -23 "$OUT/tags-new.txt" "$OUT/tags-legacy.txt" | sed 's/^/       - /'
+echo "       （回滚比 canonical 多的）:"
+comm -13 "$OUT/tags-new.txt" "$OUT/tags-legacy.txt" | sed 's/^/       + /' 
 
 log "6 · 逐节点三方对比（旧判定 / compat / 合并）"
-python3 "$V/tri_compare.py" 2>&1 | tee "$OUT/tri.txt" | tail -80
+python3 "$V/tri_compare.py" 2>&1 | tee "$OUT/tri.txt" | tail -70
+echo
+echo "6b · 新旧快照逐条对比（同一份数据 + 同一个 to_sb.py, 只差 compat2.py/lib）"
+COMPAT_CLIENT_ROOT="$V/client-old" COMPAT_TRI_OUT="$OUT/tri-uri-old.json" \
+    python3 "$V/tri_compare.py" > "$OUT/tri-old.txt" 2>&1
+python3 - "$OUT/tri-uri.json" "$OUT/tri-uri-old.json" <<'PY'
+import json, sys
+new = {r["tag"]: r for r in json.load(open(sys.argv[1], encoding="utf-8"))}
+old = {r["tag"]: r for r in json.load(open(sys.argv[2], encoding="utf-8"))}
+keys = ("legacy", "compat", "merged")
+diff = []
+for tag in sorted(set(new) | set(old)):
+    a, b = old.get(tag), new.get(tag)
+    if a is None or b is None:
+        diff.append((tag, "缺一侧", a and a["merged"], b and b["merged"])); continue
+    if any(a[k] != b[k] for k in keys) or a["rc"] != b["rc"]:
+        diff.append((tag, "判定不同", "%s/%s/%s %s" % (a["legacy"], a["compat"], a["merged"], a["rc"]),
+                     "%s/%s/%s %s" % (b["legacy"], b["compat"], b["merged"], b["rc"])))
+print("    %d 条真实链接: 旧快照(带 shim) vs canonical(删 shim) 判定差异 %d 条"
+      % (len(new), len(diff)))
+for d in diff:
+    print("      ✗ %s | %s | %s → %s" % d)
+if not diff:
+    print("      ✓ 逐条一致（legacy / compat / merged / reason_codes 四项全等）")
+PY
 
 log "7 · 真实连通性（临时内核实例, 每节点一条出站）"
 python3 "$V/probe_real.py" 2>&1 | tee "$OUT/probe.txt" | tail -25

@@ -6,7 +6,7 @@ import json
 import os
 import sys
 
-V = os.environ.get("CLIENT_ROOT", "/tmp/sbc-verify/client")
+V = os.environ.get("COMPAT_CLIENT_ROOT") or os.environ.get("CLIENT_ROOT", "/tmp/sbc-verify/client")
 sys.path.insert(0, os.path.join(V, "share-state"))
 sys.path.insert(0, os.path.join(V, "share-state", "lib"))
 import compat2  # noqa: E402
@@ -34,7 +34,7 @@ def main():
             line = line.strip()
             if "://" in line:
                 links.append((os.path.basename(f)[8:-4], line))
-    print("== 表 A · URI 路径（RN 真实分享链接 %d 条）" % len(links))
+    print("== 表 A · URI 路径（RN 真实分享链接 %d 条）[副本: %s]" % (len(links), V))
     print("%-22s %-12s %-14s %-14s %-10s %s" %
           ("节点", "旧判定", "compat", "合并", "依据", "说明"))
     tally = {"relax": 0, "tighten": 0, "same": 0, "fallback": 0}
@@ -68,21 +68,10 @@ def main():
     print("  → 小计: 一致 %d / 收紧 %d / 放松 %d（必须 0）/ 回退旧判定 %d"
           % (tally["same"], tally["tighten"], tally["relax"], tally["fallback"]))
 
-    # ---- 表 A2: 关掉已知缺陷绕行（SB_COMPAT_NO_SHIMS=1）会怎样
-    os.environ["SB_COMPAT_NO_SHIMS"] = "1"
-    flip = []
-    for tag, uri in links:
-        r = compat2.judge(uri=uri, tgt=t)
-        old = [x for x in rows if x["tag"] == tag][0]
-        if old["merged"] != r["verdict"]:
-            flip.append((tag, old["merged"], r["verdict"], r["reason_codes"]))
-    del os.environ["SB_COMPAT_NO_SHIMS"]
-    print()
-    print("== 表 A2 · 关掉绕行（SB_COMPAT_NO_SHIMS=1）后翻转的节点: %d" % len(flip))
-    for tag, a, b, rc in flip:
-        print("   %-24s %s → %s  %s" % (tag, a, b, rc))
-    json.dump(rows, open("/tmp/sbc-verify/out/tri-uri.json", "w", encoding="utf-8"),
-              ensure_ascii=False, indent=1)
+    # 该侧结果落盘, 供"新旧快照逐条 diff"用（COMPAT_CLIENT_ROOT 指定用哪一份副本）
+    out = os.environ.get("COMPAT_TRI_OUT") or "/tmp/sbc-verify/out/tri-uri.json"
+    json.dump(rows, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    print("  （本侧结果已落盘: %s）" % out)
 
     # ---------------- 表 B: sing-box JSON 路径（RN 整份 profile + CC 生产节点文件）
     print()
@@ -129,7 +118,8 @@ def main():
                       "rules": (r["compat"] or {}).get("rules_applied")})
     print("  → 小计: 无问题 %d / 有确定损失 %d / 判不支持 %d / 未知 %d"
           % (tally2["ok"], tally2["loss"], tally2["unsup"], tally2["unk"]))
-    json.dump(rows2, open("/tmp/sbc-verify/out/tri-json.json", "w", encoding="utf-8"),
+    json.dump(rows2, open(os.environ.get("COMPAT_TRI_JSON_OUT")
+                          or "/tmp/sbc-verify/out/tri-json.json", "w", encoding="utf-8"),
               ensure_ascii=False, indent=1)
 
     # ---------------- 假 UNSUPPORTED / 退步 检查

@@ -2,31 +2,31 @@
  {
   "label": "A-tosb-trojan-noTLS",
   "code": "000",
-  "secs": "0.630440",
-  "err": "\u001b[37mDEBUG\u001b[0m[0000] [\u001b[38;5;130m918308466\u001b[0m 5ms] dns: exchanged hxicc.catmicos.dpdns.org NOERROR 296 | \u001b[31mERROR\u001b[0m[0000] [\u001b[38;5;130m918308466\u001b[0m 629ms] connection: open con"
+  "secs": "0.386115",
+  "err": "\u001b[37mDEBUG\u001b[0m[0000] [\u001b[38;5;216m2575867592\u001b[0m 5ms] dns: exchanged hxicc.catmicos.dpdns.org NOERROR 464 | \u001b[31mERROR\u001b[0m[0000] [\u001b[38;5;216m2575867592\u001b[0m 385ms] connection: open c"
  },
  {
   "label": "B-trojan-withTLS",
   "code": "204",
-  "secs": "2.858666",
+  "secs": "2.454092",
   "err": ""
  },
  {
   "label": "C-shadowtls-chain",
   "code": "204",
-  "secs": "2.854103",
-  "err": "\u001b[31mERROR\u001b[0m[0002] [\u001b[38;5;70m5527350\u001b[0m 2.87s] connection: connection download closed: http2: client connection force closed via ClientConn.Close"
+  "secs": "2.201377",
+  "err": "\u001b[31mERROR\u001b[0m[0002] [\u001b[38;5;223m1122227423\u001b[0m 2.21s] connection: connection download closed: http2: client connection force closed via ClientConn.Close"
  },
  {
   "label": "D-shadowtls-no-mux",
   "code": "204",
-  "secs": "1.741341",
+  "secs": "2.747287",
   "err": ""
  },
  {
   "label": "E-vmess02-link(vless)",
   "code": "000",
-  "secs": "0.782629",
+  "secs": "1.154894",
   "err": ""
  }
 ]
