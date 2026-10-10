@@ -143,6 +143,49 @@ stream: dict = {"network": transport, "method": transport}
 
 ---
 
+## 8. mihomo 的**结构性根因**（源码确证，v1.19.32）
+
+前面说"不要用 `-t` 当判据"，这一节给出**为什么**——因为它不是 bug，是设计：
+
+- `common/structure/structure.go` 的 decoder 把**没匹配上的输入键**收集进 `dataValKeysUnused`，
+  只有当结构体带 `remain` tag 时才消费它。**mihomo 的 proxy option 无一使用 `remain`，
+  也没有 `ErrorUnused` 开关** → 任何拼错/不认识的字段都被静默丢弃。
+  顶层 `config/config.go:617` 的 `yaml.Unmarshal` 同样没开 `KnownFields`。
+- 订阅解析层还会**主动产出内核不认的值**：`common/convert/v.go:110,127` 把 `type=httpupgrade`
+  原样写成 `network: httpupgrade`，而 `adapter/` 下 **0 处**处理它 → httpupgrade 节点静默按 TCP 跑。
+- `splithttp` 在 mihomo **全仓库 + 全历史 0 命中**（从未存在过）——
+  我之前探针里那条"`network: splithttp` 也连通"，正确解释是**未知值回落 tcp**，而不是"支持旧名"。
+
+### 8.1 字段名跨协议不一致（真实陷阱）
+
+| 协议 | SNI 字段名 |
+|---|---|
+| vmess / vless | 只有 `servername` |
+| trojan / hysteria2 / tuic / anytls | 只有 `sni` |
+
+写错**不报错、只静默失效**。trojan 的结构体里**根本没有 `tls` 字段**。
+→ 我们必须建**字段名规范化层**，并把"别名/正确名/写错的后果"进 diagnostics，
+而不是把用户写错的名字直接传下去。
+
+### 8.2 有些字段是**真校验**的（可以信任）
+
+`xhttp-opts.mode` 在构造期就抛 `xhttp mode %s is not implemented yet`（`-t` 会失败）；
+`mieru.transport` 必须恰好 `TCP`/`UDP`（大小写敏感）；snell `obfs-opts.mode`、hysteria2 `obfs` 均硬校验。
+→ 能力表要逐字段标 `validation: strict | lax | none`，不能整内核一刀切。
+
+### 8.3 "完整可用"必须叠加**运行期条件**
+
+同一份通过的配置，仍可能因为运行期条件不满足而完全没用：
+
+| 能力 | 需要的额外条件 | 不满足时 |
+|---|---|---|
+| Reality | 必须有 `client-fingerprint` | **运行期**才报错（`-t` 抓不到） |
+| ECH | 必须 `tls: true`，且不能与 shadow-tls/restls/jls 同用 | 静默丢弃 |
+| smux | 必须显式 `enabled: true` | 静默不复用 |
+| `udp: false` | 在 hysteria/hysteria2/tuic/shadowquic/sudoku/openvpn 上被硬编码 `UDP: true` 抵消 | 用户关不掉 UDP |
+
+→ 这直接印证 §3：`runtime_options`（乃至"用户意图是否被抵消"）必须进判定签名。
+
 ## 待办（本文件引发的后续工作）
 
 1. Capability Registry 的数据行必须包含：`valid_from` / `valid_until` / `timeline[]` /

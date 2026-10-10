@@ -697,10 +697,10 @@ proxy-provider payload/http/file 内容
 4. **UNKNOWN** — v1.19.22 当版被移除的 xhttp 选项清单：RN v1.19.22 只有一句 “7fdc122 fix: remove incomplete xhttp config options (#2648)”，**未枚举被删的选项**。
 5. **UNKNOWN** — **全局 `mux:` 块是否曾经存在过**。字面量 `"mux"` 在 v1.6.5 / v1.8.0 / v1.10.0 / v1.12.0 / v1.14.0 / v1.17.0 / v1.18.10 / v1.19.32 的 `config/` 下均不出现，`git log -S'"mux"'` 无提交，Meta-Docs 也没有全局 `mux` 章节。**若曾存在，则早于可获得 release note 的时间（v1.9.0 / 2022-01-04）**。§5.A3 只能断言「v1.19.32 中它是未知键 → 静默丢弃」。
 6. **UNKNOWN** — `smux.enabled` / `smux.padding` / `smux.brutal-opts.enabled` 的**文档化默认值**（文档只给了 `smux.protocol` 默认 `h2mux`）。
-11. **UNKNOWN** — **snell `version: 5` 是否有真正的 v5 线协议**。RN v1.19.26 加入 v4/v5，但无任何说明解释 v1.19.32 为何把 5 直接改写成 4。
-12. **UNKNOWN** — `vless.ws-headers` 从「有效」变成「死字段」的版本（release note 层面该字段一直「存在」，但 v1.19.32 源码中已无读取点 —— 见 §5.A5）。
-13. **UNKNOWN** — **ECH（listener 侧）与 jls/restls/shadow-tls 的组合矩阵**：除文档里各协议页的零散说明外，未系统验证。
-14. **UNKNOWN** — `openvpn` 的 `tls-auth`/`tls-crypt`/`tls-crypt-v2` 互斥是否被源码强制（`[doc]` 声明互斥，`[src]` 未逐行确认）。
+7. **UNKNOWN** — **snell `version: 5` 是否有真正的 v5 线协议**。RN v1.19.26 加入 v4/v5，但无任何说明解释 v1.19.32 为何把 5 直接改写成 4。
+8. **UNKNOWN** — `vless.ws-headers` 从「有效」变成「死字段」的版本（release note 层面该字段一直「存在」，但 v1.19.32 源码中已无读取点 —— 见 §5.A5）。
+9. **UNKNOWN** — **ECH（listener 侧）与 jls/restls/shadow-tls 的组合矩阵**：除文档里各协议页的零散说明外，未系统验证。
+10. **UNKNOWN** — `openvpn` 的 `tls-auth`/`tls-crypt`/`tls-crypt-v2` 互斥是否被源码强制（`[doc]` 声明互斥，`[src]` 未逐行确认）。
 
 ### 8.2 校验/行为未确证
 
@@ -709,17 +709,16 @@ proxy-provider payload/http/file 内容
 13. **UNKNOWN** — `ssr` 的 `obfs`/`protocol` 是否有枚举校验（outbound 层没看到；`[doc]` ssr 页也没给允许值列表）。
 14. **UNKNOWN** — 服务端**不支持 smux** 时 mihomo 的行为（`[doc]` 明确没有描述，源码层只是包装连接，实际协商失败的表现未验证）。
 15. **UNKNOWN** — `interface-name` 指向不存在的网卡、`routing-mark` 无权限、`mptcp`/`tfo` 在内核不支持时的**具体错误形态**（是拨号期报错、还是静默回退）。`[src]` 只看到选项被传递（`base.go:146-172`、`component/dialer/dialer.go:158, 186-187`），未追踪 socket 选项失败路径。
-16. **UNKNOWN** — `openvpn` 的 `tls-auth`/`tls-crypt`/`tls-crypt-v2` 互斥是否被源码强制（`[doc]` 声明互斥，`[src]` 未逐行确认）。
-17. **UNKNOWN** — `hysteria`(v1) 的 `protocol` 未知值行为。`[src] hysteria.go:195-197` 只在空值时兜底 `DefaultProtocol = "udp"`，非空值原样传给 `core.NewClient(...)`；服务端是否拒绝未验证。
-18. **UNKNOWN** — `xhttp-opts.session-*` / `seq-*` / `uplink-*` 组合约束（如 `session-length` 起点不能为 0、`total ID space > 2.1e9`、`seq-placement` 必须在 `session-placement: path` 时也为 `path`、`uplink-chunk-size` 最小 64 字节）**是否被 mihomo 校验**。`[doc]` 只说约束，未说会报错；`[src] transport/xhttp/` 只确证了 `mode` 与 `sc-max-each-post-bytes`/`sc-min-posts-interval-ms` 走 `GetNormalized*` 归一化（`client.go:253-262`），其余未逐一读完。（**`xhttp-opts.mode` 本身不在此列 —— 它已被确证为配置期硬错误，见 §2.4。**）
-19. **UNKNOWN** — `masque.network` 未知值、`sudoku.aead-method` 未知值、`trusttunnel.health-check` 结构的具体校验。
-20. **UNKNOWN** — `provider.health-check` / `override` 之外的 provider 键（`size-limit`、`age-secret-key`、`header`）的校验细节。
+16. **UNKNOWN** — `hysteria`(v1) 的 `protocol` 未知值行为。`[src] hysteria.go:195-197` 只在空值时兜底 `DefaultProtocol = "udp"`，非空值原样传给 `core.NewClient(...)`；服务端是否拒绝未验证。
+17. **UNKNOWN** — `xhttp-opts.session-*` / `seq-*` / `uplink-*` 组合约束（如 `session-length` 起点不能为 0、`total ID space > 2.1e9`、`seq-placement` 必须在 `session-placement: path` 时也为 `path`、`uplink-chunk-size` 最小 64 字节）**是否被 mihomo 校验**。`[doc]` 只说约束，未说会报错；`[src] transport/xhttp/` 只确证了 `mode` 与 `sc-max-each-post-bytes`/`sc-min-posts-interval-ms` 走 `GetNormalized*` 归一化（`client.go:253-262`），其余未逐一读完。（**`xhttp-opts.mode` 本身不在此列 —— 它已被确证为配置期硬错误，见 §2.4。**）
+18. **UNKNOWN** — `masque.network` 未知值、`sudoku.aead-method` 未知值、`trusttunnel.health-check` 结构的具体校验。
+19. **UNKNOWN** — `provider.health-check` / `override` 之外的 provider 键（`size-limit`、`age-secret-key`、`header`）的校验细节。
 
 ### 8.3 无法用文档/源码证明的（本项目最需要 `[test]` 的部分）
 
-21. **UNKNOWN** — §5 全部条目的**实机表现**：本文的「静默按 TCP / 静默失效」均由源码控制流推断，**尚无 `[test]` 证据**。建议 Phase 2 用真内核逐条验证，尤其是：未知 `network`、`network: httpupgrade`、`flow` 短串、`reality-opts` + `ws`、`tls: false` + `ech-opts.enable: true`、`smux` 无 `enabled`、`snell.version: 5`、`client-fingerprint: iOS`。
-22. **UNKNOWN** — Xray/sing-box 侧对同名节点的行为，本文**完全没有涉及**（不在研究范围），因此「四层不一致」目前只覆盖 mihomo 一侧。
-23. **UNKNOWN** — `mihomo -t` 是否会因为**运行期**错误（如 §5.C3 的 Reality 缺 fp）而失败：`[src] main.go:175-187` 走的是 `executor.Parse()` / `ParseWithBytes`（完整 `ParseRawConfig`），理论上只做解析与初始化，但 C3 的错误发生在 `DialContext`，故推断 `-t` 检测不到 —— **推断，非实测**。
+20. **UNKNOWN** — §5 全部条目的**实机表现**：本文的「静默按 TCP / 静默失效」均由源码控制流推断，**尚无 `[test]` 证据**。建议 Phase 2 用真内核逐条验证，尤其是：未知 `network`、`network: httpupgrade`、`flow` 短串、`reality-opts` + `ws`、`tls: false` + `ech-opts.enable: true`、`smux` 无 `enabled`、`snell.version: 5`、`client-fingerprint: iOS`。
+21. **UNKNOWN** — Xray/sing-box 侧对同名节点的行为，本文**完全没有涉及**（不在研究范围），因此「四层不一致」目前只覆盖 mihomo 一侧。
+22. **UNKNOWN** — `mihomo -t` 是否会因为**运行期**错误（如 §5.C3 的 Reality 缺 fp）而失败：`[src] main.go:175-187` 走的是 `executor.Parse()` / `ParseWithBytes`（完整 `ParseRawConfig`），理论上只做解析与初始化，但 C3 的错误发生在 `DialContext`，故推断 `-t` 检测不到 —— **推断，非实测**。
 
 ---
 
