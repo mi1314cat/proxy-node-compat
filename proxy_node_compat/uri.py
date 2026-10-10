@@ -61,6 +61,7 @@ PARAM_OWNER = {
     "sni": "standard:tls", "servername": "standard:tls", "alpn": "standard:tls",
     "fp": "standard:tls", "allowInsecure": "standard:tls", "insecure": "standard:tls",
     "flow": "standard:flow",
+    "mux": "standard:mux", "mux-enabled": "standard:mux", "smux": "standard:mux",
     "allowInsecure": "standard:tls.allow_insecure", "insecure": "standard:tls.allow_insecure", "obfs": "standard:hysteria2.obfs",
     "obfs-password": "standard:hysteria2.obfs", "pinSHA256": "standard:tls",
     "plugin": "standard:shadowsocks.plugin",
@@ -163,6 +164,9 @@ def parse_uri(uri: str) -> NodeProfile:
     if q.get("allowInsecure") or q.get("insecure"):
         profile.add_feature(Feature(id="standard:tls.allow_insecure",
                                     presence=Presence.EXPLICIT, provenance=Provenance.URI))
+    if q.get("mux") or q.get("mux-enabled") or q.get("smux"):
+        profile.add_feature(Feature(id="standard:mux", presence=Presence.EXPLICIT,
+                                    provenance=Provenance.URI))
     if q.get("flow"):
         profile.add_feature(Feature(id="standard:flow", presence=Presence.EXPLICIT,
                                     provenance=Provenance.URI))

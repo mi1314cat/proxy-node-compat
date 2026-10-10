@@ -190,6 +190,26 @@
       "how": "tools/probe/probe.py（xray -test / mihomo -t / sing-box check），控制组全绿",
       "where": "research/empirical/probe-results.json",
       "limits": "只证明被测的那些版本"
+    },
+    {
+      "id": "e-xray-mux-doc",
+      "type": "DOC",
+      "confidence": "MEDIUM",
+      "date": "2026-10-10",
+      "claim": "Xray 文档明确: 使用 XHTTP 时不要启用 mux.cool；mux 只对 TCP/UDP 语义有效；#716 分享规范里没有任何 mux 参数（属客户端私有扩展）",
+      "how": "源码级调研（infra/conf/xray.go MuxConfig.Build + outbound.html + #716 参数表）",
+      "where": "research/kernel-xray.md L172/L264/L282/L306",
+      "limits": "文档与源码层面；未逐内核实测 mux 运行效果"
+    },
+    {
+      "id": "e-mux-not-isomorphic",
+      "type": "SRC",
+      "confidence": "HIGH",
+      "date": "2026-10-10",
+      "claim": "三方 mux 不是同一个东西: Xray=mux.cool(固定域名 v1.mux.cool:9527) / mihomo=smux / sing-box=multiplex(h2mux,smux,yamux)；sing-box 对 mux.cool 直接 FATAL",
+      "how": "三家源码字段与协议名 + sing-box check 实测",
+      "where": "research/kernel-xray.md L172-174, research/kernel-singbox.md L275-281",
+      "limits": "协议名与字段层面已确证；跨内核实际互通性未做回环"
     }
   ],
   "rules": [
@@ -1692,6 +1712,108 @@
       "evidence": [
         "e-probe-suite"
       ]
+    },
+    {
+      "rule_id": "xray.mux.semantics",
+      "target": {
+        "kernel": "xray",
+        "distribution": "upstream"
+      },
+      "selector": {
+        "feature": "standard:mux"
+      },
+      "segments": [
+        {
+          "range": "*",
+          "verdict": {
+            "config": "SUPPORTED",
+            "runtime": "SUPPORTED_WITH_LOSS"
+          },
+          "failure_mode": "silent_ignore",
+          "losses": [
+            {
+              "feature": "standard:mux",
+              "what": "三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+              "impact": "CONNECTIVITY"
+            }
+          ]
+        }
+      ],
+      "version_independent": true,
+      "mismatch": "semantic_mismatch",
+      "message": "mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool",
+      "evidence": [
+        "e-mux-not-isomorphic",
+        "e-xray-mux-doc"
+      ]
+    },
+    {
+      "rule_id": "mihomo.mux.semantics",
+      "target": {
+        "kernel": "mihomo",
+        "distribution": "upstream"
+      },
+      "selector": {
+        "feature": "standard:mux"
+      },
+      "segments": [
+        {
+          "range": "*",
+          "verdict": {
+            "config": "SUPPORTED",
+            "runtime": "SUPPORTED_WITH_LOSS"
+          },
+          "failure_mode": "silent_ignore",
+          "losses": [
+            {
+              "feature": "standard:mux",
+              "what": "三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+              "impact": "CONNECTIVITY"
+            }
+          ]
+        }
+      ],
+      "version_independent": true,
+      "mismatch": "semantic_mismatch",
+      "message": "mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool",
+      "evidence": [
+        "e-mux-not-isomorphic",
+        "e-xray-mux-doc"
+      ]
+    },
+    {
+      "rule_id": "singbox.mux.semantics",
+      "target": {
+        "kernel": "singbox",
+        "distribution": "upstream"
+      },
+      "selector": {
+        "feature": "standard:mux"
+      },
+      "segments": [
+        {
+          "range": "*",
+          "verdict": {
+            "config": "SUPPORTED",
+            "runtime": "SUPPORTED_WITH_LOSS"
+          },
+          "failure_mode": "silent_ignore",
+          "losses": [
+            {
+              "feature": "standard:mux",
+              "what": "三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+              "impact": "CONNECTIVITY"
+            }
+          ]
+        }
+      ],
+      "version_independent": true,
+      "mismatch": "semantic_mismatch",
+      "message": "mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool",
+      "evidence": [
+        "e-mux-not-isomorphic",
+        "e-xray-mux-doc"
+      ]
     }
   ],
   "uri_rules": [
@@ -1751,6 +1873,139 @@
       "workaround": "本项目 vendor 扩展: fragment 里带 mi1314cat 参数（非标准，需对端认识）",
       "evidence": [
         "e-sip002"
+      ]
+    },
+    {
+      "uri_rule_id": "uri.vless.mux",
+      "scheme": "vless",
+      "feature": "standard:mux",
+      "representation": "NONE",
+      "loss": [
+        {
+          "field": "standard:mux.enabled",
+          "what": "分享链接规范里没有 mux 参数（客户端私有扩展）, 导入即丢失"
+        },
+        {
+          "field": "standard:mux.protocol",
+          "what": "mux 实现名（mux.cool/smux/h2mux）无法从链接表达"
+        }
+      ],
+      "evidence": [
+        "e-xray-mux-doc"
+      ]
+    },
+    {
+      "uri_rule_id": "uri.vmess.mux",
+      "scheme": "vmess",
+      "feature": "standard:mux",
+      "representation": "NONE",
+      "loss": [
+        {
+          "field": "standard:mux.enabled",
+          "what": "分享链接规范里没有 mux 参数（客户端私有扩展）, 导入即丢失"
+        },
+        {
+          "field": "standard:mux.protocol",
+          "what": "mux 实现名（mux.cool/smux/h2mux）无法从链接表达"
+        }
+      ],
+      "evidence": [
+        "e-xray-mux-doc"
+      ]
+    },
+    {
+      "uri_rule_id": "uri.trojan.mux",
+      "scheme": "trojan",
+      "feature": "standard:mux",
+      "representation": "NONE",
+      "loss": [
+        {
+          "field": "standard:mux.enabled",
+          "what": "分享链接规范里没有 mux 参数（客户端私有扩展）, 导入即丢失"
+        },
+        {
+          "field": "standard:mux.protocol",
+          "what": "mux 实现名（mux.cool/smux/h2mux）无法从链接表达"
+        }
+      ],
+      "evidence": [
+        "e-xray-mux-doc"
+      ]
+    },
+    {
+      "uri_rule_id": "uri.ss.mux",
+      "scheme": "ss",
+      "feature": "standard:mux",
+      "representation": "NONE",
+      "loss": [
+        {
+          "field": "standard:mux.enabled",
+          "what": "分享链接规范里没有 mux 参数（客户端私有扩展）, 导入即丢失"
+        },
+        {
+          "field": "standard:mux.protocol",
+          "what": "mux 实现名（mux.cool/smux/h2mux）无法从链接表达"
+        }
+      ],
+      "evidence": [
+        "e-xray-mux-doc"
+      ]
+    },
+    {
+      "uri_rule_id": "uri.hysteria2.mux",
+      "scheme": "hysteria2",
+      "feature": "standard:mux",
+      "representation": "NONE",
+      "loss": [
+        {
+          "field": "standard:mux.enabled",
+          "what": "分享链接规范里没有 mux 参数（客户端私有扩展）, 导入即丢失"
+        },
+        {
+          "field": "standard:mux.protocol",
+          "what": "mux 实现名（mux.cool/smux/h2mux）无法从链接表达"
+        }
+      ],
+      "evidence": [
+        "e-xray-mux-doc"
+      ]
+    },
+    {
+      "uri_rule_id": "uri.tuic.mux",
+      "scheme": "tuic",
+      "feature": "standard:mux",
+      "representation": "NONE",
+      "loss": [
+        {
+          "field": "standard:mux.enabled",
+          "what": "分享链接规范里没有 mux 参数（客户端私有扩展）, 导入即丢失"
+        },
+        {
+          "field": "standard:mux.protocol",
+          "what": "mux 实现名（mux.cool/smux/h2mux）无法从链接表达"
+        }
+      ],
+      "evidence": [
+        "e-xray-mux-doc"
+      ]
+    },
+    {
+      "uri_rule_id": "uri.anytls.mux",
+      "scheme": "anytls",
+      "feature": "standard:mux",
+      "representation": "NONE",
+      "loss": [
+        {
+          "field": "standard:mux.enabled",
+          "what": "分享链接规范里没有 mux 参数（客户端私有扩展）, 导入即丢失"
+        },
+        {
+          "field": "standard:mux.protocol",
+          "what": "mux 实现名（mux.cool/smux/h2mux）无法从链接表达"
+        }
+      ],
+      "evidence": [
+        "e-xray-mux-doc"
       ]
     }
   ]
