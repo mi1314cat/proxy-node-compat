@@ -1,0 +1,2108 @@
+[
+ {
+  "tag": "RN:rn-anytls01-TLS",
+  "type": "anytls",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.protocol.anytls"
+  ]
+ },
+ {
+  "tag": "RN:rn-anytls02-REALITY",
+  "type": "anytls",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.tls",
+   "singbox.support.reality",
+   "singbox.protocol.anytls"
+  ]
+ },
+ {
+  "tag": "RN:rn-hysteria201-TLS",
+  "type": "hysteria2",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.protocol.hysteria2"
+  ]
+ },
+ {
+  "tag": "RN:rn-naive01-TLS",
+  "type": "naive",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   },
+   {
+    "what": "层级 semantic",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls"
+  ]
+ },
+ {
+  "tag": "RN:rn-reality01-REALITY",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.tls",
+   "singbox.support.reality",
+   "singbox.support.flow",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "RN:rn-shadowsocks01-plain",
+  "type": "shadowsocks",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.protocol.shadowsocks"
+  ]
+ },
+ {
+  "tag": "RN:rn-shadowtls01-TLS-out",
+  "type": "shadowtls",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   },
+   {
+    "what": "层级 semantic",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls"
+  ]
+ },
+ {
+  "tag": "RN:rn-shadowtls01-TLS",
+  "type": "shadowsocks",
+  "compat": "SUPPORTED_WITH_LOSS",
+  "merged": "SUPPORTED_WITH_LOSS",
+  "ok": true,
+  "rc": [],
+  "msg": [
+   "mux 在三家内核里不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex）, 跨内核搬运不保证语义一致; 且 sing-box 的 multiplex 与 ws/grpc 的语义也不完全对齐",
+   "会丢能力: 三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+   "mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool"
+  ],
+  "losses": [
+   {
+    "feature": "standard:mux",
+    "what": "三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+    "impact": "CONNECTIVITY",
+    "rule": "singbox.mux.semantics"
+   }
+  ],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.protocol.shadowsocks",
+   "singbox.mux.semantics"
+  ]
+ },
+ {
+  "tag": "RN:rn-trojan01-TLS-CDN",
+  "type": "trojan",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.trojan"
+  ]
+ },
+ {
+  "tag": "RN:rn-trojan02-REALITY",
+  "type": "trojan",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.support.reality",
+   "singbox.protocol.trojan"
+  ]
+ },
+ {
+  "tag": "RN:rn-tuic01-TLS",
+  "type": "tuic",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.protocol.tuic"
+  ]
+ },
+ {
+  "tag": "RN:rn-vless01-TLS-CDN",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "RN:rn-vmess01-TLS-CDN",
+  "type": "vmess",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vmess"
+  ]
+ },
+ {
+  "tag": "RN:rn-vmess02-REALITY",
+  "type": "vmess",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.support.reality",
+   "singbox.protocol.vmess"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选1/cf-CF官方优选1",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选10/cf-CF官方优选10",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选11/cf-CF官方优选11",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选12/cf-CF官方优选12",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选13/cf-CF官方优选13",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选14/cf-CF官方优选14",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选15/cf-CF官方优选15",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选16/cf-CF官方优选16",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选17/cf-CF官方优选17",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选18/cf-CF官方优选18",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选19/cf-CF官方优选19",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选2/cf-CF官方优选2",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选20/cf-CF官方优选20",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选21/cf-CF官方优选21",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选22/cf-CF官方优选22",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选23/cf-CF官方优选23",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选24/cf-CF官方优选24",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选25/cf-CF官方优选25",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选26/cf-CF官方优选26",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选27/cf-CF官方优选27",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选28/cf-CF官方优选28",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选29/cf-CF官方优选29",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选3/cf-CF官方优选3",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选30/cf-CF官方优选30",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选4/cf-CF官方优选4",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选5/cf-CF官方优选5",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选6/cf-CF官方优选6",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选7/cf-CF官方优选7",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选8/cf-CF官方优选8",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "cf-CF官方优选9/cf-CF官方优选9",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "der-anytls01-TLS/der-anytls01-TLS",
+  "type": "anytls",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.protocol.anytls"
+  ]
+ },
+ {
+  "tag": "der-anytls02-REALITY/der-anytls02-REALITY",
+  "type": "anytls",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.tls",
+   "singbox.support.reality",
+   "singbox.protocol.anytls"
+  ]
+ },
+ {
+  "tag": "der-hysteria201-TLS/der-hysteria201-TLS",
+  "type": "hysteria2",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.protocol.hysteria2"
+  ]
+ },
+ {
+  "tag": "der-naive01-TLS/der-naive01-TLS",
+  "type": "naive",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   },
+   {
+    "what": "层级 semantic",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls"
+  ]
+ },
+ {
+  "tag": "der-reality01-REALITY/der-reality01-REALITY",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.tls",
+   "singbox.support.reality",
+   "singbox.support.flow",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "der-shadowsocks01-plain/der-shadowsocks01-plain",
+  "type": "shadowsocks",
+  "compat": "SUPPORTED_WITH_LOSS",
+  "merged": "SUPPORTED_WITH_LOSS",
+  "ok": true,
+  "rc": [],
+  "msg": [
+   "mux 在三家内核里不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex）, 跨内核搬运不保证语义一致; 且 sing-box 的 multiplex 与 ws/grpc 的语义也不完全对齐",
+   "会丢能力: 三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+   "mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool"
+  ],
+  "losses": [
+   {
+    "feature": "standard:mux",
+    "what": "三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+    "impact": "CONNECTIVITY",
+    "rule": "singbox.mux.semantics"
+   }
+  ],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.protocol.shadowsocks",
+   "singbox.mux.semantics"
+  ]
+ },
+ {
+  "tag": "der-shadowtls01-TLS/der-shadowtls01-TLS-out",
+  "type": "shadowtls",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   },
+   {
+    "what": "层级 semantic",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls"
+  ]
+ },
+ {
+  "tag": "der-shadowtls01-TLS/der-shadowtls01-TLS",
+  "type": "shadowsocks",
+  "compat": "SUPPORTED_WITH_LOSS",
+  "merged": "SUPPORTED_WITH_LOSS",
+  "ok": true,
+  "rc": [],
+  "msg": [
+   "mux 在三家内核里不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex）, 跨内核搬运不保证语义一致; 且 sing-box 的 multiplex 与 ws/grpc 的语义也不完全对齐",
+   "会丢能力: 三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+   "mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool"
+  ],
+  "losses": [
+   {
+    "feature": "standard:mux",
+    "what": "三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+    "impact": "CONNECTIVITY",
+    "rule": "singbox.mux.semantics"
+   }
+  ],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.protocol.shadowsocks",
+   "singbox.mux.semantics"
+  ]
+ },
+ {
+  "tag": "der-trojan01-TLS-CDN/der-trojan01-TLS-CDN",
+  "type": "trojan",
+  "compat": "SUPPORTED_WITH_LOSS",
+  "merged": "SUPPORTED_WITH_LOSS",
+  "ok": true,
+  "rc": [],
+  "msg": [
+   "mux 在三家内核里不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex）, 跨内核搬运不保证语义一致; 且 sing-box 的 multiplex 与 ws/grpc 的语义也不完全对齐",
+   "会丢能力: 三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+   "mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool"
+  ],
+  "losses": [
+   {
+    "feature": "standard:mux",
+    "what": "三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+    "impact": "CONNECTIVITY",
+    "rule": "singbox.mux.semantics"
+   }
+  ],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.trojan",
+   "singbox.mux.semantics"
+  ]
+ },
+ {
+  "tag": "der-trojan02-REALITY/der-trojan02-REALITY",
+  "type": "trojan",
+  "compat": "SUPPORTED_WITH_LOSS",
+  "merged": "SUPPORTED_WITH_LOSS",
+  "ok": true,
+  "rc": [],
+  "msg": [
+   "mux 在三家内核里不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex）, 跨内核搬运不保证语义一致; 且 sing-box 的 multiplex 与 ws/grpc 的语义也不完全对齐",
+   "会丢能力: 三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+   "mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool"
+  ],
+  "losses": [
+   {
+    "feature": "standard:mux",
+    "what": "三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+    "impact": "CONNECTIVITY",
+    "rule": "singbox.mux.semantics"
+   }
+  ],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.support.reality",
+   "singbox.protocol.trojan",
+   "singbox.mux.semantics"
+  ]
+ },
+ {
+  "tag": "der-trojan03-TLS-CDN/der-trojan03-TLS-CDN",
+  "type": "trojan",
+  "compat": "SUPPORTED_WITH_LOSS",
+  "merged": "SUPPORTED_WITH_LOSS",
+  "ok": true,
+  "rc": [],
+  "msg": [
+   "mux 在三家内核里不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex）, 跨内核搬运不保证语义一致; 且 sing-box 的 multiplex 与 ws/grpc 的语义也不完全对齐",
+   "会丢能力: 三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+   "mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool"
+  ],
+  "losses": [
+   {
+    "feature": "standard:mux",
+    "what": "三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+    "impact": "CONNECTIVITY",
+    "rule": "singbox.mux.semantics"
+   }
+  ],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_grpc",
+   "singbox.protocol.trojan",
+   "singbox.mux.semantics"
+  ]
+ },
+ {
+  "tag": "der-tuic01-TLS/der-tuic01-TLS",
+  "type": "tuic",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.protocol.tuic"
+  ]
+ },
+ {
+  "tag": "der-vless01-TLS-CDN/der-vless01-TLS-CDN",
+  "type": "vless",
+  "compat": "SUPPORTED_WITH_LOSS",
+  "merged": "SUPPORTED_WITH_LOSS",
+  "ok": true,
+  "rc": [],
+  "msg": [
+   "mux 在三家内核里不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex）, 跨内核搬运不保证语义一致; 且 sing-box 的 multiplex 与 ws/grpc 的语义也不完全对齐",
+   "会丢能力: 三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+   "mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool"
+  ],
+  "losses": [
+   {
+    "feature": "standard:mux",
+    "what": "三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+    "impact": "CONNECTIVITY",
+    "rule": "singbox.mux.semantics"
+   }
+  ],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless",
+   "singbox.mux.semantics"
+  ]
+ },
+ {
+  "tag": "der-vless02-TLS-CDN/der-vless02-TLS-CDN",
+  "type": "vless",
+  "compat": "SUPPORTED_WITH_LOSS",
+  "merged": "SUPPORTED_WITH_LOSS",
+  "ok": true,
+  "rc": [],
+  "msg": [
+   "mux 在三家内核里不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex）, 跨内核搬运不保证语义一致; 且 sing-box 的 multiplex 与 ws/grpc 的语义也不完全对齐",
+   "会丢能力: 三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+   "mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool"
+  ],
+  "losses": [
+   {
+    "feature": "standard:mux",
+    "what": "三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+    "impact": "CONNECTIVITY",
+    "rule": "singbox.mux.semantics"
+   }
+  ],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_grpc",
+   "singbox.protocol.vless",
+   "singbox.mux.semantics"
+  ]
+ },
+ {
+  "tag": "der-vmess01-TLS-CDN/der-vmess01-TLS-CDN",
+  "type": "vmess",
+  "compat": "SUPPORTED_WITH_LOSS",
+  "merged": "SUPPORTED_WITH_LOSS",
+  "ok": true,
+  "rc": [],
+  "msg": [
+   "mux 在三家内核里不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex）, 跨内核搬运不保证语义一致; 且 sing-box 的 multiplex 与 ws/grpc 的语义也不完全对齐",
+   "会丢能力: 三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+   "mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool"
+  ],
+  "losses": [
+   {
+    "feature": "standard:mux",
+    "what": "三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+    "impact": "CONNECTIVITY",
+    "rule": "singbox.mux.semantics"
+   }
+  ],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vmess",
+   "singbox.mux.semantics"
+  ]
+ },
+ {
+  "tag": "der-vmess02-REALITY/der-vmess02-REALITY",
+  "type": "vmess",
+  "compat": "SUPPORTED_WITH_LOSS",
+  "merged": "SUPPORTED_WITH_LOSS",
+  "ok": true,
+  "rc": [],
+  "msg": [
+   "mux 在三家内核里不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex）, 跨内核搬运不保证语义一致; 且 sing-box 的 multiplex 与 ws/grpc 的语义也不完全对齐",
+   "会丢能力: 三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+   "mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool"
+  ],
+  "losses": [
+   {
+    "feature": "standard:mux",
+    "what": "三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+    "impact": "CONNECTIVITY",
+    "rule": "singbox.mux.semantics"
+   }
+  ],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.support.reality",
+   "singbox.protocol.vmess",
+   "singbox.mux.semantics"
+  ]
+ },
+ {
+  "tag": "der-vmess03-TLS-CDN/der-vmess03-TLS-CDN",
+  "type": "vmess",
+  "compat": "SUPPORTED_WITH_LOSS",
+  "merged": "SUPPORTED_WITH_LOSS",
+  "ok": true,
+  "rc": [],
+  "msg": [
+   "mux 在三家内核里不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex）, 跨内核搬运不保证语义一致; 且 sing-box 的 multiplex 与 ws/grpc 的语义也不完全对齐",
+   "会丢能力: 三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+   "mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool"
+  ],
+  "losses": [
+   {
+    "feature": "standard:mux",
+    "what": "三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+    "impact": "CONNECTIVITY",
+    "rule": "singbox.mux.semantics"
+   }
+  ],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_grpc",
+   "singbox.protocol.vmess",
+   "singbox.mux.semantics"
+  ]
+ },
+ {
+  "tag": "rn-anytls01-TLS/rn-anytls01-TLS",
+  "type": "anytls",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.protocol.anytls"
+  ]
+ },
+ {
+  "tag": "rn-anytls02-REALITY/rn-anytls02-REALITY",
+  "type": "anytls",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.tls",
+   "singbox.support.reality",
+   "singbox.protocol.anytls"
+  ]
+ },
+ {
+  "tag": "rn-hysteria201-TLS/rn-hysteria201-TLS",
+  "type": "hysteria2",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.protocol.hysteria2"
+  ]
+ },
+ {
+  "tag": "rn-naive01-TLS/rn-naive01-TLS",
+  "type": "naive",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   },
+   {
+    "what": "层级 semantic",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls"
+  ]
+ },
+ {
+  "tag": "rn-reality01-REALITY/rn-reality01-REALITY",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.tls",
+   "singbox.support.reality",
+   "singbox.support.flow",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "rn-shadowsocks01-plain/rn-shadowsocks01-plain",
+  "type": "shadowsocks",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.protocol.shadowsocks"
+  ]
+ },
+ {
+  "tag": "rn-shadowtls01-TLS/rn-shadowtls01-TLS-out",
+  "type": "shadowtls",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   },
+   {
+    "what": "层级 semantic",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls"
+  ]
+ },
+ {
+  "tag": "rn-shadowtls01-TLS/rn-shadowtls01-TLS",
+  "type": "shadowsocks",
+  "compat": "SUPPORTED_WITH_LOSS",
+  "merged": "SUPPORTED_WITH_LOSS",
+  "ok": true,
+  "rc": [],
+  "msg": [
+   "mux 在三家内核里不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex）, 跨内核搬运不保证语义一致; 且 sing-box 的 multiplex 与 ws/grpc 的语义也不完全对齐",
+   "会丢能力: 三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+   "mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool"
+  ],
+  "losses": [
+   {
+    "feature": "standard:mux",
+    "what": "三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」",
+    "impact": "CONNECTIVITY",
+    "rule": "singbox.mux.semantics"
+   }
+  ],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.protocol.shadowsocks",
+   "singbox.mux.semantics"
+  ]
+ },
+ {
+  "tag": "rn-trojan01-TLS-CDN/rn-trojan01-TLS-CDN",
+  "type": "trojan",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.trojan"
+  ]
+ },
+ {
+  "tag": "rn-trojan02-REALITY/rn-trojan02-REALITY",
+  "type": "trojan",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.support.reality",
+   "singbox.protocol.trojan"
+  ]
+ },
+ {
+  "tag": "rn-tuic01-TLS/rn-tuic01-TLS",
+  "type": "tuic",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.protocol.tuic"
+  ]
+ },
+ {
+  "tag": "rn-vless01-TLS-CDN/rn-vless01-TLS-CDN",
+  "type": "vless",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "rn-vmess01-TLS-CDN/rn-vmess01-TLS-CDN",
+  "type": "vmess",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vmess"
+  ]
+ },
+ {
+  "tag": "rn-vmess02-REALITY/rn-vmess02-REALITY",
+  "type": "vmess",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "ok": true,
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=singbox-json）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.support.reality",
+   "singbox.protocol.vmess"
+  ]
+ }
+]

@@ -1,0 +1,119 @@
+[
+ {
+  "label": "rn-anytls01-TLS",
+  "check_rc": 0,
+  "check_err": [],
+  "code": "204",
+  "secs": "2.243216",
+  "ip": "104.28.201.80",
+  "err": ""
+ },
+ {
+  "label": "rn-anytls02-REALITY",
+  "check_rc": 0,
+  "check_err": [],
+  "code": "204",
+  "secs": "3.950150",
+  "ip": "104.28.201.80",
+  "err": ""
+ },
+ {
+  "label": "rn-hysteria201-TLS",
+  "check_rc": 0,
+  "check_err": [],
+  "code": "204",
+  "secs": "1.203466",
+  "ip": "104.28.201.80",
+  "err": ""
+ },
+ {
+  "label": "rn-naive01-TLS",
+  "check_rc": 0,
+  "check_err": [],
+  "code": "204",
+  "secs": "1.735627",
+  "ip": "104.28.201.80",
+  "err": ""
+ },
+ {
+  "label": "rn-reality01-REALITY",
+  "check_rc": 0,
+  "check_err": [],
+  "code": "204",
+  "secs": "1.672825",
+  "ip": "104.28.201.80",
+  "err": ""
+ },
+ {
+  "label": "rn-shadowsocks01-plain",
+  "check_rc": 0,
+  "check_err": [],
+  "code": "204",
+  "secs": "0.759664",
+  "ip": "104.28.201.80",
+  "err": ""
+ },
+ {
+  "label": "rn-shadowtls01-TLS",
+  "check_rc": 0,
+  "check_err": [],
+  "code": "204",
+  "secs": "2.706644",
+  "ip": "104.28.201.80",
+  "err": ""
+ },
+ {
+  "label": "rn-trojan01-TLS-CDN",
+  "check_rc": 0,
+  "check_err": [],
+  "code": "204",
+  "secs": "2.754089",
+  "ip": "104.28.201.80",
+  "err": ""
+ },
+ {
+  "label": "rn-trojan02-REALITY",
+  "check_rc": 0,
+  "check_err": [],
+  "code": "204",
+  "secs": "3.321902",
+  "ip": "104.28.201.80",
+  "err": ""
+ },
+ {
+  "label": "rn-tuic01-TLS",
+  "check_rc": 0,
+  "check_err": [],
+  "code": "204",
+  "secs": "1.172697",
+  "ip": "104.28.201.80",
+  "err": ""
+ },
+ {
+  "label": "rn-vless01-TLS-CDN",
+  "check_rc": 0,
+  "check_err": [],
+  "code": "204",
+  "secs": "2.579424",
+  "ip": "104.28.201.80",
+  "err": ""
+ },
+ {
+  "label": "rn-vmess01-TLS-CDN",
+  "check_rc": 0,
+  "check_err": [],
+  "code": "204",
+  "secs": "1.161943",
+  "ip": "104.28.201.80",
+  "err": ""
+ },
+ {
+  "label": "rn-vmess02-REALITY",
+  "check_rc": 0,
+  "check_err": [],
+  "code": "204",
+  "secs": "3.295330",
+  "ip": "104.28.201.80",
+  "err": ""
+ }
+]

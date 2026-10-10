@@ -1,0 +1,444 @@
+[
+ {
+  "tag": "-anytls01-TLS",
+  "uri": "anytls://<redacted>@107.173.154.178:31002?sni=hxicc.catmicos.dpdns.org&insecure=0#🇺🇸 rn anytls01-TLS",
+  "legacy": "UNSUPPORTED",
+  "compat": "SUPPORTED",
+  "merged": "UNSUPPORTED",
+  "src": "legacy（比 compat 更差, 取更差者）",
+  "rc": [],
+  "msg": [
+   "to_sb.py 不支持 anytls://（或 host/port 缺失）"
+  ],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=anytls）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "raw_uri": "anytls://tjO9yFXg2zSmMh2ejDe6AZ0v@107.173.154.178:31002?sni=hxicc.catmicos.dpdns.org&insecure=0#🇺🇸 rn anytls01-TLS",
+  "client_losses": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.protocol.anytls"
+  ]
+ },
+ {
+  "tag": "-anytls02-REALITY",
+  "uri": "anytls://<redacted>@107.173.154.178:31013?sni=apache.org&insecure=0&pbk=tnXodgtAkqwGSZBIQu-O9hRj1VsFG4PwMriVzy0cHwA&sid=5c102aa54237286f#🇺🇸 rn anytls02-REALITY",
+  "legacy": "UNSUPPORTED",
+  "compat": "SUPPORTED",
+  "merged": "UNSUPPORTED",
+  "src": "legacy（比 compat 更差, 取更差者）",
+  "rc": [],
+  "msg": [
+   "to_sb.py 不支持 anytls://（或 host/port 缺失）"
+  ],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=anytls）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "raw_uri": "anytls://g4RoPGzW3QLIHJNPgS8CoVB1@107.173.154.178:31013?sni=apache.org&insecure=0&pbk=tnXodgtAkqwGSZBIQu-O9hRj1VsFG4PwMriVzy0cHwA&sid=5c102aa54237286f#🇺🇸 rn anytls02-REALITY",
+  "client_losses": [],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.tls",
+   "singbox.support.reality",
+   "singbox.protocol.anytls"
+  ]
+ },
+ {
+  "tag": "-hysteria201-TLS",
+  "uri": "hysteria2://<redacted>@107.173.154.178:31001?sni=hxicc.catmicos.dpdns.org&obfs=none&obfs-password=&alpn=h3#🇺🇸 rn hysteria201-TLS",
+  "legacy": "SUPPORTED",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "src": "compat",
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=hysteria2）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [
+   {
+    "key": "obfs",
+    "value": "none",
+    "source": "URI",
+    "note": "已收录但未建模到具体 feature"
+   },
+   {
+    "key": "obfs-password",
+    "value": "",
+    "source": "URI",
+    "note": "已收录但未建模到具体 feature"
+   }
+  ],
+  "raw_uri": "hysteria2://f00f6744246c7c55e0cb96954e56b7d0@107.173.154.178:31001?sni=hxicc.catmicos.dpdns.org&obfs=none&obfs-password=&alpn=h3#🇺🇸 rn hysteria201-TLS",
+  "client_losses": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.protocol.hysteria2"
+  ]
+ },
+ {
+  "tag": "-naive01-TLS",
+  "uri": "naive+https://<redacted>@107.173.154.178:31008?sni=hxicc.catmicos.dpdns.org#🇺🇸 rn naive01-TLS",
+  "legacy": "UNSUPPORTED",
+  "compat": "UNKNOWN",
+  "merged": "UNSUPPORTED",
+  "src": "legacy（compat 判 UNKNOWN, 无确定结论）",
+  "rc": [
+   "UNKNOWN_CAPABILITY"
+  ],
+  "msg": [
+   "没有覆盖该组合的证据（未知 ≠ 不支持, 所以不据此判死）"
+  ],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "singbox × ['unknown:naive+https']",
+    "why": "注册表里没有覆盖该组合的规则"
+   },
+   {
+    "what": "层级 uri（scheme=naive+https）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "feature unknown:naive+https",
+    "why": "该扩展 feature 没有任何能力规则（未知 ≠ 不支持）"
+   }
+  ],
+  "ext": [
+   {
+    "key": "sni",
+    "value": "hxicc.catmicos.dpdns.org",
+    "source": "URI",
+    "note": "未知协议, 参数原样保留"
+   }
+  ],
+  "raw_uri": "naive+https://e53bd040a419:f695c3946d09@107.173.154.178:31008?sni=hxicc.catmicos.dpdns.org#🇺🇸 rn naive01-TLS",
+  "client_losses": [],
+  "rules": []
+ },
+ {
+  "tag": "-reality01-REALITY",
+  "uri": "vless://<redacted>@107.173.154.178:31000?encryption=none&security=reality&sni=apps.apple.com&fp=chrome&pbk=tnXodgtAkqwGSZBIQu-O9hRj1VsFG4PwMriVzy0cHwA&sid=60656f4e153adc66&type=tcp&flow=xtls-rprx-vision#🇺🇸 rn reality01-REALITY",
+  "legacy": "SUPPORTED",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "src": "compat",
+  "rc": [],
+  "msg": [
+   "走了一条已知缺陷绕行: encryption='none' 是 VLESS 链接的「不加密」哨兵值, 不是 VLESS Encryption; 已从 profile 摘除（uri.py:310 的已知缺陷, 非能力规则）"
+  ],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "raw_uri": "vless://d9f866b2-3f4c-46f2-b3fd-f18f60861865@107.173.154.178:31000?encryption=none&security=reality&sni=apps.apple.com&fp=chrome&pbk=tnXodgtAkqwGSZBIQu-O9hRj1VsFG4PwMriVzy0cHwA&sid=60656f4e153adc66&type=tcp&flow=xtls-rprx-vision#🇺🇸 rn reality01-REALITY",
+  "client_losses": [],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.reality",
+   "singbox.support.flow",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "-shadowsocks01-plain",
+  "uri": "ss://<redacted>@107.173.154.178:31004#🇺🇸 rn shadowsocks01-plain",
+  "legacy": "SUPPORTED",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "src": "compat",
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=ss）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "raw_uri": "ss://MjAyMi1ibGFrZTMtYWVzLTEyOC1nY206NnZqRVJpWGRab2VkSDVVaW9JV0R6UT09@107.173.154.178:31004#🇺🇸 rn shadowsocks01-plain",
+  "client_losses": [],
+  "rules": [
+   "singbox.protocol.shadowsocks"
+  ]
+ },
+ {
+  "tag": "-shadowtls01-TLS",
+  "uri": "shadowtls://<redacted>@107.173.154.178:31009?sni=apps.apple.com&version=3#🇺🇸 rn shadowtls01-TLS",
+  "legacy": "UNSUPPORTED",
+  "compat": "UNKNOWN",
+  "merged": "UNSUPPORTED",
+  "src": "legacy（compat 判 UNKNOWN, 无确定结论）",
+  "rc": [
+   "UNKNOWN_CAPABILITY"
+  ],
+  "msg": [
+   "没有覆盖该组合的证据（未知 ≠ 不支持, 所以不据此判死）"
+  ],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "singbox × ['unknown:shadowtls']",
+    "why": "注册表里没有覆盖该组合的规则"
+   },
+   {
+    "what": "层级 uri（scheme=shadowtls）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "feature unknown:shadowtls",
+    "why": "该扩展 feature 没有任何能力规则（未知 ≠ 不支持）"
+   }
+  ],
+  "ext": [
+   {
+    "key": "sni",
+    "value": "apps.apple.com",
+    "source": "URI",
+    "note": "未知协议, 参数原样保留"
+   },
+   {
+    "key": "version",
+    "value": "3",
+    "source": "URI",
+    "note": "未知协议, 参数原样保留"
+   }
+  ],
+  "raw_uri": "shadowtls://LVrD7aD9fH1dlN1uKzsw@107.173.154.178:31009?sni=apps.apple.com&version=3#🇺🇸 rn shadowtls01-TLS",
+  "client_losses": [],
+  "rules": []
+ },
+ {
+  "tag": "-trojan01-TLS-CDN",
+  "uri": "trojan://<redacted>@hxicc.catmicos.dpdns.org:443?sni=hxicc.catmicos.dpdns.org&alpn=http/1.1&type=ws&path=/322c087d&host=hxicc.catmicos.dpdns.org#🇺🇸 rn trojan01-TLS-CDN",
+  "legacy": "SUPPORTED",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "src": "compat",
+  "rc": [],
+  "msg": [
+   "分享链接里有 standard:tls, 写出的出站里没有 —— 客户端转换环节丢了（内核侧不会报错, 只会连不上）"
+  ],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=trojan）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "raw_uri": "trojan://TsoFwGJLPqTtuJLkvuhF@hxicc.catmicos.dpdns.org:443?sni=hxicc.catmicos.dpdns.org&alpn=http/1.1&type=ws&path=/322c087d&host=hxicc.catmicos.dpdns.org#🇺🇸 rn trojan01-TLS-CDN",
+  "client_losses": [
+   {
+    "feature": "standard:tls",
+    "what": "分享链接里有 standard:tls, 写出的出站里没有 —— 客户端转换环节丢了（内核侧不会报错, 只会连不上）"
+   }
+  ],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.trojan"
+  ]
+ },
+ {
+  "tag": "-trojan02-REALITY",
+  "uri": "trojan://<redacted>@107.173.154.178:31012?sni=ibm.com&security=reality&pbk=tnXodgtAkqwGSZBIQu-O9hRj1VsFG4PwMriVzy0cHwA&sid=c1f47cd762b2fa17&type=ws&path=/9b527228&host=ibm.com#🇺🇸 rn trojan02-REALITY",
+  "legacy": "SUPPORTED",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "src": "compat",
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=trojan）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "raw_uri": "trojan://T9CtGP1lML2jxLrveA5Z@107.173.154.178:31012?sni=ibm.com&security=reality&pbk=tnXodgtAkqwGSZBIQu-O9hRj1VsFG4PwMriVzy0cHwA&sid=c1f47cd762b2fa17&type=ws&path=/9b527228&host=ibm.com#🇺🇸 rn trojan02-REALITY",
+  "client_losses": [],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.transport_ws",
+   "singbox.support.reality",
+   "singbox.protocol.trojan"
+  ]
+ },
+ {
+  "tag": "-tuic01-TLS",
+  "uri": "tuic://<redacted>@107.173.154.178:31005?sni=hxicc.catmicos.dpdns.org&congestion_control=bbr&alpn=h3#🇺🇸 rn tuic01-TLS",
+  "legacy": "SUPPORTED",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "src": "compat",
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=tuic）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [
+   {
+    "key": "congestion_control",
+    "value": "bbr",
+    "source": "URI",
+    "note": "已收录但未建模到具体 feature"
+   }
+  ],
+  "raw_uri": "tuic://0891ed4d-491c-407b-92ff-5ad27c2e5336:9e874ff1faa7a0ff642af541b4fffc53@107.173.154.178:31005?sni=hxicc.catmicos.dpdns.org&congestion_control=bbr&alpn=h3#🇺🇸 rn tuic01-TLS",
+  "client_losses": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.protocol.tuic"
+  ]
+ },
+ {
+  "tag": "-vless01-TLS-CDN",
+  "uri": "vless://<redacted>@hxicc.catmicos.dpdns.org:443?encryption=none&security=tls&sni=hxicc.catmicos.dpdns.org&type=ws&path=/5ac821b0&host=hxicc.catmicos.dpdns.org#🇺🇸 rn vless01-TLS-CDN",
+  "legacy": "SUPPORTED",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "src": "compat",
+  "rc": [],
+  "msg": [
+   "走了一条已知缺陷绕行: encryption='none' 是 VLESS 链接的「不加密」哨兵值, 不是 VLESS Encryption; 已从 profile 摘除（uri.py:310 的已知缺陷, 非能力规则）"
+  ],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=vless）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "raw_uri": "vless://cd791ff5-1bcc-466e-99ae-c2edce371bdc@hxicc.catmicos.dpdns.org:443?encryption=none&security=tls&sni=hxicc.catmicos.dpdns.org&type=ws&path=/5ac821b0&host=hxicc.catmicos.dpdns.org#🇺🇸 rn vless01-TLS-CDN",
+  "client_losses": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vless"
+  ]
+ },
+ {
+  "tag": "-vmess01-TLS-CDN",
+  "uri": "vmess://eyJhZGQiOiJoeGljYy5jYXRtaWNvcy5kcGRucy5vcmciLCJwb3J0IjoiNDQzIiwidXVpZCI6IjQ4YWYyOGVhLTNjZDAtNDc1Ny1hZGM5LTgxNWE3YjFjMWUzNiIsImFpZCI6IjAiLCJuZXQiOiJ3cyIsInBhdGgiOiIvY2JhMzExYjUiLCJob3N0IjoiaHhpY2MuY2F0bWljb3MuZHBkbnMub3JnIiwic2VjdXJpdHkiOiJhdXRvIiwidGxzIjoidGxzIiwic25pIjoiaHhpY2MuY2F0bWljb3MuZHBkbnMub3JnIiwiYWxwbiI6Imh0dHAvMS4xIn0=#🇺🇸 rn vmess01-TLS-CDN",
+  "legacy": "SUPPORTED",
+  "compat": "SUPPORTED",
+  "merged": "SUPPORTED",
+  "src": "compat",
+  "rc": [],
+  "msg": [],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 uri（scheme=vmess）",
+    "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+   },
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "raw_uri": "vmess://eyJhZGQiOiJoeGljYy5jYXRtaWNvcy5kcGRucy5vcmciLCJwb3J0IjoiNDQzIiwidXVpZCI6IjQ4YWYyOGVhLTNjZDAtNDc1Ny1hZGM5LTgxNWE3YjFjMWUzNiIsImFpZCI6IjAiLCJuZXQiOiJ3cyIsInBhdGgiOiIvY2JhMzExYjUiLCJob3N0IjoiaHhpY2MuY2F0bWljb3MuZHBkbnMub3JnIiwic2VjdXJpdHkiOiJhdXRvIiwidGxzIjoidGxzIiwic25pIjoiaHhpY2MuY2F0bWljb3MuZHBkbnMub3JnIiwiYWxwbiI6Imh0dHAvMS4xIn0=#🇺🇸 rn vmess01-TLS-CDN",
+  "client_losses": [],
+  "rules": [
+   "singbox.support.tls",
+   "singbox.support.transport_ws",
+   "singbox.protocol.vmess"
+  ]
+ },
+ {
+  "tag": "-vmess02-REALITY",
+  "uri": "vless://<redacted>@107.173.154.178:31011?encryption=aes-128-gcm&security=reality&sni=python.org&fp=chrome&pbk=tnXodgtAkqwGSZBIQu-O9hRj1VsFG4PwMriVzy0cHwA&sid=a3baeab74472c469&type=ws&path=/7025f50c&host=#🇺🇸 rn vmess02-REALITY",
+  "legacy": "SUPPORTED",
+  "compat": "UNSUPPORTED",
+  "merged": "UNSUPPORTED",
+  "src": "compat",
+  "rc": [
+   "KERNEL_NEVER_SUPPORTED"
+  ],
+  "msg": [
+   "vless 的 encryption（VLESS Encryption）sing-box 未实现 —— 链接里的 encryption 会被丢弃/或配置期报错。本内核可用: vless 明文（无 encryption）",
+   "该内核从来没有支持过这个能力（不是版本问题, 换版本也没用）"
+  ],
+  "losses": [],
+  "unknowns": [
+   {
+    "what": "层级 parse",
+    "why": "没有任何证据覆盖该层级"
+   }
+  ],
+  "ext": [],
+  "raw_uri": "vless://d35b8824-0803-44c9-823b-d283a6ba3b52@107.173.154.178:31011?encryption=aes-128-gcm&security=reality&sni=python.org&fp=chrome&pbk=tnXodgtAkqwGSZBIQu-O9hRj1VsFG4PwMriVzy0cHwA&sid=a3baeab74472c469&type=ws&path=/7025f50c&host=#🇺🇸 rn vmess02-REALITY",
+  "client_losses": [
+   {
+    "feature": "standard:vless.encryption",
+    "what": "分享链接里有 standard:vless.encryption, 写出的出站里没有 —— 客户端转换环节丢了（内核侧不会报错, 只会连不上）"
+   }
+  ],
+  "rules": [
+   "singbox.reality.build_tags",
+   "singbox.support.transport_ws",
+   "singbox.support.reality",
+   "singbox.protocol.vless",
+   "singbox.vless.encryption.never"
+  ]
+ }
+]
