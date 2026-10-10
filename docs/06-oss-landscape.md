@@ -207,6 +207,24 @@ VMess/Trojan/WireGuard/Hysteria2/AnyTLS **整类凭空消失**（issue #643）�
   该组被填成 `Direct`，即用户以为在走代理、实际裸奔）。→ 未知必须上浮为 `UNKNOWN`，
   绝不允许任何一条路径"静默变成直连"。
 
+### 4.10 Sub-Store：唯一有"无损通道"的项目，和一个 URI 参数注入问题
+
+- **它唯一的无损路径**是 `_extra_unsupported` sidecar（`parsers/index.js:2078-2090` 采集 +
+  `producers/uri.js:539-557` 合并回 `extra=`），实测四字段完整回环 —— 但只覆盖 VLESS xhttp 的 extra。
+  其设计规则值得照抄：**"能结构化表达的禁止塞进 sidecar，否则旧值会覆盖用户的新编辑"**。
+- **它把"目标表达不了"建模成可判定的正常结果**：类型化的 `SurgeUnsupportedProxyError`，
+  而不是让它变成一个异常。→ 这正是我们 `SUPPORTED_WITH_LOSS` 想要的形态。
+- ⚠️ **`isSupportedMihomoVersion` 是个骗人的名字**：它比较的是 Snell / ShadowTLS **插件版本**，
+  与内核版本无关；全项目**没有任何内核版本维度**。→ 又一个"版本维度被生态普遍忽略"的实例。
+- ⚠️ **安全相关：未知 URI 参数会泄漏成节点字段**。主流解析器（vless/vmess/trojan/ss/wireguard）
+  把未知参数收进自由 `params` 后静默丢弃；但 `anytls / hysteria2 / tuic` 三处用
+  `else if (!Object.keys(proxy).includes(key)) proxy[key] = value`（`parsers/index.js:2165/2338/2407`），
+  于是**链接里带的任意参数会原样进入 clashmeta 产物**（实测输出含 `"evilField":"1"`）。
+  即 **URI 可控参数注入下游配置** —— 这既是安全问题，也说明"未知参数"必须有明确归属
+  （我们放 `extensions{}`，且**默认不进入任何生成物**）。
+- **存在零诊断的丢弃路径**（`clash.js:57,62`、`uri.js` 的 producer 无 default 分支）——
+  证明"靠手写日志保证不丢"必然漏；损失必须是引擎的结构化输出，不能寄望于作者记得写日志。
+
 **没有现成实现的**（= 我们的核心工作）：
 
 - 内核 **× 发行版 × 版本** 维度的能力表
