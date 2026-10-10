@@ -12,7 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field as dc_field
 from typing import Any
 
-from .model import NodeProfile
+from .model import NodeProfile, Presence
 from .registry import Registry, Rule, Segment, parse_version, version_in_range
 
 LEVELS = ("parse", "config", "uri", "runtime", "semantic")
@@ -35,6 +35,30 @@ def _worst(a: str | None, b: str | None) -> str | None:
     if b is None:
         return a
     return a if _STATUS_ORDER[a] >= _STATUS_ORDER[b] else b
+
+
+# 节点自身**显式**给出的字段可以直接满足某些运行期条件（P7: DEFAULTED/INFERRED 一律不算）。
+# 证据: mihomo common/convert/v.go:28-33 —— URI 的 fp → client-fingerprint
+#       （trojan 路径 converter.go:212-216），所以"链接里有 fp"确实能补上这个条件。
+_PROFILE_RUNTIME_FACTS = {"client_fingerprint_present": ("fingerprint", "fp")}
+
+
+def _profile_runtime_facts(profile: NodeProfile) -> tuple[dict[str, Any], dict[str, str]]:
+    """profile → 可确定的运行期条件。返回 (facts, why)。
+
+    facts 只是**缺省来源**: 目标端自报的 runtime_options 永远优先（客户端说没有就是没有）。
+    """
+    facts: dict[str, Any] = {}
+    why: dict[str, str] = {}
+    feats = ([profile.protocol] if profile.protocol else []) + list(profile.features)
+    for key, param_names in _PROFILE_RUNTIME_FACTS.items():
+        for feat in feats:
+            for pk, pf in feat.params.items():
+                if pk in param_names and pf.presence is Presence.EXPLICIT and pf.v:
+                    facts[key] = True
+                    why[key] = (f"{feat.id}.{pk}={pf.v}"
+                                f"（provenance={pf.provenance.value if pf.provenance else '?'}）")
+    return facts, why
 
 
 @dataclass

@@ -1,0 +1,309 @@
+### /root/catmi/sing-box/config/naive-01.json
+{
+  "inbounds": [
+    {
+      "type": "naive",
+      "tag": "naive01-TLS",
+      "listen": "::",
+      "listen_port": 31008,
+      "users": [
+        {
+          "username": "e53bd040a419",
+          "password": "f695c3946d09"
+        }
+      ],
+      "tls": {
+        "enabled": true,
+        "certificate_path": "/home/web/certs/hxicc.catmicos.dpdns.org_cert.pem",
+        "key_path": "/home/web/certs/hxicc.catmicos.dpdns.org_key.pem"
+      }
+    }
+  ]
+}
+### /root/catmi/sing-box/config/reality-01.json
+{
+  "inbounds": [
+    {
+      "type": "vless",
+      "tag": "reality01-REALITY",
+      "listen": "::",
+      "listen_port": 31000,
+      "users": [
+        {
+          "name": "user",
+          "uuid": "d9f866b2-3f4c-46f2-b3fd-f18f60861865",
+          "flow": "xtls-rprx-vision"
+        }
+      ],
+      "tls": {
+        "enabled": true,
+        "server_name": "apps.apple.com",
+        "reality": {
+          "enabled": true,
+          "handshake": {
+            "server": "apps.apple.com",
+            "server_port": 443
+          },
+          "private_key": "YHwHJHAd2omiXFq3cG8577b8tEZFX-2PawKS02mUdFE",
+          "short_id": [
+            "60656f4e153adc66"
+          ]
+        }
+      }
+    }
+  ]
+}
+
+### /root/catmi/sing-box/config/shadowsocks-01.json
+{
+  "inbounds": [
+    {
+      "type": "shadowsocks",
+      "tag": "shadowsocks01-plain",
+      "listen": "::",
+      "listen_port": 31004,
+      "method": "2022-blake3-aes-128-gcm",
+      "password": "6vjERiXdZoedH5UioIWDzQ=="
+    }
+  ]
+}
+
+### /root/catmi/sing-box/config/shadowtls-01.json
+{
+  "inbounds": [
+    {
+      "type": "shadowtls",
+      "tag": "shadowtls01-TLS",
+      "listen": "::",
+      "listen_port": 31009,
+      "version": 3,
+      "detour": "shadowtls01-TLSinner",
+      "handshake": {
+        "server": "apps.apple.com",
+        "server_port": 443
+      },
+      "strict_mode": true,
+      "users": [
+        {
+          "name": "user",
+          "password": "LVrD7aD9fH1dlN1uKzsw"
+        }
+      ]
+    },
+    {
+      "type": "shadowsocks",
+      "tag": "shadowtls01-TLSinner",
+      "listen": "127.0.0.1",
+      "listen_port": 31010,
+      "method": "2022-blake3-aes-128-gcm",
+      "password": "86XM+pgDCTgK8+oJz4/SOA==",
+      "multiplex": {
+        "enabled": true,
+        "padding": true
+      }
+    }
+  ]
+}
+
+### /root/catmi/sing-box/config/trojan-01.json
+{
+  "inbounds": [
+    {
+      "type": "trojan",
+      "tag": "trojan01-TLS-CDN",
+      "listen": "127.0.0.1",
+      "listen_port": 31007,
+      "users": [
+        {
+          "name": "user",
+          "password": "TsoFwGJLPqTtuJLkvuhF"
+        }
+      ],
+      "transport": {
+        "type": "ws",
+        "path": "/322c087d",
+        "max_early_data": 2560,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "tls": {
+        "enabled": true,
+        "alpn": [
+          "http/1.1"
+        ],
+        "certificate_path": "/home/web/certs/hxicc.catmicos.dpdns.org_cert.pem",
+        "key_path": "/home/web/certs/hxicc.catmicos.dpdns.org_key.pem"
+      }
+    }
+  ]
+}
+### /root/catmi/sing-box/config/trojan-02.json
+{
+  "inbounds": [
+    {
+      "type": "trojan",
+      "tag": "trojan02-REALITY",
+      "listen": "::",
+      "listen_port": 31012,
+      "users": [
+        {
+          "password": "T9CtGP1lML2jxLrveA5Z"
+        }
+      ],
+      "transport": {
+        "type": "ws",
+        "path": "/9b527228",
+        "max_early_data": 2560,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "tls": {
+        "enabled": true,
+        "server_name": "ibm.com",
+        "reality": {
+          "enabled": true,
+          "handshake": {
+            "server": "ibm.com",
+            "server_port": 443
+          },
+          "private_key": "YHwHJHAd2omiXFq3cG8577b8tEZFX-2PawKS02mUdFE",
+          "short_id": [
+            "c1f47cd762b2fa17"
+          ]
+        }
+      }
+    }
+  ]
+}
+
+### /root/catmi/sing-box/config/tuic-01.json
+{
+  "inbounds": [
+    {
+      "type": "tuic",
+      "tag": "tuic01-TLS",
+      "listen": "::",
+      "listen_port": 31005,
+      "users": [
+        {
+          "uuid": "0891ed4d-491c-407b-92ff-5ad27c2e5336",
+          "password": "9e874ff1faa7a0ff642af541b4fffc53"
+        }
+      ],
+      "congestion_control": "bbr",
+      "tls": {
+        "enabled": true,
+        "alpn": [
+          "h3"
+        ],
+        "certificate_path": "/home/web/certs/hxicc.catmicos.dpdns.org_cert.pem",
+        "key_path": "/home/web/certs/hxicc.catmicos.dpdns.org_key.pem"
+      }
+    }
+  ]
+}
+### /root/catmi/sing-box/config/vless-01.json
+{
+  "inbounds": [
+    {
+      "type": "vless",
+      "tag": "vless01-TLS-CDN",
+      "listen": "127.0.0.1",
+      "listen_port": 31003,
+      "users": [
+        {
+          "name": "user",
+          "uuid": "cd791ff5-1bcc-466e-99ae-c2edce371bdc"
+        }
+      ],
+      "transport": {
+        "type": "ws",
+        "path": "/5ac821b0",
+        "max_early_data": 2560,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "tls": {
+        "enabled": true,
+        "certificate_path": "/home/web/certs/hxicc.catmicos.dpdns.org_cert.pem",
+        "key_path": "/home/web/certs/hxicc.catmicos.dpdns.org_key.pem",
+        "alpn": [
+          "http/1.1"
+        ]
+      }
+    }
+  ]
+}
+### /root/catmi/sing-box/config/vmess-01.json
+{
+  "inbounds": [
+    {
+      "type": "vmess",
+      "tag": "vmess01-TLS-CDN",
+      "listen": "127.0.0.1",
+      "listen_port": 31006,
+      "users": [
+        {
+          "name": "user",
+          "uuid": "48af28ea-3cd0-4757-adc9-815a7b1c1e36",
+          "alterId": 0
+        }
+      ],
+      "transport": {
+        "type": "ws",
+        "path": "/cba311b5",
+        "max_early_data": 2560,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "tls": {
+        "enabled": true,
+        "server_name": "hxicc.catmicos.dpdns.org",
+        "alpn": [
+          "http/1.1"
+        ],
+        "certificate_path": "/home/web/certs/hxicc.catmicos.dpdns.org_cert.pem",
+        "key_path": "/home/web/certs/hxicc.catmicos.dpdns.org_key.pem"
+      }
+    }
+  ]
+}
+### /root/catmi/sing-box/config/vmess-02.json
+{
+  "inbounds": [
+    {
+      "type": "vmess",
+      "tag": "vmess02-REALITY",
+      "listen": "::",
+      "listen_port": 31011,
+      "users": [
+        {
+          "name": "user",
+          "uuid": "d35b8824-0803-44c9-823b-d283a6ba3b52",
+          "alterId": 0
+        }
+      ],
+      "transport": {
+        "type": "ws",
+        "path": "/7025f50c",
+        "max_early_data": 2560,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "tls": {
+        "enabled": true,
+        "server_name": "python.org",
+        "reality": {
+          "enabled": true,
+          "handshake": {
+            "server": "python.org",
+            "server_port": 443
+          },
+          "private_key": "YHwHJHAd2omiXFq3cG8577b8tEZFX-2PawKS02mUdFE",
+          "short_id": [
+            "a3baeab74472c469"
+          ]
+        }
+      }
+    }
+  ]
+}
+
+### /root/catmi/sing-box/out/reality-keys.json
+{"private_key":"YHwHJHAd2omiXFq3cG8577b8tEZFX-2PawKS02mUdFE","public_key":"tnXodgtAkqwGSZBIQu-O9hRj1VsFG4PwMriVzy0cHwA"}
+

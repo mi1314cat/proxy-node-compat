@@ -1,0 +1,111 @@
+### FILE: cdn/a.example.com.conf
+# CDN 回源片段 —— 由 mihomo--core 面板生成 (域名 a.example.com)。
+# 回源链路: Cloudflare -> Nginx(443) -> 127.0.0.1:<节点端口>
+# 依赖: $connection_upgrade 这个 map 必须已在 http{} 层定义,
+#       否则 nginx -t 会报 unknown "connection_upgrade" variable。
+
+    # ---- trojan-01  (回源 -> 127.0.0.1:21847, ws) ----
+    location /cdnws-03 {
+        proxy_ssl_server_name on;
+        proxy_ssl_verify off;
+        proxy_pass https://127.0.0.1:21847;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_buffering off;
+        proxy_read_timeout 600s;
+        proxy_send_timeout 600s;
+    }
+
+
+### FILE: cdn/hxicc.catmicos.dpdns.org.conf
+# CDN 回源片段 —— 由 mihomo--core 面板生成 (域名 hxicc.catmicos.dpdns.org)。
+# 回源链路: Cloudflare -> Nginx(443) -> 127.0.0.1:<节点端口>
+# 依赖: $connection_upgrade 这个 map 必须已在 http{} 层定义,
+#       否则 nginx -t 会报 unknown "connection_upgrade" variable。
+
+    # ---- trojan-04  (回源 -> 127.0.0.1:25680, ws) ----
+    location /cdnws-0ab96db5 {
+        proxy_ssl_server_name on;
+        proxy_ssl_verify off;
+        proxy_pass https://127.0.0.1:25680;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_buffering off;
+        proxy_read_timeout 600s;
+        proxy_send_timeout 600s;
+    }
+
+    # ---- trojan-05  (回源 -> 127.0.0.1:25681, grpc) ----
+    # 坑: proxy_http_version 2 在 nginx < 1.29.4 直接
+    #     [emerg] invalid value "2", 整份配置起不来;
+    #     而 grpc_pass grpc:// 指向开了 TLS 的节点会 502。
+    #     正确解是 grpcs:// (节点开 TLS 时)。
+    location /cg0599db34 {
+        grpc_pass grpcs://127.0.0.1:25681;
+        grpc_set_header Host $host;
+        grpc_set_header X-Real-IP $remote_addr;
+        grpc_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        grpc_read_timeout 600s;
+        grpc_send_timeout 600s;
+    }
+
+    # ---- vless-03  (回源 -> 127.0.0.1:25677, xhttp) ----
+    # xHTTP 专属: 用 grpc_pass (xhttp 默认伪装成 gRPC), 非 proxy_pass
+    # 依赖 http{}/server{} 层: client_max_body_size 0;
+    #                       proxy_request_buffering off;
+    #                       proxy_buffering off;
+    location /xhc-bcd2a955 {
+        grpc_buffer_size 16k;
+        grpc_socket_keepalive on;
+        grpc_read_timeout 1h;
+        grpc_send_timeout 1h;
+        grpc_set_header Connection "";
+        grpc_set_header Host $host;
+        grpc_set_header X-Real-IP $remote_addr;
+        grpc_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        grpc_set_header X-Forwarded-Proto $scheme;
+        grpc_set_header X-Forwarded-Port $server_port;
+        grpc_set_header X-Forwarded-Host $host;
+        grpc_pass grpcs://127.0.0.1:25677;
+    }
+    # 若上游仍 413, 检查 http{}/server{} 是否设了 client_max_body_size 0;
+
+    # ---- vless-04  (回源 -> 127.0.0.1:25678, ws) ----
+    location /cdnws-7a34637f {
+        proxy_ssl_server_name on;
+        proxy_ssl_verify off;
+        proxy_pass https://127.0.0.1:25678;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_buffering off;
+        proxy_read_timeout 600s;
+        proxy_send_timeout 600s;
+    }
+
+    # ---- vless-05  (回源 -> 127.0.0.1:25679, grpc) ----
+    # 坑: proxy_http_version 2 在 nginx < 1.29.4 直接
+    #     [emerg] invalid value "2", 整份配置起不来;
+    #     而 grpc_pass grpc:// 指向开了 TLS 的节点会 502。
+    #     正确解是 grpcs:// (节点开 TLS 时)。
+    location /cg0523759e {
+        grpc_pass grpcs://127.0.0.1:25679;
+        grpc_set_header Host $host;
+        grpc_set_header X-Real-IP $remote_addr;
+        grpc_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        grpc_read_timeout 600s;
+        grpc_send_timeout 600s;
+    }
+
+

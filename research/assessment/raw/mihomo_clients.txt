@@ -1,0 +1,338 @@
+### FILE: anytls_anytls_client-01.yaml
+proxies:
+  - name: 🇺🇸 mAnyTLS01-TLS
+    type: anytls
+    server: 107.173.154.178
+    port: 25684
+    password: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    sni: hxicc.catmicos.dpdns.org
+    skip-cert-verify: false
+    udp: true
+    client-fingerprint: chrome
+
+### FILE: anytls_client-02.yaml
+proxies:
+  - name: 🇺🇸 mAnyTLS02-TLS
+    type: anytls
+    server: 107.173.154.178
+    port: 28725
+    password: f537cd201a21c199f874f254f9ac6c8b
+    sni: hxicc.catmicos.dpdns.org
+    client-fingerprint: chrome
+    idle-session-check-interval: 30
+    idle-session-timeout: 30
+    udp: true
+    skip-cert-verify: false
+    alpn:
+      - h2
+      - http/1.1
+
+
+
+### FILE: anytls_client-03.yaml
+proxies:
+  - name: 🇺🇸 mAnyTLS03-TLS
+    type: anytls
+    server: 107.173.154.178
+    port: 22812
+    password: d3cc09aa867186e5887515fcc95d8628
+    sni: www.apple.com
+    client-fingerprint: chrome
+    idle-session-check-interval: 30
+    idle-session-timeout: 30
+    udp: true
+    skip-cert-verify: true
+    alpn:
+      - h2
+      - http/1.1
+
+
+
+### FILE: hysteria2_client-02.yaml
+proxies:
+  - name: 🇺🇸 mHysteria202-TLS
+    type: hysteria2
+    server: 107.173.154.178
+    port: 20309
+    up: "50 Mbps"
+    down: "200 Mbps"
+    password: f71c235e1b5e8a510bd33f24dd0212f1
+    sni: www.amazon.com
+    fingerprint: b8f8fc0516c13230f65c2a4a728daa047353aaf8eadf76263562c60a9baa9a03
+    alpn:
+      - h3
+
+### FILE: hysteria2_hysteria2_client-01.yaml
+proxies:
+  - name: 🇺🇸 mHysteria201-TLS
+    type: hysteria2
+    server: 107.173.154.178
+    port: 25682
+    password: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    sni: hxicc.catmicos.dpdns.org
+    skip-cert-verify: false
+    up: "30"
+    down: "200"
+
+### FILE: reality_reality-grpc_client-02.yaml
+proxies:
+  - name: 🇺🇸 mVLESS02-REALITY-gRPC
+    type: vless
+    server: 107.173.154.178
+    port: 25670
+    uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    network: grpc
+    tls: true
+    udp: true
+    servername: www.microsoft.com
+    reality-opts:
+      public-key: uMcVRoEWeMAwPaj6e3jSVCZfbl-gj37MH9_XI9tL5wY
+      short-id: 58896ecc5f8bf710
+    client-fingerprint: chrome
+    grpc-opts:
+      grpc-service-name: gs025a08f0
+
+### FILE: reality_reality-xhttp_client-03.yaml
+proxies:
+  - name: 🇺🇸 mVLESS03-REALITY-XHTTP
+    type: vless
+    server: 107.173.154.178
+    port: 25671
+    uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    network: xhttp
+    tls: true
+    udp: true
+    servername: www.microsoft.com
+    reality-opts:
+      public-key: uMcVRoEWeMAwPaj6e3jSVCZfbl-gj37MH9_XI9tL5wY
+      short-id: 58896ecc5f8bf710
+    client-fingerprint: chrome
+    xhttp-opts:
+      mode: auto
+      path: /xhr-7e11f298
+      x-padding-bytes: "100-1000"
+
+### FILE: reality_reality_client-01.yaml
+proxies:
+  - name: 🇺🇸 mVLESS01-REALITY
+    type: vless
+    server: 107.173.154.178
+    port: 25669
+    uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    network: tcp
+    tls: true
+    udp: true
+    flow: xtls-rprx-vision
+    servername: www.microsoft.com
+    reality-opts:
+      public-key: uMcVRoEWeMAwPaj6e3jSVCZfbl-gj37MH9_XI9tL5wY
+      short-id: 58896ecc5f8bf710
+    client-fingerprint: chrome
+
+### FILE: trojan_cdn-t-grpc_client-05.yaml
+# ★ 客户端产物 · Trojan + gRPC + CDN
+#   连的是 CDN 边缘: server=hxicc.catmicos.dpdns.org port=443。源站端口不在这里出现。
+proxies:
+  - name: 🇺🇸 mTrojan05-CDN-gRPC
+    type: trojan
+    server: hxicc.catmicos.dpdns.org
+    port: 443
+    username: ""
+
+    password: "0647a947-6f77-4a91-8df0-8ff9f2d5e720"
+    network: grpc
+    tls: true
+    udp: true
+    servername: hxicc.catmicos.dpdns.org
+    client-fingerprint: chrome
+    ech-opts:
+      enable: true
+      query-server-name: hxicc.catmicos.dpdns.org
+    grpc-opts:
+      grpc-service-name: cg0599db34
+
+### FILE: trojan_cdn-t-ws_client-04.yaml
+# ★ 客户端产物 · Trojan + WS + CDN
+#   连的是 CDN 边缘: server=hxicc.catmicos.dpdns.org port=443。源站端口不在这里出现。
+proxies:
+  - name: 🇺🇸 mTrojan04-CDN-WS
+    type: trojan
+    server: hxicc.catmicos.dpdns.org
+    port: 443
+    username: ""
+
+    password: "0647a947-6f77-4a91-8df0-8ff9f2d5e720"
+    network: ws
+    tls: true
+    udp: true
+    servername: hxicc.catmicos.dpdns.org
+    client-fingerprint: chrome
+    ech-opts:
+      enable: true
+      query-server-name: hxicc.catmicos.dpdns.org
+    ws-opts:
+      path: /cdnws-0ab96db5
+
+### FILE: trojan_trojan-grpc_client-02.yaml
+proxies:
+  - name: 🇺🇸 mTrojan02-REALITY-gRPC
+    type: trojan
+    server: 107.173.154.178
+    port: 25673
+    password: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    udp: true
+    # ★ trojan 用 sni, 不是 servername —— 写成 servername 会**静默退回普通
+    #   TLS 校验**, 然后报一个和 REALITY 毫无关系的 x509 证书错误 (K-8)。
+    sni: www.microsoft.com
+    reality-opts:
+      public-key: uMcVRoEWeMAwPaj6e3jSVCZfbl-gj37MH9_XI9tL5wY
+      short-id: 58896ecc5f8bf710
+    client-fingerprint: chrome
+    network: grpc
+    grpc-opts:
+      grpc-service-name: tg02286ead
+
+### FILE: trojan_trojan-tls_client-03.yaml
+proxies:
+  - name: 🇺🇸 mTrojan03-TLS
+    type: trojan
+    server: 107.173.154.178
+    port: 25674
+    password: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    udp: true
+    sni: hxicc.catmicos.dpdns.org
+    skip-cert-verify: false
+
+### FILE: trojan_trojan_client-01.yaml
+proxies:
+  - name: 🇺🇸 mTrojan01-REALITY
+    type: trojan
+    server: 107.173.154.178
+    port: 25672
+    password: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    udp: true
+    sni: www.microsoft.com
+    reality-opts:
+      public-key: uMcVRoEWeMAwPaj6e3jSVCZfbl-gj37MH9_XI9tL5wY
+      short-id: 58896ecc5f8bf710
+    client-fingerprint: chrome
+
+### FILE: tuicv5_tuicv5_client-01.yaml
+proxies:
+  - name: 🇺🇸 mTUIC01-TLS
+    type: tuic
+    server: 107.173.154.178
+    port: 25683
+    uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    password: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    sni: hxicc.catmicos.dpdns.org
+    skip-cert-verify: false
+    alpn:
+      - h3
+    congestion-controller: bbr
+
+### FILE: vless_cdn-v-grpc_client-05.yaml
+# ★ 客户端产物 · VLESS + gRPC + CDN
+#   连的是 CDN 边缘: server=hxicc.catmicos.dpdns.org port=443。源站端口不在这里出现。
+proxies:
+  - name: 🇺🇸 mVLESS05-CDN-gRPC
+    type: vless
+    server: hxicc.catmicos.dpdns.org
+    port: 443
+    username: ""
+
+    uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    network: grpc
+    tls: true
+    udp: true
+    servername: hxicc.catmicos.dpdns.org
+    client-fingerprint: chrome
+    ech-opts:
+      enable: true
+      query-server-name: hxicc.catmicos.dpdns.org
+    grpc-opts:
+      grpc-service-name: cg0523759e
+
+### FILE: vless_cdn-v-ws_client-04.yaml
+# ★ 客户端产物 · VLESS + WS + CDN
+#   连的是 CDN 边缘: server=hxicc.catmicos.dpdns.org port=443。源站端口不在这里出现。
+proxies:
+  - name: 🇺🇸 mVLESS04-CDN-WS
+    type: vless
+    server: hxicc.catmicos.dpdns.org
+    port: 443
+    username: ""
+
+    uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    network: ws
+    tls: true
+    udp: true
+    servername: hxicc.catmicos.dpdns.org
+    client-fingerprint: chrome
+    ech-opts:
+      enable: true
+      query-server-name: hxicc.catmicos.dpdns.org
+    ws-opts:
+      path: /cdnws-7a34637f
+
+### FILE: vless_vless-ws_client-01.yaml
+proxies:
+  - name: 🇺🇸 mVLESS01-TLS-WS
+    type: vless
+    server: 107.173.154.178
+    port: 25675
+    uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    network: ws
+    tls: true
+    udp: true
+    skip-cert-verify: false
+    servername: hxicc.catmicos.dpdns.org
+    ws-opts:
+      path: /wss01
+
+### FILE: vless_xhttp-cdn_client-03.yaml
+# ★ 这是**客户端**产物, 它连的是 CDN 边缘 (443), 不是你的源站。
+#   你的源站监听在端口 25677 —— 必须去 CDN 后台把回源指向 本机IP:25677,
+#   并把该域名的 DNS 记录改成走 CDN (橙云)。这一步做漏了, 节点必然连不上,
+#   而客户端这边看不出任何异常。源站端口写在这里就是为了让它有据可查。
+proxies:
+  - name: 🇺🇸 mVLESS03-TLS-XHTTP-CDN
+    type: vless
+    server: hxicc.catmicos.dpdns.org
+    port: 443
+    uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    network: xhttp
+    tls: true
+    udp: true
+    servername: hxicc.catmicos.dpdns.org
+    client-fingerprint: chrome
+    ech-opts:
+      enable: true
+      query-server-name: hxicc.catmicos.dpdns.org
+    xhttp-opts:
+      mode: auto
+      path: /xhc-bcd2a955
+      x-padding-bytes: "100-1000"
+
+### FILE: vless_xhttp-tls_client-02.yaml
+# 由 all.sh 一键生成 · VLESS + XHTTP + TLS 客户端
+proxies:
+  - name: 🇺🇸 mVLESS02-TLS-XHTTP
+    type: vless
+    server: 107.173.154.178
+    port: 25676
+    uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    network: xhttp
+    tls: true
+    udp: true
+    skip-cert-verify: false
+    servername: hxicc.catmicos.dpdns.org
+    # uTLS ClientHello 伪装。XHTTP 把握手指纹做在 HTTP 握手层,
+    # 这里给真实浏览器指纹才有意义 (明文 xhttp 用不上, 故明文那版不写)。
+    client-fingerprint: chrome
+    # xhttp-opts 与 listener 的 xhttp-config **逐字段一致** (同一份字符串渲染)
+    xhttp-opts:
+      mode: auto
+      path: /xhttps-6ecedb76
+      x-padding-bytes: "100-1000"
+

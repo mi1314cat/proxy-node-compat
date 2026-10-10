@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import base64
 import json
-from urllib.parse import parse_qsl, quote, unquote, urlsplit
+from urllib.parse import quote, unquote, urlsplit
 
 from .model import Field, Feature, NodeProfile, Presence, Provenance
 
@@ -22,6 +22,10 @@ SCHEMES: dict[str, tuple[str, set[str]]] = {
         "type", "security", "sni", "servername", "alpn", "fp", "flow", "path", "host",
         "mode", "serviceName", "headerType", "seed", "pbk", "sid", "spx", "ech", "pqv",
         "pcs", "vcn", "fm", "encryption", "allowInsecure", "insecure", "extra", "mtu", "tti"}),
+    "vmess": ("standard:vmess", {
+        # vmess:// 的载荷是 base64(JSON), 键名按生态通用写法（v2rayN / Shadowrocket / mihomo）
+        "v", "ps", "add", "port", "id", "uuid", "aid", "scy", "net", "type", "host",
+        "path", "tls", "sni", "alpn", "fp", "security", "allowInsecure", "insecure"}),
     "trojan": ("standard:trojan", {
         "type", "security", "sni", "alpn", "fp", "path", "host", "serviceName",
         "allowInsecure", "insecure", "pbk", "sid", "spx", "ech"}),
@@ -67,9 +71,93 @@ PARAM_OWNER = {
     "plugin": "standard:shadowsocks.plugin",
 }
 
+# vmess:// 载荷(JSON)里已被解析器消费的键 —— 不再走"参数归属"循环
+_VMESS_CONSUMED = {"v", "ps", "add", "port", "id", "uuid", "aid", "scy", "security",
+                   "net", "tls"}
+
+# security=reality 时, 这些 query 键是 REALITY 的握手身份 → 挂到 standard:reality 的 params
+# （键名用 universal-node-profile.md §1 的写法: server_name / fingerprint），
+# 而不是掉进 extensions 变成"未建模"。
+_REALITY_IDENTITY = {"sni": "server_name", "servername": "server_name", "fp": "fingerprint"}
+
+# 回写 vmess:// 时允许进入 JSON 的键（VMess QR 的字段集, 含 id/uuid 两种别名写法）。
+# 依据: docs/uri-representation.md §1 —— VMess QR 只有固定字段, reality/ech 等塞不进去,
+# 因此这些 feature 的参数**不写回**（该损失由 URI 表达力规则逐条报告, 不在这里伪造）。
+_VMESS_QR_KEYS = ("v", "ps", "add", "port", "id", "uuid", "aid", "scy", "security", "net",
+                  "type", "host", "path", "tls", "sni", "alpn", "fp")
+_VMESS_NET = {"standard:transport.tcp": "tcp", "standard:transport.ws": "ws",
+              "standard:transport.grpc": "grpc", "standard:transport.http_h2": "h2",
+              "standard:transport.httpupgrade": "httpupgrade",
+              "standard:transport.quic": "quic", "standard:mkcp": "kcp",
+              "standard:xhttp": "xhttp"}
+
 
 def _b64pad(s: str) -> str:
     return s + "=" * (-len(s) % 4)
+
+
+def _b64decode_text(text: str) -> str:
+    """容忍 %XX 转义 / 标准或 urlsafe 字母表 / 缺省 padding 的 base64 解码。"""
+    return base64.urlsafe_b64decode(_b64pad(unquote(text.strip()))).decode("utf-8")
+
+
+def _vmess_payload(uri: str) -> str:
+    """取出 vmess:// 的 base64 载荷。
+
+    **不能用 urlsplit().hostname** —— hostname 会被小写化, 而 base64 大小写敏感。
+    """
+    body = uri.split("://", 1)[1] if "://" in uri else ""
+    return body.split("#", 1)[0].split("?", 1)[0].strip()
+
+
+def _decode_vmess_body(uri: str) -> dict | None:
+    """base64(JSON) → dict。解不出来返回 None（绝不抛错拖垮整批）。"""
+    payload = _vmess_payload(uri)
+    if not payload:
+        return None
+    candidates = [payload]
+    if payload.endswith("/"):          # 个别客户端会在末尾补一个 '/'
+        candidates.append(payload[:-1])
+    for cand in candidates:
+        try:
+            obj = json.loads(_b64decode_text(cand))
+        except Exception:
+            continue
+        if isinstance(obj, dict):
+            return obj
+    return None
+
+
+def _first_present(cfg: dict, *keys: str) -> tuple[str | None, object]:
+    """返回第一个非空值 + 它在原文里的键名（生态里 id/uuid、scy/security 两种写法并存）。"""
+    for k in keys:
+        if cfg.get(k) not in (None, ""):
+            return k, cfg[k]
+    return None, None
+
+
+def _port_value(v: object) -> object:
+    """生态里 port 常写成字符串（"443"），能转 int 就转, 不能就原样保留。"""
+    try:
+        return int(str(v).strip())
+    except (TypeError, ValueError):
+        return v
+
+
+def _parse_query(query: str) -> dict[str, object]:
+    """按分享链接规范的语义解析 query（encodeURIComponent: 空格是 %20, '+' 是字面量）。
+
+    **不用 parse_qsl** —— 它按 form-encoding 把 '+' 解成空格。真实链接里的
+    `ech=AGH+DQBd…` / base64 取值含 '+', 用 parse_qsl 会在**解析期**就把原文改掉
+    （违反 I1「raw.fields 字节不变」, 且会让客户端拿到被破坏的 ech/pbk 值）。
+    """
+    fields: dict[str, object] = {}
+    for chunk in query.split("&"):
+        if not chunk:
+            continue
+        k, _, v = chunk.partition("=")
+        fields[unquote(k)] = unquote(v)
+    return fields
 
 
 def parse_uri(uri: str) -> NodeProfile:
@@ -77,9 +165,7 @@ def parse_uri(uri: str) -> NodeProfile:
     uri = uri.strip()
     parts = urlsplit(uri)
     scheme = (parts.scheme or "").lower()
-    raw_fields: dict[str, object] = {}
-    for k, v in parse_qsl(parts.query, keep_blank_values=True):
-        raw_fields[k] = v
+    raw_fields: dict[str, object] = _parse_query(parts.query)
     frag_text = unquote(parts.fragment) if parts.fragment else ""
 
     profile = NodeProfile(raw_uri=uri, source_format="URI", raw_fields=raw_fields)
@@ -107,31 +193,68 @@ def parse_uri(uri: str) -> NodeProfile:
                                provenance=Provenance.URI)
 
     host = parts.hostname or ""
-    if scheme == "ss":  # SIP002: userinfo 是 base64(method:password)
-        try:
-            decoded = base64.urlsafe_b64decode(_b64pad(parts.username or "")).decode()
-            method, _, password = decoded.partition(":")
-            profile.auth["method"] = Field.explicit(method, Provenance.URI, "userinfo")
-            profile.auth["password"] = Field.explicit(password, Provenance.URI, "userinfo")
-        except Exception:
-            profile.diagnostics.append({"code": "SS_USERINFO_UNPARSED",
-                                        "detail": "userinfo 不是合法 base64"})
+    q: dict[str, object] = dict(raw_fields)
+    transport_key = "type"      # 用哪个键选传输（vmess JSON 里是 net）
+    sec_key = "security"        # 用哪个键选安全层（vmess JSON 的 security 是加密方式, TLS 看 tls）
+    consumed = {"type", "security", "encryption"}   # 已消费的键, 不再走参数归属循环
+
+    if scheme == "vmess":
+        # ★ vmess://: 载荷是 base64(JSON), 不在 query 里
+        cfg = _decode_vmess_body(uri)
+        if cfg is None:
+            # 解不出来也要能保存并标记（不丢、不猜、不让整批解析失败）
+            profile.raw_fields["_vmess_body"] = _vmess_payload(uri)
+            profile.diagnostics.append({
+                "code": "VMESS_BODY_UNPARSED",
+                "detail": "base64(JSON) 载荷无法解码; 原文保留在 raw.uri 与 raw.fields._vmess_body"})
+            return profile
+        q = dict(cfg)
+        profile.raw_fields = dict(cfg)          # 原始键值原样保存（含未知键, I1）
+        transport_key, sec_key = "net", "tls"
+        consumed = set(_VMESS_CONSUMED)
+        if cfg.get("add") not in (None, ""):
+            profile.endpoint["host"] = Field.explicit(cfg["add"], Provenance.URI, "add")
+        if cfg.get("port") not in (None, ""):
+            profile.endpoint["port"] = Field.explicit(_port_value(cfg["port"]),
+                                                      Provenance.URI, "port")
+        rid, vm_id = _first_present(cfg, "id", "uuid")     # 两种写法都要认
+        if rid:
+            profile.auth["uuid"] = Field.explicit(vm_id, Provenance.URI, rid)
+        if cfg.get("aid") not in (None, ""):
+            profile.auth["alter_id"] = Field.explicit(cfg["aid"], Provenance.URI, "aid")
+        rscy, vm_scy = _first_present(cfg, "scy", "security")
+        if rscy:
+            profile.auth["method"] = Field.explicit(vm_scy, Provenance.URI, rscy)
+        if cfg.get("ps") not in (None, ""):                # 备注: 不覆盖 fragment 里的名字
+            key = "remark" if "name" in profile.metadata else "name"
+            profile.metadata[key] = Field.explicit(cfg["ps"], Provenance.URI, "ps")
     else:
-        if parts.username:
-            key = "uuid" if proto_id in ("standard:vless",) else "password"
-            if proto_id == "standard:vmess":
-                key = "uuid"
-            profile.auth[key] = Field.explicit(unquote(parts.username), Provenance.URI, "userinfo")
-        if parts.password:
-            profile.auth["password"] = Field.explicit(unquote(parts.password),
-                                                      Provenance.URI, "userinfo")
-    profile.endpoint["host"] = Field.explicit(host, Provenance.URI, "host")
-    profile.endpoint["port"] = Field.explicit(parts.port or (443 if parts.port is None else None),
-                                              Provenance.URI, "port")
+        if scheme == "ss":  # SIP002: userinfo 是 base64(method:password)
+            try:
+                decoded = base64.urlsafe_b64decode(_b64pad(parts.username or "")).decode()
+                method, _, password = decoded.partition(":")
+                profile.auth["method"] = Field.explicit(method, Provenance.URI, "userinfo")
+                profile.auth["password"] = Field.explicit(password, Provenance.URI, "userinfo")
+            except Exception:
+                profile.diagnostics.append({"code": "SS_USERINFO_UNPARSED",
+                                            "detail": "userinfo 不是合法 base64"})
+        else:
+            if parts.username:
+                key = "uuid" if proto_id in ("standard:vless",) else "password"
+                profile.auth[key] = Field.explicit(unquote(parts.username),
+                                                   Provenance.URI, "userinfo")
+            if parts.password:
+                profile.auth["password"] = Field.explicit(unquote(parts.password),
+                                                          Provenance.URI, "userinfo")
+        profile.endpoint["host"] = Field.explicit(host, Provenance.URI, "host")
+        profile.endpoint["port"] = Field.explicit(parts.port or (443 if parts.port is None else None),
+                                                  Provenance.URI, "port")
 
     # ---- transport / security / 其它 feature
-    q = dict(raw_fields)
-    tname = (q.get("type") or q.get("net") or "").strip().lower()
+    if scheme == "vmess":
+        tname = str(q.get("net") or "").strip().lower()   # vmess 的 type 是 header 类型, 不是传输
+    else:
+        tname = str(q.get("type") or q.get("net") or "").strip().lower()
     if tname:
         tid = TRANSPORT_MAP.get(tname)
         if tid is None:
@@ -139,16 +262,17 @@ def parse_uri(uri: str) -> NodeProfile:
             profile.add_feature(Feature(id=f"unknown:transport.{tname}",
                                         presence=Presence.EXPLICIT,
                                         provenance=Provenance.URI,
-                                        note=f"未收录的传输方式 type={tname}"))
-            profile.add_extension("type", q["type"], "URI", "未知传输方式, 原样保留")
+                                        note=f"未收录的传输方式 {transport_key}={tname}"))
+            profile.add_extension(transport_key, q[transport_key], "URI",
+                                  "未知传输方式, 原样保留")
         else:
             profile.add_feature(Feature(id=tid, presence=Presence.EXPLICIT,
                                         provenance=Provenance.URI))
     else:
         profile.add_feature(Feature(id="standard:transport.tcp", presence=Presence.DEFAULTED,
                                     provenance=Provenance.INFERRED,
-                                    note="未写 type, 按规范默认 raw/tcp"))
-    sec = (q.get("security") or "").strip().lower()
+                                    note="未写传输方式(type/net), 按规范默认 raw/tcp"))
+    sec = str(q.get(sec_key) or "").strip().lower()
     if sec == "tls":
         profile.add_feature(Feature(id="standard:tls", presence=Presence.EXPLICIT,
                                     provenance=Provenance.URI))
@@ -174,11 +298,27 @@ def parse_uri(uri: str) -> NodeProfile:
         profile.add_feature(Feature(id="standard:ech", presence=Presence.EXPLICIT,
                                     provenance=Provenance.URI))
 
+    # ---- VLESS 后量子加密（gap: 原来只在 raw.fields 里, profile 里看不见 → 漏判/假阳性）
+    if proto_id == "standard:vless" and q.get("encryption") not in (None, ""):
+        profile.add_feature(Feature(
+            id="standard:vless.encryption", presence=Presence.EXPLICIT,
+            provenance=Provenance.URI,
+            params={"encryption": Field.explicit(q["encryption"], Provenance.URI, "encryption")},
+            note="VLESS encryption（取值含 mlkem768x25519plus… 后量子加密）; 值原样保存"))
+
     # ---- 参数归属（挂到对应 feature 上, 否则进 extensions）
+    reality_feat = profile.get_feature("standard:reality")
+    # security=reality 时 sni/fp 属于 REALITY 的握手身份（reality serverNames / uTLS 指纹）,
+    # 必须挂到 standard:reality 上, 不能掉进 extensions。security=tls 时仍归 standard:tls。
+    reality_identity = reality_feat is not None and (
+        sec == "reality" or profile.get_feature("standard:tls") is None)
     for k, v in q.items():
-        if k in ("type", "security", "encryption"):
+        if k in consumed:
             continue
         owner = PARAM_OWNER.get(k)
+        pkey = k
+        if reality_identity and k in _REALITY_IDENTITY:
+            owner, pkey = "standard:reality", _REALITY_IDENTITY[k]
         if owner == "transport":
             tid = TRANSPORT_MAP.get(tname)
             feat = profile.get_feature(tid) if tid else None
@@ -190,7 +330,7 @@ def parse_uri(uri: str) -> NodeProfile:
                     "standard:xhttp", "standard:ech", "standard:reality"):
                 feat = None
         if feat is not None:
-            feat.params[k] = Field.explicit(v, Provenance.URI, k)
+            feat.params[pkey] = Field.explicit(v, Provenance.URI, k)
         elif owner in ("standard:xhttp", "standard:ech", "standard:reality"):
             # 对应 feature 不存在 → 用参数本身反推一个 feature（如 pbk 隐含 reality）
             implied = {"standard:reality": "standard:reality", "standard:ech": "standard:ech",
@@ -219,6 +359,8 @@ def parse_uri(uri: str) -> NodeProfile:
 def generate_uri(profile: NodeProfile, *, allow_extensions: bool = False) -> str:
     """回写链接。INFERRED 字段不写回（不伪装成用户显式提供）。"""
     proto = profile.protocol.id if profile.protocol else "unknown"
+    if proto == "standard:vmess":
+        return _generate_vmess_uri(profile, allow_extensions=allow_extensions)
     scheme = {"standard:vless": "vless", "standard:trojan": "trojan",
               "standard:shadowsocks": "ss", "standard:hysteria2": "hysteria2",
               "standard:tuic": "tuic", "standard:anytls": "anytls",
@@ -267,6 +409,55 @@ def generate_uri(profile: NodeProfile, *, allow_extensions: bool = False) -> str
     query = "&".join(f"{k}={v}" for k, v in q)
     return f"{scheme}://{user}@{host.v if host else ''}:{port.v if port else ''}" \
            + (f"?{query}" if query else "") + frag
+
+
+def _generate_vmess_uri(profile: NodeProfile, *, allow_extensions: bool = False) -> str:
+    """vmess:// ← base64(JSON)。
+
+    只写 presence=EXPLICIT 的值（推断/DEFAULTED 不写回, 不伪造用户意图）;
+    只有 VMess QR 的字段集能进 body（_VMESS_QR_KEYS）, 其它 feature 的参数
+    （reality/ech/mux…）不写回 —— 该损失由 URI 表达力规则报告, 不在这里假装能表达。
+    extensions 默认丢弃, 仅在 allow_extensions=True 时原样写回。
+    """
+    body: dict[str, object] = {}
+    host = profile.endpoint.get("host")
+    port = profile.endpoint.get("port")
+    if host is not None and host.presence is Presence.EXPLICIT:
+        body["add"] = str(host.v)
+    if port is not None and port.presence is Presence.EXPLICIT:
+        body["port"] = str(port.v)
+    for key, name in (("uuid", "id"), ("alter_id", "aid"), ("method", "scy")):
+        f = profile.auth.get(key)
+        if f is not None and f.presence is Presence.EXPLICIT:
+            body[f.raw_key or name] = str(f.v)
+
+    name = profile.metadata.get("name")
+    remark = profile.metadata.get("remark")
+    if remark is not None and remark.presence is Presence.EXPLICIT:
+        body["ps"] = str(remark.v)
+    elif name is not None and name.presence is Presence.EXPLICIT and name.raw_key == "ps":
+        body["ps"] = str(name.v)
+    frag = ""
+    if name is not None and name.presence is Presence.EXPLICIT and name.raw_key != "ps":
+        frag = "#" + quote(str(name.v))       # fragment 里的名字来自 '#', 不是 ps
+
+    for feat in profile.features:
+        net = _VMESS_NET.get(feat.id)
+        if net and feat.presence is Presence.EXPLICIT:
+            body["net"] = net
+        if feat.id == "standard:tls" and feat.presence is Presence.EXPLICIT:
+            body["tls"] = "tls"
+        for pk, pf in feat.params.items():
+            qk = pf.raw_key or pk
+            if pf.presence is Presence.EXPLICIT and qk in _VMESS_QR_KEYS:
+                body[qk] = str(pf.v)
+    if allow_extensions:                       # 显式要求时才写未知键
+        for e in profile.extensions:
+            body.setdefault(str(e["key"]), e["value"])
+
+    payload = base64.urlsafe_b64encode(
+        json.dumps(body, ensure_ascii=False, separators=(",", ":")).encode()).decode()
+    return f"vmess://{payload}{frag}"
 
 
 def parse_json_node(data: dict, fmt: str) -> NodeProfile:

@@ -1,0 +1,313 @@
+total 88
+drwxr-xr-x 2 root root 4096 Oct  9 02:27 .
+drwxr-xr-x 4 root root 4096 Oct  9 02:27 ..
+-rw------- 1 root root  411 Oct  9 02:27 .managed.json
+-rw-r--r-- 1 root root  328 Oct  7 21:49 anytls-01.yaml
+-rw-r--r-- 1 root root  396 Oct  9 01:55 anytls-02.yaml
+-rw-r--r-- 1 root root  374 Oct  9 01:56 anytls-03.yaml
+-rw-r--r-- 1 root root  340 Oct  7 21:49 hysteria2-01.yaml
+-rw-r--r-- 1 root root  332 Oct  9 02:27 hysteria2-02.yaml
+-rw-r--r-- 1 root root  517 Oct  7 21:49 reality-01.yaml
+-rw-r--r-- 1 root root  542 Oct  7 21:49 reality-02.yaml
+-rw-r--r-- 1 root root  613 Oct  7 21:49 reality-03.yaml
+-rw-r--r-- 1 root root  449 Oct  7 21:49 trojan-01.yaml
+-rw-r--r-- 1 root root  469 Oct  7 21:49 trojan-02.yaml
+-rw-r--r-- 1 root root  357 Oct  7 21:49 trojan-03.yaml
+-rw-r--r-- 1 root root  659 Oct  7 21:49 trojan-04.yaml
+-rw-r--r-- 1 root root  668 Oct  7 21:49 trojan-05.yaml
+-rw-r--r-- 1 root root  401 Oct  7 21:49 tuicv5-01.yaml
+-rw-r--r-- 1 root root  319 Oct  7 21:49 vless-01.yaml
+-rw-r--r-- 1 root root  423 Oct  7 21:49 vless-02.yaml
+-rw-r--r-- 1 root root  601 Oct  7 21:49 vless-03.yaml
+-rw-r--r-- 1 root root  650 Oct  7 21:49 vless-04.yaml
+-rw-r--r-- 1 root root  659 Oct  7 21:49 vless-05.yaml
+---
+### /root/catmi/mihomo/conf/config.d/anytls-01.yaml
+# 由 all.sh 一键生成
+listeners:
+  - name: mAnyTLS01-TLS
+    type: anytls
+    listen: "0.0.0.0"
+    port: 25684
+    users:
+      0647a947-6f77-4a91-8df0-8ff9f2d5e720: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    certificate: /root/catmi/mihomo/conf/certs/fullchain.pem
+    private-key: /root/catmi/mihomo/conf/certs/privkey.pem
+### /root/catmi/mihomo/conf/config.d/anytls-02.yaml
+# mtls: false
+# smux: false
+# fp: chrome
+# idle: 30/30
+listeners:
+  - name: mAnyTLS02-TLS
+    type: anytls
+    listen: "0.0.0.0"
+    port: 28725
+    users:
+      a81c117d-d690-4fc5-9ef0-1ad7feb8e272: f537cd201a21c199f874f254f9ac6c8b
+    certificate: /root/catmi/mihomo/conf/certs/cert-hxicc.catmicos.dpdns.org.crt
+    private-key: /root/catmi/mihomo/conf/certs/key-hxicc.catmicos.dpdns.org.key
+
+
+### /root/catmi/mihomo/conf/config.d/anytls-03.yaml
+# mtls: false
+# smux: false
+# fp: chrome
+# idle: 30/30
+listeners:
+  - name: mAnyTLS03-TLS
+    type: anytls
+    listen: "0.0.0.0"
+    port: 22812
+    users:
+      b7d1f3b1-6b33-4545-a054-23968674fc1a: d3cc09aa867186e5887515fcc95d8628
+    certificate: /root/catmi/mihomo/conf/certs/cert-www.apple.com.crt
+    private-key: /root/catmi/mihomo/conf/certs/key-www.apple.com.key
+
+
+### /root/catmi/mihomo/conf/config.d/hysteria2-01.yaml
+# 由 all.sh 一键生成
+listeners:
+  - name: mHysteria201-TLS
+    type: hysteria2
+    listen: "0.0.0.0"
+    port: 25682
+    users:
+      user1: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    certificate: /root/catmi/mihomo/conf/certs/fullchain.pem
+    private-key: /root/catmi/mihomo/conf/certs/privkey.pem
+    masquerade: https://www.bing.com
+### /root/catmi/mihomo/conf/config.d/hysteria2-02.yaml
+listeners:
+  - name: mHysteria202-TLS
+    type: hysteria2
+    listen: "0.0.0.0"
+    port: 20309
+    users:
+      user1: f71c235e1b5e8a510bd33f24dd0212f1
+
+    masquerade: https://www.bing.com
+    certificate: /root/catmi/mihomo/conf/certs/cert-www.amazon.com.crt
+    private-key: /root/catmi/mihomo/conf/certs/key-www.amazon.com.key
+### /root/catmi/mihomo/conf/config.d/reality-01.yaml
+# 由 all.sh 一键生成
+listeners:
+  - name: mVLESS01-REALITY
+    type: vless
+    listen: "0.0.0.0"
+    port: 25669
+    users:
+      - uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+        flow: xtls-rprx-vision
+    # ★ listener 端是 reality-config + 私钥; reality-opts/public-key 是**客户端**用的
+    reality-config:
+      dest: www.microsoft.com:443
+      private-key: UP7tMv5WPGrsOqUW32EBwygGg4yQebsnpdZMJOvFkUw
+      short-id:
+        - 58896ecc5f8bf710
+      server-names:
+        - www.microsoft.com
+### /root/catmi/mihomo/conf/config.d/reality-02.yaml
+# 由 all.sh 一键生成 · VLESS + gRPC + REALITY (直连)
+# 实测可用。listener 侧只有 grpc-service-name, 没有 network 字段。
+listeners:
+  - name: mVLESS02-REALITY-gRPC
+    type: vless
+    listen: "0.0.0.0"
+    port: 25670
+    users:
+      - uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    grpc-service-name: gs025a08f0
+    reality-config:
+      dest: www.microsoft.com:443
+      private-key: UP7tMv5WPGrsOqUW32EBwygGg4yQebsnpdZMJOvFkUw
+      short-id:
+        - 58896ecc5f8bf710
+      server-names:
+        - www.microsoft.com
+### /root/catmi/mihomo/conf/config.d/reality-03.yaml
+# 由 all.sh 一键生成 · VLESS + xHTTP + REALITY (直连)
+# 实测可用。listener 侧靠 xhttp-config 非空判定传输, 无 network 字段。
+listeners:
+  - name: mVLESS03-REALITY-XHTTP
+    type: vless
+    listen: "0.0.0.0"
+    port: 25671
+    users:
+      - uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    xhttp-config:
+      mode: auto
+      path: /xhr-7e11f298
+      x-padding-bytes: "100-1000"
+    reality-config:
+      dest: www.microsoft.com:443
+      private-key: UP7tMv5WPGrsOqUW32EBwygGg4yQebsnpdZMJOvFkUw
+      short-id:
+        - 58896ecc5f8bf710
+      server-names:
+        - www.microsoft.com
+### /root/catmi/mihomo/conf/config.d/trojan-01.yaml
+# 由 all.sh 一键生成
+listeners:
+  - name: mTrojan01-REALITY
+    type: trojan
+    listen: "0.0.0.0"
+    port: 25672
+    users:
+      - username: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+        password: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    reality-config:
+      dest: www.microsoft.com:443
+      private-key: UP7tMv5WPGrsOqUW32EBwygGg4yQebsnpdZMJOvFkUw
+      short-id:
+        - 58896ecc5f8bf710
+      server-names:
+        - www.microsoft.com
+### /root/catmi/mihomo/conf/config.d/trojan-02.yaml
+# 由 all.sh 一键生成 · Trojan + gRPC + REALITY (直连)
+listeners:
+  - name: mTrojan02-REALITY-gRPC
+    type: trojan
+    listen: "0.0.0.0"
+    port: 25673
+    users:
+      - password: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    grpc-service-name: tg02286ead
+    reality-config:
+      dest: www.microsoft.com:443
+      private-key: UP7tMv5WPGrsOqUW32EBwygGg4yQebsnpdZMJOvFkUw
+      short-id:
+        - 58896ecc5f8bf710
+      server-names:
+        - www.microsoft.com
+### /root/catmi/mihomo/conf/config.d/trojan-03.yaml
+# 由 all.sh 一键生成
+listeners:
+  - name: mTrojan03-TLS
+    type: trojan
+    listen: "0.0.0.0"
+    port: 25674
+    users:
+      - username: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+        password: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    certificate: /root/catmi/mihomo/conf/certs/fullchain.pem
+    private-key: /root/catmi/mihomo/conf/certs/privkey.pem
+### /root/catmi/mihomo/conf/config.d/trojan-04.yaml
+# 由 all.sh 一键生成 · Trojan + WS + CDN (过 Cloudflare)
+# ★ 这是**源站**: 由 Cloudflare 回源到它, 监听 0.0.0.0 且用真证书。
+#   客户端连的是 CDN 边缘 (443), 不是这里的 25680 —— 本端口只用于配 Origin Rule。
+# ⚠ 必须真证书: Cloudflare 回源时不认自签 CA, 用自签必然回源失败。
+listeners:
+  - name: mTrojan04-CDN-WS
+    type: trojan
+    listen: "0.0.0.0"
+    port: 25680
+    users:
+      - password: "0647a947-6f77-4a91-8df0-8ff9f2d5e720"
+    ws-path: /cdnws-0ab96db5
+    certificate: /root/catmi/mihomo/conf/certs/fullchain.pem
+    private-key: /root/catmi/mihomo/conf/certs/privkey.pem
+### /root/catmi/mihomo/conf/config.d/trojan-05.yaml
+# 由 all.sh 一键生成 · Trojan + gRPC + CDN (过 Cloudflare)
+# ★ 这是**源站**: 由 Cloudflare 回源到它, 监听 0.0.0.0 且用真证书。
+#   客户端连的是 CDN 边缘 (443), 不是这里的 25681 —— 本端口只用于配 Origin Rule。
+# ⚠ 必须真证书: Cloudflare 回源时不认自签 CA, 用自签必然回源失败。
+listeners:
+  - name: mTrojan05-CDN-gRPC
+    type: trojan
+    listen: "0.0.0.0"
+    port: 25681
+    users:
+      - password: "0647a947-6f77-4a91-8df0-8ff9f2d5e720"
+    grpc-service-name: cg0599db34
+    certificate: /root/catmi/mihomo/conf/certs/fullchain.pem
+    private-key: /root/catmi/mihomo/conf/certs/privkey.pem
+### /root/catmi/mihomo/conf/config.d/tuicv5-01.yaml
+# 由 all.sh 一键生成
+listeners:
+  - name: mTUIC01-TLS
+    type: tuic
+    listen: "0.0.0.0"
+    port: 25683
+    users:
+      0647a947-6f77-4a91-8df0-8ff9f2d5e720: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    certificate: /root/catmi/mihomo/conf/certs/fullchain.pem
+    private-key: /root/catmi/mihomo/conf/certs/privkey.pem
+    congestion-controller: bbr
+    max-idle-time: 15000
+    alpn:
+      - h3
+### /root/catmi/mihomo/conf/config.d/vless-01.yaml
+# 由 all.sh 一键生成
+listeners:
+  - name: mVLESS01-TLS-WS
+    type: vless
+    listen: "0.0.0.0"
+    port: 25675
+    users:
+      - uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    ws-path: /wss01
+    certificate: /root/catmi/mihomo/conf/certs/fullchain.pem
+    private-key: /root/catmi/mihomo/conf/certs/privkey.pem
+### /root/catmi/mihomo/conf/config.d/vless-02.yaml
+# 由 all.sh 一键生成 · VLESS + XHTTP + TLS
+listeners:
+  - name: mVLESS02-TLS-XHTTP
+    type: vless
+    listen: "0.0.0.0"
+    port: 25676
+    users:
+      - uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    xhttp-config:
+      mode: auto
+      path: /xhttps-6ecedb76
+      x-padding-bytes: "100-1000"
+    certificate: /root/catmi/mihomo/conf/certs/fullchain.pem
+    private-key: /root/catmi/mihomo/conf/certs/privkey.pem
+### /root/catmi/mihomo/conf/config.d/vless-03.yaml
+# 由 all.sh 一键生成 · VLESS + xHTTP + TLS (过 Cloudflare CDN)
+# 这是**源站**: 由 Cloudflare 回源到它, 所以监听 0.0.0.0 且用真证书。
+# 建议在 Cloudflare 侧设置 Origin Rule 回源到本端口。
+listeners:
+  - name: mVLESS03-TLS-XHTTP-CDN
+    type: vless
+    listen: "0.0.0.0"
+    port: 25677
+    users:
+      - uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    xhttp-config:
+      mode: auto
+      path: /xhc-bcd2a955
+      x-padding-bytes: "100-1000"
+    certificate: /root/catmi/mihomo/conf/certs/fullchain.pem
+    private-key: /root/catmi/mihomo/conf/certs/privkey.pem
+### /root/catmi/mihomo/conf/config.d/vless-04.yaml
+# 由 all.sh 一键生成 · VLESS + WS + CDN (过 Cloudflare)
+# ★ 这是**源站**: 由 Cloudflare 回源到它, 监听 0.0.0.0 且用真证书。
+#   客户端连的是 CDN 边缘 (443), 不是这里的 25678 —— 本端口只用于配 Origin Rule。
+# ⚠ 必须真证书: Cloudflare 回源时不认自签 CA, 用自签必然回源失败。
+listeners:
+  - name: mVLESS04-CDN-WS
+    type: vless
+    listen: "0.0.0.0"
+    port: 25678
+    users:
+      - uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    ws-path: /cdnws-7a34637f
+    certificate: /root/catmi/mihomo/conf/certs/fullchain.pem
+    private-key: /root/catmi/mihomo/conf/certs/privkey.pem
+### /root/catmi/mihomo/conf/config.d/vless-05.yaml
+# 由 all.sh 一键生成 · VLESS + gRPC + CDN (过 Cloudflare)
+# ★ 这是**源站**: 由 Cloudflare 回源到它, 监听 0.0.0.0 且用真证书。
+#   客户端连的是 CDN 边缘 (443), 不是这里的 25679 —— 本端口只用于配 Origin Rule。
+# ⚠ 必须真证书: Cloudflare 回源时不认自签 CA, 用自签必然回源失败。
+listeners:
+  - name: mVLESS05-CDN-gRPC
+    type: vless
+    listen: "0.0.0.0"
+    port: 25679
+    users:
+      - uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    grpc-service-name: cg0523759e
+    certificate: /root/catmi/mihomo/conf/certs/fullchain.pem
+    private-key: /root/catmi/mihomo/conf/certs/privkey.pem
