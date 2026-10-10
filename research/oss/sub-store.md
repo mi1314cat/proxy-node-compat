@@ -77,15 +77,15 @@ for (const addon of addons.split('&')) { ... params[key] = decodeURIComponent(va
 
 | 归一化动作 | 位置 |
 |---|---|
-| 所有 `*-opts` key 及其子 key 转小写 | `index.js:758-778` |
-| `udp` 缺省置 `true` | `index.js:785-787` |
-| `vmess`/`vless`/`trojan` 的 `network` 缺省补 `tcp` | `index.js:1015-1030` |
-| `trojan/tuic/hysteria/hysteria2/juicity/anytls/trusttunnel/h2-connect/naive/masque/shadowquic` **强制 `tls=true`** | `index.js:1040-1056` |
-| `shadow-tls-opts` ↔ mihomo 的 `plugin: shadow-tls` + `plugin-opts` 双向改写 | `index.js:880-905` |
-| `tls` 且无 `sni` 时，从传输层 `Host` 或 `server` 推断 `sni` | `index.js:1120-1145` |
-| `ws-opts.path` 缺省补 `'/'`；`h2-opts.host` 统一成数组 | `index.js:1075-1100`、`index.js:1195-1215` |
-| `packet-encoding` 由 `xudp`/`packet-addr` 推导 | `index.js:1032-1039` |
-| `ports`（端口跳跃）统一成逗号分隔字符串 | `index.js:1148-1154` |
+| 所有 `*-opts` key 及其子 key 转小写 | `index.js:759-783` |
+| `udp` 缺省置 `true` | `index.js:793-795` |
+| `vmess`/`vless`/`trojan` 的 `network` 缺省补 `tcp` | `index.js:941-957` |
+| `trojan/tuic/hysteria/hysteria2/juicity/anytls/trusttunnel/h2-connect/naive/masque/shadowquic` **强制 `tls=true`** | `index.js:968-984` |
+| `shadow-tls-opts` ↔ mihomo 的 `plugin: shadow-tls` + `plugin-opts` 双向改写 | `index.js:855-905` |
+| `tls` 且无 `sni` 时，从传输层 `Host` 或 `server` 推断 `sni` | `index.js:1042-1060` |
+| `ws-opts.path` 缺省补 `'/'`；`h2-opts.host` 统一成数组 | `index.js:1140-1147`、`index.js:993-1011` |
+| `packet-encoding` 由 `xudp`/`packet-addr` 推导 | `index.js:959-966` |
+| `ports`（端口跳跃）统一成逗号分隔字符串 | `index.js:1062-1067` |
 
 **证据 3 — "能力"全部寄生在字符串 key 上，没有枚举、没有 tagged union。**
 `proxy.type` 是裸字符串；`proxy.network` 是裸字符串；`proxy.cipher` 是裸字符串。
@@ -106,7 +106,7 @@ for (const addon of addons.split('&')) { ... params[key] = decodeURIComponent(va
 | `_resolved` | 产出前把 `resolved` 复制一份（保留原始域名信息） | `core/proxy-utils/index.js:539` | — |
 | `_dns_server` / `_domain_resolver` | sing-box 专用 | 脚本/operator | `producers/sing-box.js:30-48` |
 | `_subName` / `_desc` / `_category` | 订阅级元数据 | 各层 | `core/proxy-utils/index.js:628-634` |
-| `_loon_tls_profile` | Loon TLS 指纹档位 | Loon 解析器 | `lastParse` `index.js:781-790` |
+| `_loon_tls_profile` | Loon TLS 指纹档位 | Loon 解析器 | `lastParse` `index.js:784-792` |
 
 **关键设计（不是随手起的名字）**：`_` 前缀同时承担两个职责——
 (a) 标记"这是 Sub-Store 内部元数据，不是 mihomo 字段"；

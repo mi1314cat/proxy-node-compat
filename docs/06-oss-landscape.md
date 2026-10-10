@@ -14,7 +14,7 @@
 | [Fanju6/Proxylink](https://github.com/Fanju6/Proxylink) | Go | URI/Clash YAML/Xray JSON/sing-box JSON → 统一 `ProfileItem` → 生成 Xray / sing-box 配置或回写 URI | **同赛道最近的一个**。它的模型/解析/生成/回写四件套值得细看；但它没有内核维度，且默认静默丢字段 |
 | [tindy2013/subconverter](https://github.com/tindy2013/subconverter) | C++ | 订阅 → 多目标（clash/clashr/singbox/v2ray/surge/loon/quan…）配置生成 | 生态里最经典的"多目标生成"，**每个目标一个生成器**的组织方式值得借鉴；它的丢字段行为是本项目最有力的反面教材 |
 | [sub-store-org/Sub-Store](https://github.com/sub-store-org/Sub-Store) | JS | 订阅管理 + 可复用处理链（operator）+ 多目标产出 | operator 管线的设计对"可扩展 feature 处理"最有参考价值（调研进行中） |
-| [7Sageer/sublink-worker](https://github.com/7Sageer/sublink-worker) | TS | 跑在 Worker/Node 的轻量订阅转换 | 现代实现的对照样本（已并入 subconverter 报告） |
+| [7Sageer/sublink-worker](https://github.com/7Sageer/sublink-worker) | JS | 跑在 Worker/Node 的轻量订阅转换 | 现代实现的对照样本（已并入 subconverter 报告） |
 | [lilendian0x00/xray-knife](https://github.com/lilendian0x00/xray-knife) | Go | 链接 ↔ 配置解码、节点测速存活。**已到 v11**（不是文档说的 v9） | ⚠️ **生态里最接近我们的一件事**：它有"能力判断"（`removedTransport` 知道 h2 被 xray 移除）但**零版本维度** —— 说不出"从哪个版本移除"、也无法表达"你的 sing-box 太旧"。见 §4.5 |
 | [mmwX-plugins/proxyparser](https://pkg.go.dev/github.com/MMWOrg/mmwX-plugins/proxyparser) | Go | 各协议 URI → **clash-meta 风格 `map[string]any`**，再向 12 种客户端格式分发 | 印证"生态事实标准枢纽格式 = Clash/Mihomo 风格"；**也暴露了枢纽格式的天花板**，见 §4.5 |
 | [2dust/v2rayN](https://github.com/2dust/v2rayN) | C# | 客户端；同一份节点在 **Xray / sing-box 两套内核**间切换 | 生态里最接近"跨内核"的实践（调研进行中） |
@@ -173,6 +173,25 @@ URI 表达不了 (no share-link form)     → 与内核无关，属于 URI 层�
 | 多目标生成的工程组织 | subconverter 的 `src/generator/` | 抄"目标=数据"的组织方式 |
 | 节点存活/测速 | xray-knife | 我们已有自研测速，不必重复 |
 | 分享链接规范本身 | SIP002 / VMess QR / 各内核文档 | 直接实现（量小且必须自己掌握） |
+
+### 4.8 三条可直接搬进设计的外部旁证
+
+1. **"没写" 与 "写了 false" 必须分开存** —— subconverter 已经有现成范本：`src/utils/tribool.h` 的
+   `indeterminate / true / false` + `is_undef()` / `define()`。把它从**字段级升到能力级**，
+   就是我们的 `PRESENT / ABSENT_EXPLICITLY / UNKNOWN_NOT_EXPRESSIBLE` 状态。
+   （旁证 §4 结论：三家 Go 项目全部因为没做这件事而写不出 loss 报告。）
+2. **损失只能记在返回值里，绝不能塞进客户端配置正文** —— sublink-worker 曾把
+   `# <tag> - Unsupported proxy type` 写进 Surge 输出，issue #299 证明这会污染配置语法。
+   → `losses[]` 属于 compat 的返回结构，不属于生成物。
+3. **字段同名 ≠ 语义相同：Registry 必须建模"语义反转"** —— sing-box 的 `network: "tcp"`
+   会**静默关闭 UDP**（连带 DNS hijack / fakeip / QUIC / 所有 selector 失效），
+   而同一个字段在 Clash 里无害。这类"支持与否"之外的第二类问题必须进模型
+   （`semantic_inversion`），否则我们会把"配置通过"当成"行为正确"。
+
+另记两条工程实践：**UA 可以提供内核版本**（subconverter 的 `UAMatchList` / `verGreaterEqual`、
+sublink-worker 的 `resolveSingboxConfigVersion`），其"解析失败就回落到一个安全的老版本（1.12）"
+的兜底值得照抄；反之 subconverter `intSurgeVer` **默认 3** 导致不带 `&ver=4` 时
+VMess/Trojan/WireGuard/Hysteria2/AnyTLS **整类凭空消失**（issue #643）——默认值选错就是静默丢节点。
 
 **没有现成实现的**（= 我们的核心工作）：
 
