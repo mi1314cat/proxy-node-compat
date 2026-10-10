@@ -1,0 +1,20 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:41:50.758535 [Debug] app/log: Logger started
+2026/10/10 03:41:50.759202 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:43687
+2026/10/10 03:41:50.759410 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/b1-singbox-vision-reality.server.json Format:json}
+2026/10/10 03:41:50.759440 [Warning] infra/conf: REALITY: Listening on non-443 ports may get your IP blocked by the GFW
+2026/10/10 03:41:50.762388 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:43687
+2026/10/10 03:41:50.762454 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:41:50.862139 [Info] transport/internet/tcp: REALITY: processed invalid connection from 127.0.0.1:58088: failed to read client hello
+2026/10/10 03:41:51.279785 from 127.0.0.1:58092 accepted tcp:127.0.0.1:38019 [direct]
+2026/10/10 03:41:51.279925 [Info] [2368052495] proxy/vless/inbound: firstLen = 302
+2026/10/10 03:41:51.279948 [Info] [2368052495] proxy/vless/inbound: received request for tcp:127.0.0.1:38019
+2026/10/10 03:41:51.279957 [Info] [2368052495] app/dispatcher: default route for tcp:127.0.0.1:38019
+2026/10/10 03:41:51.279963 [Info] [2368052495] transport/internet/tcp: dialing TCP to tcp:127.0.0.1:38019
+2026/10/10 03:41:51.279968 [Debug] [2368052495] transport/internet: dialing to tcp:127.0.0.1:38019
+2026/10/10 03:41:51.287785 [Info] [2368052495] proxy/freedom: connection opened to tcp:127.0.0.1:38019, local endpoint 127.0.0.1:60016, remote endpoint 127.0.0.1:38019
+2026/10/10 03:41:51.288420 [Debug] [2368052495] proxy: Xtls Unpadding new block, content 0 padding 237 command 0
+2026/10/10 03:41:51.288441 [Debug] [2368052495] proxy: Xtls Unpadding new block, content 79 padding 196 command 0
+2026/10/10 03:41:51.297306 [Debug] [2368052495] proxy: XtlsPadding 185 230 0
+2026/10/10 03:41:51.299434 [Debug] [2368052495] proxy: XtlsPadding 17 66 0

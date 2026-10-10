@@ -1,0 +1,12 @@
+-0700 2026-10-10 03:42:11 [36mINFO[0m inbound/socks[in]: tcp server started at 127.0.0.1:55153
+-0700 2026-10-10 03:42:11 [36mINFO[0m network: updated default interface eth0, index 2
+-0700 2026-10-10 03:42:11 [36mINFO[0m network: updated network environment: gateway 107.173.154.1, gateway_mac 00:21:59:c4:51:c1
+-0700 2026-10-10 03:42:11 [36mINFO[0m [[38;5;83m2784484675[0m 0ms] inbound/socks[in]: inbound connection from 127.0.0.1:40290
+-0700 2026-10-10 03:42:11 [37mDEBUG[0m [[38;5;83m2784484675[0m 0ms] inbound/socks[in]: connection closed: EOF
+-0700 2026-10-10 03:42:11 [36mINFO[0m sing-box started (0.01s)
+-0700 2026-10-10 03:42:11 [36mINFO[0m [[38;5;100m2703754324[0m 0ms] inbound/socks[in]: inbound connection from 127.0.0.1:40304
+-0700 2026-10-10 03:42:11 [36mINFO[0m [[38;5;100m2703754324[0m 0ms] inbound/socks[in]: inbound connection to 127.0.0.1:38019
+-0700 2026-10-10 03:42:11 [36mINFO[0m [[38;5;100m2703754324[0m 0ms] outbound/vless[out]: outbound multiplex connection to 127.0.0.1:38019
+-0700 2026-10-10 03:42:11 [36mINFO[0m [[38;5;100m2703754324[0m 1ms] outbound/vless[out]: outbound connection to sp.mux.sing-box.arpa:444
+-0700 2026-10-10 03:42:11 [37mDEBUG[0m [[38;5;100m2703754324[0m 9ms] connection: connection download finished
+-0700 2026-10-10 03:42:11 [37mDEBUG[0m [[38;5;100m2703754324[0m 9ms] connection: connection upload finished

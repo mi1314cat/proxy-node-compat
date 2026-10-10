@@ -1,0 +1,23 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:42:08.633515 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/b6-singbox-smux-vs-xray-server.server.json Format:json}
+2026/10/10 03:42:08.634439 [Debug] app/log: Logger started
+2026/10/10 03:42:08.634467 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:60825
+2026/10/10 03:42:08.634483 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:60825
+2026/10/10 03:42:08.634494 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:42:08.703849 [Info] [2874234860] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:42:08.992352 [Info] [2045609676] proxy/vless/inbound: firstLen = 53
+2026/10/10 03:42:08.992421 [Info] [2045609676] proxy/vless/inbound: received request for tcp:sp.mux.sing-box.arpa:444
+2026/10/10 03:42:08.992433 [Info] [2045609676] app/dispatcher: default route for tcp:sp.mux.sing-box.arpa:444
+2026/10/10 03:42:08.992439 [Info] [2045609676] transport/internet/tcp: dialing TCP to tcp:sp.mux.sing-box.arpa:444
+2026/10/10 03:42:08.992445 [Debug] [2045609676] transport/internet: dialing to tcp:sp.mux.sing-box.arpa:444
+2026/10/10 03:42:08.992513 from 127.0.0.1:47854 accepted tcp:sp.mux.sing-box.arpa:444 [direct]
+2026/10/10 03:42:08.994680 [Info] [2045609676] transport/internet/tcp: dialing TCP to tcp:sp.mux.sing-box.arpa:444
+2026/10/10 03:42:08.994697 [Debug] [2045609676] transport/internet: dialing to tcp:sp.mux.sing-box.arpa:444
+2026/10/10 03:42:09.095863 [Info] [2045609676] transport/internet/tcp: dialing TCP to tcp:sp.mux.sing-box.arpa:444
+2026/10/10 03:42:09.096823 [Debug] [2045609676] transport/internet: dialing to tcp:sp.mux.sing-box.arpa:444
+2026/10/10 03:42:09.298632 [Info] [2045609676] transport/internet/tcp: dialing TCP to tcp:sp.mux.sing-box.arpa:444
+2026/10/10 03:42:09.298723 [Debug] [2045609676] transport/internet: dialing to tcp:sp.mux.sing-box.arpa:444
+2026/10/10 03:42:09.601630 [Info] [2045609676] transport/internet/tcp: dialing TCP to tcp:sp.mux.sing-box.arpa:444
+2026/10/10 03:42:09.602734 [Debug] [2045609676] transport/internet: dialing to tcp:sp.mux.sing-box.arpa:444
+2026/10/10 03:42:10.007758 [Info] [2045609676] app/proxyman/outbound: app/proxyman/outbound: failed to process outbound traffic > proxy/freedom: failed to open connection to tcp:sp.mux.sing-box.arpa:444 > common/retry: [dial tcp: lookup sp.mux.sing-box.arpa on 127.0.0.1:53: no such host] > common/retry: all retry attempts failed

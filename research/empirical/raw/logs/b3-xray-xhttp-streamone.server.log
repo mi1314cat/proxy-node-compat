@@ -1,0 +1,18 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:41:52.692003 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/b3-xray-xhttp-streamone.server.json Format:json}
+2026/10/10 03:41:52.692285 [Warning] infra/conf: REALITY: Listening on non-443 ports may get your IP blocked by the GFW
+2026/10/10 03:41:52.692448 [Debug] app/log: Logger started
+2026/10/10 03:41:52.692465 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:55375
+2026/10/10 03:41:52.692474 [Info] transport/internet/splithttp: listening TCP for XHTTP on 127.0.0.1:55375
+2026/10/10 03:41:52.692480 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:41:52.971384 from 127.0.0.1:32908 accepted tcp:127.0.0.1:38019 [direct]
+2026/10/10 03:41:52.971455 [Info] [3023254996] proxy/vless/inbound: firstLen = 105
+2026/10/10 03:41:52.971465 [Info] [3023254996] proxy/vless/inbound: received request for tcp:127.0.0.1:38019
+2026/10/10 03:41:52.971472 [Info] [3023254996] app/dispatcher: default route for tcp:127.0.0.1:38019
+2026/10/10 03:41:52.971486 [Info] [3023254996] transport/internet/tcp: dialing TCP to tcp:127.0.0.1:38019
+2026/10/10 03:41:52.971495 [Debug] [3023254996] transport/internet: dialing to tcp:127.0.0.1:38019
+2026/10/10 03:41:52.971945 [Info] [3023254996] proxy/freedom: connection opened to tcp:127.0.0.1:38019, local endpoint 127.0.0.1:60046, remote endpoint 127.0.0.1:38019
+2026/10/10 03:41:52.971964 [Debug] [3023254996] proxy: CopyRawConn (maybe) readv
+2026/10/10 03:41:52.984065 [Info] [3023254996] app/proxyman/outbound: app/proxyman/outbound: failed to process outbound traffic > proxy/freedom: connection ends > proxy/freedom: failed to process request > client disconnected
+2026/10/10 03:41:52.984396 [Debug] app/log: Logger closing

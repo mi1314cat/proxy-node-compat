@@ -3,6 +3,11 @@
 这里的结论**不是读文档得来的**，是把配置喂给真内核跑出来的。
 `probe-results.json` 是机器可读的原始结论，本文件是它的解读与**甄别记录**。
 
+> **后续（同一批版本的更深一层实测）**：`cross-kernel-matrix.md`（同目录）把
+> ss+REALITY / VLESS 各变体 / mux 三方语义做成了**逐内核回环矩阵**（60 个用例，
+> 原始证据在 `raw/cross-kernel-matrix-results.json` + `raw/logs/`，复现脚本
+> `tools/probe/loopback_matrix.py`）。本文件里"运行层 UNKNOWN"的条目以那份为准。
+
 ## 被测版本
 
 | 内核 | 版本 | 二进制 |

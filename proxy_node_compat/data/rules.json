@@ -240,6 +240,16 @@
       "how": "用同一份配置做对照（未知键 vs 非法值）",
       "where": "research/empirical/vless-encryption-mlkem.md §2",
       "limits": "该判别法只对'有值校验的字段'有效"
+    },
+    {
+      "id": "e-cross-matrix",
+      "type": "RUNTIME_TEST",
+      "confidence": "HIGH",
+      "date": "2026-10-10",
+      "claim": "跨内核 60 用例矩阵（回环 + 死端口负对照）: ss+reality 只有 Xray 能用; ws+reality 只有 sing-box 能通; xhttp 系 sing-box 完全没有; 三方 mux 不同构, 跨内核搬运必损; vision+security=none 三家都是配置过、运行期报错",
+      "how": "xray 作服务端 + 三家作客户端逐组合回环; 3 控制组 + 3 死代理负对照; mihomo mode=global 假 PASS 已靠负对照抓出并修正",
+      "where": "research/empirical/cross-kernel-matrix.md",
+      "limits": "三个内核各一个版本 (26.3.27 / 1.19.32 / 1.14.2); 部分方向 (mihomo·singbox 作 ss+reality 服务端) 未测"
     }
   ],
   "rules": [
@@ -1930,6 +1940,166 @@
       "version_independent": true,
       "evidence": [
         "e-vlessenc-runtime"
+      ]
+    },
+    {
+      "rule_id": "xray.combo.ss_reality",
+      "target": {
+        "kernel": "xray",
+        "distribution": "upstream"
+      },
+      "selector": {
+        "protocol": "standard:shadowsocks",
+        "all_of_features": [
+          "standard:reality"
+        ]
+      },
+      "segments": [
+        {
+          "range": "*",
+          "verdict": {
+            "config": "SUPPORTED",
+            "runtime": "SUPPORTED"
+          },
+          "note": "回环实测通过; 错 publicKey 必失败 → reality 真被校验"
+        }
+      ],
+      "version_independent": true,
+      "evidence": [
+        "e-cross-matrix"
+      ]
+    },
+    {
+      "rule_id": "mihomo.combo.ss_reality",
+      "target": {
+        "kernel": "mihomo",
+        "distribution": "upstream"
+      },
+      "selector": {
+        "protocol": "standard:shadowsocks",
+        "all_of_features": [
+          "standard:reality"
+        ]
+      },
+      "segments": [
+        {
+          "range": "*",
+          "verdict": {
+            "config": "SUPPORTED",
+            "runtime": "SUPPORTED_WITH_LOSS"
+          },
+          "failure_mode": "silent_ignore",
+          "losses": [
+            {
+              "feature": "standard:reality",
+              "what": "ss 上不存在 reality-opts 字段 → 静默丢弃; 打 reality 服务端必失败、打裸 ss 服务端成功",
+              "impact": "SECURITY"
+            }
+          ]
+        }
+      ],
+      "version_independent": true,
+      "evidence": [
+        "e-cross-matrix"
+      ]
+    },
+    {
+      "rule_id": "xray.combo.ws_reality",
+      "target": {
+        "kernel": "xray",
+        "distribution": "upstream"
+      },
+      "selector": {
+        "all_of_features": [
+          "standard:reality",
+          "standard:transport.ws"
+        ]
+      },
+      "segments": [
+        {
+          "range": "*",
+          "verdict": {
+            "config": "UNSUPPORTED",
+            "runtime": "UNSUPPORTED"
+          },
+          "failure_mode": "hard_error",
+          "reason_code": "SEMANTIC_MISMATCH",
+          "note": "REALITY only supports RAW, XHTTP and gRPC for now."
+        }
+      ],
+      "version_independent": true,
+      "evidence": [
+        "e-cross-matrix"
+      ]
+    },
+    {
+      "rule_id": "xray.combo.flow_without_tls",
+      "target": {
+        "kernel": "xray",
+        "distribution": "upstream"
+      },
+      "selector": {
+        "all_of_features": [
+          "standard:flow",
+          "standard:transport.tcp"
+        ]
+      },
+      "segments": [
+        {
+          "range": "*",
+          "verdict": {
+            "config": "SUPPORTED",
+            "runtime": "SUPPORTED_WITH_LOSS"
+          },
+          "failure_mode": "runtime_fail",
+          "reason_code": "RUNTIME_CONDITION_NOT_MET",
+          "losses": [
+            {
+              "feature": "standard:flow",
+              "what": "xtls-rprx-vision 在 security∉{tls,reality} 时配置层通过、运行期才报错",
+              "impact": "CONNECTIVITY"
+            }
+          ]
+        }
+      ],
+      "version_independent": true,
+      "evidence": [
+        "e-cross-matrix"
+      ]
+    },
+    {
+      "rule_id": "xray.combo.xhttp_muxcool",
+      "target": {
+        "kernel": "xray",
+        "distribution": "upstream"
+      },
+      "selector": {
+        "all_of_features": [
+          "standard:mux",
+          "standard:xhttp"
+        ]
+      },
+      "segments": [
+        {
+          "range": "*",
+          "verdict": {
+            "config": "SUPPORTED",
+            "runtime": "SUPPORTED_WITH_LOSS"
+          },
+          "failure_mode": "runtime_fail",
+          "reason_code": "SEMANTIC_MISMATCH",
+          "losses": [
+            {
+              "feature": "standard:mux",
+              "what": "XHTTP 与 mux.cool 同开会运行期失败: common/mux: unexpected network TCP（新版服务端只接受纯 XUDP）",
+              "impact": "CONNECTIVITY"
+            }
+          ]
+        }
+      ],
+      "version_independent": true,
+      "evidence": [
+        "e-cross-matrix"
       ]
     }
   ],

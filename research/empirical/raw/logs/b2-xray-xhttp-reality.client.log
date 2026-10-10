@@ -1,0 +1,15 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:41:51.558504 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/b2-xray-xhttp-reality.client.json Format:json}
+2026/10/10 03:41:51.559126 [Debug] app/log: Logger started
+2026/10/10 03:41:51.559144 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:48621
+2026/10/10 03:41:51.559153 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:48621
+2026/10/10 03:41:51.559159 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:41:51.633469 [Info] [1419135177] proxy/socks: Connection closed immediately, likely health check connection
+2026/10/10 03:41:51.661213 [Info] [4230294503] proxy/socks: TCP Connect request to tcp:127.0.0.1:38019
+2026/10/10 03:41:51.661270 [Info] [4230294503] app/dispatcher: default route for tcp:127.0.0.1:38019
+2026/10/10 03:41:51.661278 [Debug] [4230294503] transport/internet/splithttp: XMUX: creating xmuxClient because xmuxClients is empty
+2026/10/10 03:41:51.661287 [Info] [4230294503] transport/internet/splithttp: XHTTP is dialing to tcp:127.0.0.1:33175, mode stream-one, HTTP version 2, host www.microsoft.com
+2026/10/10 03:41:51.661295 [Debug] [4230294503] transport/internet: dialing to tcp:127.0.0.1:33175
+2026/10/10 03:41:51.661351 from tcp:127.0.0.1:52134 accepted tcp:127.0.0.1:38019
+2026/10/10 03:41:51.674046 [Info] [4230294503] proxy/vless/outbound: tunneling request to tcp:127.0.0.1:38019 via 127.0.0.1:33175

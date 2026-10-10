@@ -1,0 +1,17 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:41:53.595831 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/cfg-xray-xmux-maxconn-only.client.json Format:json}
+2026/10/10 03:41:53.596064 [Debug] app/log: Logger started
+2026/10/10 03:41:53.596089 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:53593
+2026/10/10 03:41:53.596118 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:53593
+2026/10/10 03:41:53.596135 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:41:53.670127 [Info] [3979839741] proxy/socks: Connection closed immediately, likely health check connection
+2026/10/10 03:41:53.694315 [Info] [628697631] proxy/socks: TCP Connect request to tcp:127.0.0.1:38019
+2026/10/10 03:41:53.694742 [Info] [628697631] app/dispatcher: default route for tcp:127.0.0.1:38019
+2026/10/10 03:41:53.694752 [Debug] [628697631] transport/internet/splithttp: XMUX: creating xmuxClient because xmuxClients is empty
+2026/10/10 03:41:53.694759 [Info] [628697631] transport/internet/splithttp: XHTTP is dialing to tcp:127.0.0.1:443, mode packet-up, HTTP version 1.1, host 127.0.0.1
+2026/10/10 03:41:53.694766 [Debug] [628697631] transport/internet: dialing to tcp:127.0.0.1:443
+2026/10/10 03:41:53.694817 from tcp:127.0.0.1:35430 accepted tcp:127.0.0.1:38019
+2026/10/10 03:41:53.695842 [Info] [628697631] proxy/vless/outbound: tunneling request to tcp:127.0.0.1:38019 via 127.0.0.1:443
+2026/10/10 03:41:53.697283 [Debug] [628697631] transport/internet: dialing to tcp:127.0.0.1:443
+2026/10/10 03:41:53.699947 [Info] [628697631] transport/internet/splithttp: unexpected status 400

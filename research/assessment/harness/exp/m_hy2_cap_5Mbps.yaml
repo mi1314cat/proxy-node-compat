@@ -1,0 +1,15 @@
+mixed-port: 18080
+mode: rule
+log-level: info
+proxies:
+  - name: n
+    type: hysteria2
+    server: 107.173.154.178
+    port: 25682
+    password: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    sni: hxicc.catmicos.dpdns.org
+    skip-cert-verify: false
+    up: "100 Mbps"
+    down: "5 Mbps"
+rules:
+  - MATCH,n

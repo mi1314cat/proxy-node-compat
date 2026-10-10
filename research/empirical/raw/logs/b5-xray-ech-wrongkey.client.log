@@ -1,0 +1,22 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:41:59.314210 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/b5-xray-ech-wrongkey.client.json Format:json}
+2026/10/10 03:41:59.317467 [Debug] app/log: Logger started
+2026/10/10 03:41:59.317515 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:45703
+2026/10/10 03:41:59.317526 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:45703
+2026/10/10 03:41:59.317532 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:41:59.399037 [Info] [537949962] proxy/socks: Connection closed immediately, likely health check connection
+2026/10/10 03:41:59.414943 [Info] [488863336] proxy/socks: TCP Connect request to tcp:127.0.0.1:38019
+2026/10/10 03:41:59.415004 [Info] [488863336] app/dispatcher: default route for tcp:127.0.0.1:38019
+2026/10/10 03:41:59.415023 [Info] [488863336] transport/internet/tcp: dialing TCP to tcp:127.0.0.1:36311
+2026/10/10 03:41:59.415036 [Debug] [488863336] transport/internet: dialing to tcp:127.0.0.1:36311
+2026/10/10 03:41:59.415089 from tcp:127.0.0.1:54834 accepted tcp:127.0.0.1:38019
+2026/10/10 03:41:59.468250 [Info] [488863336] transport/internet/tcp: dialing TCP to tcp:127.0.0.1:36311
+2026/10/10 03:41:59.468273 [Debug] [488863336] transport/internet: dialing to tcp:127.0.0.1:36311
+2026/10/10 03:41:59.672045 [Info] [488863336] transport/internet/tcp: dialing TCP to tcp:127.0.0.1:36311
+2026/10/10 03:41:59.672100 [Debug] [488863336] transport/internet: dialing to tcp:127.0.0.1:36311
+2026/10/10 03:42:00.077637 [Info] [488863336] transport/internet/tcp: dialing TCP to tcp:127.0.0.1:36311
+2026/10/10 03:42:00.078167 [Debug] [488863336] transport/internet: dialing to tcp:127.0.0.1:36311
+2026/10/10 03:42:00.683566 [Info] [488863336] transport/internet/tcp: dialing TCP to tcp:127.0.0.1:36311
+2026/10/10 03:42:00.683664 [Debug] [488863336] transport/internet: dialing to tcp:127.0.0.1:36311
+2026/10/10 03:42:01.489056 [Info] [488863336] app/proxyman/outbound: app/proxyman/outbound: failed to process outbound traffic > proxy/vless/outbound: failed to find an available destination > common/retry: [remote error: tls: unrecognized name] > common/retry: all retry attempts failed

@@ -1,0 +1,9 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:42:05.144759 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/b5-singbox-ech-wrongkey.server.json Format:json}
+2026/10/10 03:42:05.144982 [Debug] app/log: Logger started
+2026/10/10 03:42:05.145002 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:41361
+2026/10/10 03:42:05.145010 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:41361
+2026/10/10 03:42:05.172235 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:42:05.215476 [Info] [1916615023] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:42:05.530907 [Info] [2717104267] app/proxyman/inbound: connection ends > tls: no certificates configured

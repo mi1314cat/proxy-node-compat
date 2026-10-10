@@ -1,0 +1,17 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:42:01.906582 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/b5-singbox-ech.server.json Format:json}
+2026/10/10 03:42:01.906790 [Debug] app/log: Logger started
+2026/10/10 03:42:01.906808 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:49549
+2026/10/10 03:42:01.906818 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:49549
+2026/10/10 03:42:01.951393 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:42:01.977692 [Info] [3018897622] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:42:02.252703 from 127.0.0.1:41366 accepted tcp:127.0.0.1:38019 [direct]
+2026/10/10 03:42:02.252766 [Info] [733604176] proxy/vless/inbound: firstLen = 26
+2026/10/10 03:42:02.252776 [Info] [733604176] proxy/vless/inbound: received request for tcp:127.0.0.1:38019
+2026/10/10 03:42:02.252782 [Info] [733604176] app/dispatcher: default route for tcp:127.0.0.1:38019
+2026/10/10 03:42:02.252788 [Info] [733604176] transport/internet/tcp: dialing TCP to tcp:127.0.0.1:38019
+2026/10/10 03:42:02.252794 [Debug] [733604176] transport/internet: dialing to tcp:127.0.0.1:38019
+2026/10/10 03:42:02.252928 [Info] [733604176] proxy/freedom: connection opened to tcp:127.0.0.1:38019, local endpoint 127.0.0.1:39926, remote endpoint 127.0.0.1:38019
+2026/10/10 03:42:02.252940 [Debug] [733604176] proxy: CopyRawConn (maybe) readv
+2026/10/10 03:42:02.257346 [Info] [733604176] app/proxyman/outbound: app/proxyman/outbound: failed to process outbound traffic > proxy/freedom: connection ends > proxy/freedom: failed to process request > read tcp 127.0.0.1:49549->127.0.0.1:41366: use of closed network connection

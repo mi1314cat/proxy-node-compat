@@ -1,0 +1,18 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:42:16.986501 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/b7-mihomo-vision-none.server.json Format:json}
+2026/10/10 03:42:16.990622 [Debug] app/log: Logger started
+2026/10/10 03:42:16.990778 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:39501
+2026/10/10 03:42:16.990801 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:39501
+2026/10/10 03:42:16.990815 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:42:17.070244 [Info] [2732704380] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:42:17.220988 [Info] [1592437364] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:42:17.232706 [Info] [2727517086] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:42:17.253222 [Info] [62532410] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:42:17.275783 [Info] [3357437114] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:42:17.308088 [Info] [4059418229] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:42:17.361652 [Info] [2325830861] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:42:17.406826 [Info] [1078836645] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:42:17.964600 [Info] [2988072914] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:42:18.122115 [Info] [2646651670] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:42:18.283752 [Info] [3839575352] app/proxyman/inbound: connection ends > EOF

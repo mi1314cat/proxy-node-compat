@@ -1,0 +1,18 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:42:02.357968 [Debug] app/log: Logger started
+2026/10/10 03:42:02.358171 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:43207
+2026/10/10 03:42:02.358182 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:43207
+2026/10/10 03:42:02.358312 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/b5-mihomo-ech-wrongkey.server.json Format:json}
+2026/10/10 03:42:02.408916 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:42:02.429985 [Info] [2745174778] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:42:02.600475 [Info] [2828835283] app/proxyman/inbound: connection ends > tls: no certificates configured
+2026/10/10 03:42:02.615441 [Info] [2647442650] app/proxyman/inbound: connection ends > tls: no certificates configured
+2026/10/10 03:42:02.634621 [Info] [1431299664] app/proxyman/inbound: connection ends > tls: no certificates configured
+2026/10/10 03:42:02.669088 [Info] [2861312055] app/proxyman/inbound: connection ends > tls: no certificates configured
+2026/10/10 03:42:02.746690 [Info] [668870878] app/proxyman/inbound: connection ends > tls: no certificates configured
+2026/10/10 03:42:02.766905 [Info] [548751492] app/proxyman/inbound: connection ends > tls: no certificates configured
+2026/10/10 03:42:02.959751 [Info] [2615406628] app/proxyman/inbound: connection ends > tls: no certificates configured
+2026/10/10 03:42:03.263413 [Info] [3127237137] app/proxyman/inbound: connection ends > tls: no certificates configured
+2026/10/10 03:42:03.737774 [Info] [2696845446] app/proxyman/inbound: connection ends > tls: no certificates configured
+2026/10/10 03:42:04.069866 [Info] [3755038590] app/proxyman/inbound: connection ends > tls: no certificates configured

@@ -1,0 +1,10 @@
+-0700 2026-10-10 03:41:47 [36mINFO[0m inbound/socks[in]: tcp server started at 127.0.0.1:38737
+-0700 2026-10-10 03:41:47 [36mINFO[0m network: updated default interface eth0, index 2
+-0700 2026-10-10 03:41:47 [36mINFO[0m network: updated network environment: gateway 107.173.154.1, gateway_mac 00:21:59:c4:51:c1
+-0700 2026-10-10 03:41:47 [36mINFO[0m sing-box started (0.00s)
+-0700 2026-10-10 03:41:47 [36mINFO[0m [[38;5;38m2012720406[0m 0ms] inbound/socks[in]: inbound connection from 127.0.0.1:39630
+-0700 2026-10-10 03:41:47 [37mDEBUG[0m [[38;5;38m2012720406[0m 0ms] inbound/socks[in]: connection closed: EOF
+-0700 2026-10-10 03:41:47 [36mINFO[0m [[38;5;139m958540155[0m 0ms] inbound/socks[in]: inbound connection from 127.0.0.1:39644
+-0700 2026-10-10 03:41:47 [36mINFO[0m [[38;5;139m958540155[0m 0ms] inbound/socks[in]: inbound connection to 127.0.0.1:38019
+-0700 2026-10-10 03:41:47 [36mINFO[0m [[38;5;139m958540155[0m 0ms] outbound/vless[out]: outbound connection to 127.0.0.1:38019
+-0700 2026-10-10 03:41:47 [31mERROR[0m [[38;5;139m958540155[0m 3ms] connection: open connection to 127.0.0.1:38019 using outbound/vless[out]: dial tcp 127.0.0.1:1: connect: connection refused

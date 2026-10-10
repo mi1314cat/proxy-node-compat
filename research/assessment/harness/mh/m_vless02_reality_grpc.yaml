@@ -1,0 +1,18 @@
+mixed-port: 18080
+mode: rule
+log-level: error
+proxies:
+  - name: n
+    type: vless
+    server: 107.173.154.178
+    port: 25670
+    uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    network: grpc
+    tls: true
+    udp: true
+    servername: www.microsoft.com
+    reality-opts: {public-key: uMcVRoEWeMAwPaj6e3jSVCZfbl-gj37MH9_XI9tL5wY, short-id: 58896ecc5f8bf710}
+    client-fingerprint: chrome
+    grpc-opts: {grpc-service-name: gs025a08f0}
+rules:
+  - MATCH,n

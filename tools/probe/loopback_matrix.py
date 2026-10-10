@@ -53,6 +53,17 @@ ECH_CONF_OTHER = ""  # 另一个密钥对, 同 public name -> 负对照
 ECH_SRVKEYS_OTHER = ""
 CERT = os.path.join(WORK, "cert.pem")
 KEY = os.path.join(WORK, "key.pem")
+CERT_SHA256 = ""     # xray 26.x 移除了 allowInsecure -> 用 pinnedPeerCertSha256
+ECH_PEM = ""         # sing-box 的 tls.ech.config 要 PEM("ECH CONFIGS"), 不是裸 base64
+# REALITY 的 dest: 默认用**本地 Go/Xray TLS 服务端**做可控 dest。
+# 原因(实测): 用真实站点做 dest 时, 若该站证书记录 > reality 模块的 8192 缓冲,
+# 服务端会 `break` 掉 mimicry 循环 => 已认证连接也会 "handshake did not complete successfully"。
+# 见 research/empirical/cross-kernel-matrix.md 的 dest 章节与 ctrl-xray-reality-realdest 用例。
+DEST = ""            # 本地 dest, setup() 里填
+DEST_PROC = None
+DEST_PORT = 0
+REAL_DEST = "www.microsoft.com:443"   # 真实 dest (8273B 证书记录, 会触发 8192 边界)
+REAL_SNI = "www.microsoft.com"
 ORIGIN_PORT = 0
 ORIGIN_PROC = None
 
@@ -152,10 +163,10 @@ def jcfg(o) -> str:
 
 
 def xray_stream_server(net="tcp", sec="none", *, path="/xyz", mode=None, xmux=None,
-                       extra_stream=None, ech_server=False) -> dict:
+                       extra_stream=None, ech_server=False, dest=None) -> dict:
     st: dict = {"network": net, "security": sec}
     if sec == "reality":
-        st["realitySettings"] = {"show": False, "dest": DEST, "xver": 0,
+        st["realitySettings"] = {"show": False, "dest": dest or DEST, "xver": 0,
                                  "serverNames": [SNI], "privateKey": RPRIV, "shortIds": [SID]}
     elif sec == "tls":
         st["tlsSettings"] = {"certificates": [{"certificateFile": CERT, "keyFile": KEY}]}
@@ -185,7 +196,7 @@ def xray_stream_client(net="tcp", sec="none", *, path="/xyz", mode=None, pbk=Non
                                  "publicKey": pbk if pbk is not None else RPUB,
                                  "shortId": sid if sid is not None else SID, "spiderX": "/"}
     elif sec == "tls":
-        tls = {"serverName": sni or SNI, "allowInsecure": True}
+        tls = {"serverName": sni or SNI, "pinnedPeerCertSha256": CERT_SHA256}
         if flow_tls:
             tls["fingerprint"] = "chrome"
         if ech:
@@ -210,12 +221,13 @@ def xray_cfg(inbounds: list, outbounds: list, loglevel="debug") -> str:
 
 
 def xray_server_vless(port, net="tcp", sec="none", *, flow="", path="/xyz", mode=None,
-                      xmux=None, extra_stream=None, ech_server=False) -> str:
+                      xmux=None, extra_stream=None, ech_server=False, dest=None) -> str:
     return xray_cfg(
         [{"listen": "127.0.0.1", "port": port, "protocol": "vless",
           "settings": {"clients": [{"id": UUID, "flow": flow}], "decryption": "none"},
           "streamSettings": xray_stream_server(net, sec, path=path, mode=mode, xmux=xmux,
-                                              extra_stream=extra_stream, ech_server=ech_server)}],
+                                              extra_stream=extra_stream, ech_server=ech_server,
+                                              dest=dest)}],
         [{"protocol": "freedom", "tag": "direct"}])
 
 
@@ -280,13 +292,16 @@ def mihomo_cfg(socks_port, proxy: dict, head_extra: str = "") -> str:
             return v  # 端口占位符
         return json.dumps(v, ensure_ascii=False)
 
-    out = [f"mixed-port: {socks_port}", "allow-lan: false", "mode: global",
+    out = [f"mixed-port: {socks_port}", "allow-lan: false", "mode: rule",
            "log-level: debug", "ipv6: false"]
     if head_extra:
         out.append(head_extra)
     out.append("proxies:")
     for i, (k, v) in enumerate(proxy.items()):
         out.append(f"  - {k}: {scalar(v)}" if i == 0 else f"    {k}: {scalar(v)}")
+    # 必须显式选路: mode=global 时 GLOBAL 组默认选 DIRECT, 流量会绕过代理(实测踩过)
+    out += ['proxy-groups:', '  - name: "PROXY"', '    type: "select"',
+            '    proxies: ["t"]', 'rules:', '  - "MATCH,PROXY"']
     return "\n".join(out) + "\n"
 
 
@@ -297,12 +312,20 @@ def singbox_cfg(socks_port, outbound: dict) -> str:
                  "outbounds": [outbound]})
 
 
-def singbox_server_vless(port, *, tls=False, multiplex=None, net=None, transport=None) -> str:
+def singbox_server_vless(port, *, tls=False, multiplex=None, net=None, transport=None,
+                         reality=False, sni=None) -> str:
     ob: dict = {"type": "vless", "tag": "in", "listen": "127.0.0.1", "listen_port": port,
                 "users": [{"name": "u", "uuid": UUID}]}
+    if net == "ws":
+        ob["transport"] = {"type": "ws", "path": "/xyz"}
     if transport:
         ob["transport"] = transport
-    if tls:
+    if reality:
+        ob["tls"] = {"enabled": True, "server_name": sni or SNI,
+                     "reality": {"enabled": True,
+                                 "handshake": {"server": "127.0.0.1", "server_port": DEST_PORT},
+                                 "private_key": RPRIV, "short_id": [SID]}}
+    elif tls:
         ob["tls"] = {"enabled": True, "certificate_path": CERT, "key_path": KEY,
                      "server_name": ECH_INNER}
     if multiplex:
@@ -316,7 +339,7 @@ def sb_tls(inner=SNI, ech=None, utls=False, insecure=True) -> dict:
     if utls:
         t["utls"] = {"enabled": True, "fingerprint": "chrome"}
     if ech:
-        t["ech"] = {"enabled": True, "config": [ech]}
+        t["ech"] = {"enabled": True, "config": [ech if "BEGIN ECH" in ech else ECH_PEM]}
     return t
 
 
@@ -363,7 +386,26 @@ def build_cases() -> None:
          expect="PASS", note="控制组: sing-box ss2022 回环(无 reality)")
     case("ctrl-xray-reality", server=("xray", xray_server_vless("@SP@", "tcp", "reality")),
          client=("xray", xray_client_vless("@CP@", "@SP@", "tcp", "reality")), expect="PASS",
-         note="控制组: xray vless tcp reality 回环")
+         note="控制组: xray vless tcp reality 回环(本地 Go TLS dest)")
+    case("ctrl-xray-reality-realdest",
+         server=("xray", xray_server_vless("@SP@", "tcp", "reality", dest=REAL_DEST)),
+         client=("xray", xray_client_vless("@CP@", "@SP@", "tcp", "reality", sni=REAL_SNI)),
+         expect="?", note="dest=真实站点(microsoft, 8273B 证书记录): 探 reality 的 8192 缓冲边界")
+
+    # ---- 死代理负对照: 证明"流量真的走代理"(mihomo mode=global 曾默认 DIRECT, 导致假 PASS) ----
+    case("neg-xray-deadproxy", server=None,
+         client=("xray", xray_client_vless("@CP@", 1)), expect="FAIL", tier="B",
+         note="负对照: 代理指向死端口 1, 必须失败")
+    case("neg-mihomo-deadproxy", server=None,
+         client=("mihomo", mihomo_cfg("@CP@", {
+             "name": "t", "type": "vless", "server": "127.0.0.1", "port": 1,
+             "uuid": UUID, "network": "tcp"})), expect="FAIL", tier="B",
+         note="负对照: mihomo 代理指向死端口 1, 必须失败")
+    case("neg-singbox-deadproxy", server=None,
+         client=("singbox", singbox_cfg("@CP@", {
+             "type": "vless", "tag": "out", "server": "127.0.0.1", "server_port": 1,
+             "uuid": UUID})), expect="FAIL", tier="B",
+         note="负对照: sing-box 代理指向死端口 1, 必须失败")
 
     # ---- A. SS + REALITY ----
     case("a1-xray-ss-reality", server=("xray", xray_server_ss("@SP@", "reality")),
@@ -464,36 +506,51 @@ def build_cases() -> None:
          expect="?", note="B3 mihomo xhttp mode=packet-up 回环")
     case("cfg-xray-xmux-both", server=None,
          client=("xray", xray_client_vless("@CP@", 443, "xhttp", "none",
-                                           xmux={"maxConcurrency": {"from": 1, "to": 3},
-                                                 "maxConnections": {"from": 1, "to": 2}})),
-         expect="FAIL", tier="A", note="B3 xmux: maxConcurrency+maxConnections 同时指定")
+                                           xmux={"maxConcurrency": "1-3", "maxConnections": "1-2"})),
+         expect="FAIL", tier="A", note="B3 xmux: maxConcurrency+maxConnections 同时指定(硬报错?)")
     case("cfg-xray-xmux-maxconn-only", server=None,
          client=("xray", xray_client_vless("@CP@", 443, "xhttp", "none",
-                                           xmux={"maxConnections": {"from": 1, "to": 2}})),
+                                           xmux={"maxConnections": "1-2"})),
          expect="PASS", tier="A", note="B3 xmux: 只指定 maxConnections")
+    case("cfg-xray-xmux-maxconc-only", server=None,
+         client=("xray", xray_client_vless("@CP@", 443, "xhttp", "none",
+                                           xmux={"maxConcurrency": "16-32"})),
+         expect="PASS", tier="A", note="B3 xmux: 只指定 maxConcurrency(文档默认值)")
 
     # ---- B4. vless + ws + reality ----
-    case("b4-xray-ws-reality",
-         server=("xray", xray_server_vless("@SP@", "ws", "reality")),
-         client=("xray", xray_client_vless("@CP@", "@SP@", "ws", "reality")),
-         expect="?", note="B4 xray ws+reality 回环")
-    case("b4-mihomo-ws-reality",
-         server=("xray", xray_server_vless("@SP@", "ws", "reality")),
+    case("b4-xray-server-ws-reality", server=("xray", xray_server_vless("@SP@", "ws", "reality")),
+         client=None, expect="FAIL", tier="A",
+         note="B4 xray 服务端 ws+reality: 配置层是否接受")
+    case("b4-xray-client-ws-reality", server=None,
+         client=("xray", xray_client_vless("@CP@", 443, "ws", "reality")),
+         expect="FAIL", tier="A", note="B4 xray 客户端 ws+reality: 配置层是否接受")
+    case("b4-singbox-server-ws-reality-singbox",
+         server=("singbox", singbox_server_vless("@SP@", tls=True, net="ws",
+                                                 reality=True, sni=SNI)),
+         client=("singbox", singbox_cfg("@CP@", {
+             "type": "vless", "tag": "out", "server": "127.0.0.1", "server_port": "@SP@",
+             "uuid": UUID, "transport": {"type": "ws", "path": "/xyz"},
+             "tls": {"enabled": True, "server_name": SNI,
+                     "utls": {"enabled": True, "fingerprint": "chrome"},
+                     "reality": {"enabled": True, "public_key": RPUB, "short_id": SID}}})),
+         expect="?", note="B4 ws+reality: sing-box 服务端 + sing-box 客户端 回环")
+    case("b4-singbox-server-ws-reality-mihomo",
+         server=("singbox", singbox_server_vless("@SP@", tls=True, net="ws",
+                                                 reality=True, sni=SNI)),
          client=("mihomo", mihomo_cfg("@CP@", {
              "name": "t", "type": "vless", "server": "127.0.0.1", "port": "@SP@",
              "uuid": UUID, "network": "ws", "tls": True, "udp": True,
              "client-fingerprint": "chrome", "servername": SNI,
              "reality-opts": {"public-key": RPUB, "short-id": SID},
              "ws-opts": {"path": "/xyz"}})),
-         expect="?", note="B4 mihomo ws+reality 回环")
-    case("b4-singbox-ws-reality",
-         server=("xray", xray_server_vless("@SP@", "ws", "reality")),
-         client=("singbox", singbox_cfg("@CP@", {
-             "type": "vless", "tag": "out", "server": "127.0.0.1", "server_port": "@SP@",
-             "uuid": UUID, "transport": {"type": "ws", "path": "/xyz"},
-             "tls": {"enabled": True, "server_name": SNI, "utls": {"enabled": True, "fingerprint": "chrome"},
-                     "reality": {"enabled": True, "public_key": RPUB, "short_id": SID}}})),
-         expect="?", note="B4 sing-box ws+reality 回环")
+         expect="?", note="B4 ws+reality: sing-box 服务端 + mihomo 客户端 跨内核回环")
+    case("b4-singbox-server-ws-plain-mihomo",
+         server=("singbox", singbox_server_vless("@SP@", net="ws")),
+         client=("mihomo", mihomo_cfg("@CP@", {
+             "name": "t", "type": "vless", "server": "127.0.0.1", "port": "@SP@",
+             "uuid": UUID, "network": "ws", "udp": True,
+             "ws-opts": {"path": "/xyz"}})),
+         expect="PASS", note="B4 对照: mihomo ws(无 TLS) -> sing-box ws 服务端")
 
     # ---- B5. ECH ----
     case("b5-xray-ech",
@@ -521,6 +578,39 @@ def build_cases() -> None:
              "type": "vless", "tag": "out", "server": "127.0.0.1", "server_port": "@SP@",
              "uuid": UUID, "tls": sb_tls(ECH_INNER, ech=ECH_CONF)})),
          expect="?", note="B5 sing-box tls.ech 对 xray ECH 服务端")
+    case("b5-mihomo-ech-wrongkey",
+         server=("xray", xray_server_vless("@SP@", "tcp", "tls", ech_server=True)),
+         client=("mihomo", mihomo_cfg("@CP@", {
+             "name": "t", "type": "vless", "server": "127.0.0.1", "port": "@SP@",
+             "uuid": UUID, "network": "tcp", "tls": True, "udp": True,
+             "client-fingerprint": "chrome", "servername": ECH_INNER,
+             "skip-cert-verify": True,
+             "ech-opts": {"enable": True, "config": ECH_CONF_OTHER}})),
+         expect="FAIL", note="B5 负对照: mihomo 用不匹配的 ECH 密钥 => 证明它真的在发 ECH")
+    case("b5-singbox-ech-wrongkey",
+         server=("xray", xray_server_vless("@SP@", "tcp", "tls", ech_server=True)),
+         client=("singbox", singbox_cfg("@CP@", {
+             "type": "vless", "tag": "out", "server": "127.0.0.1", "server_port": "@SP@",
+             "uuid": UUID, "tls": sb_tls(ECH_INNER, ech="-----BEGIN ECH CONFIGS-----\n"
+                                         + ECH_CONF_OTHER + "\n-----END ECH CONFIGS-----\n")})),
+         expect="FAIL", note="B5 负对照: sing-box 用不匹配的 ECH 密钥")
+    case("b4-mihomo-tcp-reality-vs-singbox-server",
+         server=("singbox", singbox_server_vless("@SP@", reality=True, sni=SNI)),
+         client=("mihomo", mihomo_cfg("@CP@", {
+             "name": "t", "type": "vless", "server": "127.0.0.1", "port": "@SP@",
+             "uuid": UUID, "network": "tcp", "tls": True, "udp": True,
+             "client-fingerprint": "chrome", "servername": SNI,
+             "reality-opts": {"public-key": RPUB, "short-id": SID}})),
+         expect="?", note="B4 隔离: mihomo tcp+reality -> sing-box reality 服务端(不带 ws)")
+    case("b4-singbox-tcp-reality-vs-singbox-server",
+         server=("singbox", singbox_server_vless("@SP@", reality=True, sni=SNI)),
+         client=("singbox", singbox_cfg("@CP@", {
+             "type": "vless", "tag": "out", "server": "127.0.0.1", "server_port": "@SP@",
+             "uuid": UUID,
+             "tls": {"enabled": True, "server_name": SNI,
+                     "utls": {"enabled": True, "fingerprint": "chrome"},
+                     "reality": {"enabled": True, "public_key": RPUB, "short_id": SID}}})),
+         expect="?", note="B4 隔离: sing-box tcp+reality -> sing-box reality 服务端(控制)")
     case("b5-control-xray-tls-noech",
          server=("xray", xray_server_vless("@SP@", "tcp", "tls")),
          client=("xray", xray_client_vless("@CP@", "@SP@", "tcp", "tls", sni=SNI)),
@@ -560,6 +650,19 @@ def build_cases() -> None:
              "type": "vless", "tag": "out", "server": "127.0.0.1", "server_port": "@SP@",
              "uuid": UUID, "multiplex": {"enabled": True, "protocol": "smux"}})),
          expect="PASS", note="B6 sing-box multiplex 自洽回环(证明 smux 本身可用)")
+    case("b6-mihomo-smux-vs-singbox-server",
+         server=("singbox", singbox_server_vless("@SP@", multiplex={"enabled": True})),
+         client=("mihomo", mihomo_cfg("@CP@", {
+             "name": "t", "type": "vless", "server": "127.0.0.1", "port": "@SP@",
+             "uuid": UUID, "network": "tcp", "udp": True,
+             "smux": {"enabled": True, "protocol": "yamux"}})),
+         expect="?", note="B6 mihomo smux(yamux) -> sing-box(multiplex enabled) 跨厂商 smux")
+    case("b6-singbox-h2mux-default-vs-self",
+         server=("singbox", singbox_server_vless("@SP@", multiplex={"enabled": True})),
+         client=("singbox", singbox_cfg("@CP@", {
+             "type": "vless", "tag": "out", "server": "127.0.0.1", "server_port": "@SP@",
+             "uuid": UUID, "multiplex": {"enabled": True}})),
+         expect="?", note="B6 sing-box multiplex 不写 protocol(文档默认 h2mux) 自洽回环")
     case("cfg-singbox-muxcool", server=None,
          client=("singbox", singbox_cfg("@CP@", {
              "type": "vless", "tag": "out", "server": "127.0.0.1", "server_port": 443,
@@ -583,6 +686,16 @@ def build_cases() -> None:
              "uuid": UUID, "network": "tcp",
              "smux": {"enabled": True, "protocol": "no-such-mux"}})),
          expect="?", tier="A", note="B6 mihomo smux 是否校验 protocol 名")
+
+    case("b6-xray-xhttp-with-muxcool",
+         server=("xray", xray_server_vless("@SP@", "xhttp", "reality")),
+         client=("xray", xray_client_vless("@CP@", "@SP@", "xhttp", "reality",
+                                           mux={"enabled": True, "concurrency": 8})),
+         expect="?", note="B6 XHTTP + mux.cool 同时开(#4113 称服务端有检查, 只接受纯 XUDP)")
+    case("b6-xray-xhttp-without-mux",
+         server=("xray", xray_server_vless("@SP@", "xhttp", "reality")),
+         client=("xray", xray_client_vless("@CP@", "@SP@", "xhttp", "reality")),
+         expect="PASS", note="B6 对照: XHTTP 不启用 mux.cool")
 
     # ---- B7. flow=vision + security=none ----
     case("b7-xray-vision-none",
@@ -647,6 +760,35 @@ def setup() -> None:
                   "-addext", f"subjectAltName=DNS:{SNI}"])
     assert os.path.exists(CERT), out
 
+    global CERT_SHA256, ECH_PEM
+    rc, out = sh([XRAY, "tls", "hash", "--cert", CERT])
+    CERT_SHA256 = out.split("SHA256:")[1].strip()
+    assert len(CERT_SHA256) == 64, out
+    import base64 as _b64
+    _raw = _b64.b64decode(ECH_CONF)
+    _pem = "-----BEGIN ECH CONFIGS-----\n" + "\n".join(
+        _b64.b64encode(_raw[i:i + 48]).decode() for i in range(0, len(_raw), 48)) + "\n-----END ECH CONFIGS-----\n"
+    ECH_PEM = _pem
+
+    # 本地 REALITY dest: 一个 xray vless+tcp+tls 服务端 (Go TLS, 证书记录 ~466B)
+    global DEST_PROC, DEST, DEST_PORT
+    DEST_PORT = free_port()
+    dest_cfg = jcfg({
+        "log": {"loglevel": "warning"},
+        "inbounds": [{"listen": "127.0.0.1", "port": DEST_PORT, "protocol": "vless",
+                      "settings": {"clients": [{"id": UUID}], "decryption": "none"},
+                      "streamSettings": {"network": "tcp", "security": "tls",
+                                         "tlsSettings": {"certificates": [
+                                             {"certificateFile": CERT, "keyFile": KEY}],
+                                             "serverName": SNI}}}],
+        "outbounds": [{"protocol": "freedom"}]})
+    dpath = os.path.join(CFGD, "_reality_dest.json")
+    with open(dpath, "w") as f:
+        f.write(dest_cfg)
+    DEST_PROC = spawn("xray", dpath, os.path.join(LOGD, "_reality_dest.log"))
+    assert wait_port(DEST_PORT, 5), "local reality dest did not start"
+    DEST = f"127.0.0.1:{DEST_PORT}"
+
     ORIGIN_PORT = free_port()
     ORIGIN_PROC = subprocess.Popen(
         [sys.executable, "-m", "http.server", str(ORIGIN_PORT), "--bind", "127.0.0.1",
@@ -658,6 +800,7 @@ def setup() -> None:
 
 def teardown() -> None:
     kill(ORIGIN_PROC)
+    kill(DEST_PROC)
 
 
 def run_case(c: dict) -> dict:
@@ -755,7 +898,8 @@ def main() -> int:
                 r = {"name": c["name"], "verdict": "HARNESS_ERROR", "error": repr(exc)}
             r["secs"] = round(time.time() - t0, 1)
             results.append(r)
-            mark = {"PASS": "PASS", "RUNTIME_FAIL": "FAIL", "CONFIG_REJECTED_CLIENT": "CFG-REJ",
+            mark = {"PASS": "PASS", "RUNTIME_FAIL": "FAIL", "CONFIG_OK_SERVER_ONLY": "CFG-OK-SRV",
+                    "CONFIG_REJECTED_CLIENT": "CFG-REJ",
                     "CONFIG_REJECTED_SERVER": "CFG-REJ-SRV", "SERVER_NOT_LISTENING": "SRV-DEAD",
                     "CLIENT_SOCKS_NOT_LISTENING": "CLI-DEAD", "HARNESS_ERROR": "ERR"}.get(r["verdict"], "?")
             print(f"[{mark:10}] {r['name']:45} {r.get('secs')}s  {c['note']}", flush=True)

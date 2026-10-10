@@ -1,0 +1,12 @@
+[36mINFO[0m[0000] inbound/vless[in]: tcp server started at 127.0.0.1:47375
+[36mINFO[0m[0000] network: updated default interface eth0, index 2
+[36mINFO[0m[0000] network: updated network environment: gateway 107.173.154.1, gateway_mac 00:21:59:c4:51:c1
+[36mINFO[0m[0000] sing-box started (0.01s)
+[36mINFO[0m[0000] [[38;5;178m3604511650[0m 0ms] inbound/vless[in]: inbound connection from 127.0.0.1:35048
+[31mERROR[0m[0000] [[38;5;178m3604511650[0m 0ms] inbound/vless[in]: process connection from 127.0.0.1:35048: EOF
+[36mINFO[0m[0000] [[38;5;33m2157094929[0m 0ms] inbound/vless[in]: inbound connection from 127.0.0.1:35064
+[36mINFO[0m[0000] [[38;5;33m2157094929[0m 3ms] inbound/vless[in]: [u] inbound connection to 127.0.0.1:38019
+[36mINFO[0m[0000] [[38;5;33m2157094929[0m 3ms] outbound/direct[direct]: outbound connection to 127.0.0.1:38019
+[37mDEBUG[0m[0000] [[38;5;33m2157094929[0m 12ms] connection: connection download finished
+[37mDEBUG[0m[0000] [[38;5;33m2157094929[0m 12ms] connection: connection upload finished
+[31mERROR[0m[0000] [[38;5;33m2157094929[0m 18ms] inbound/vless[in]: process connection from 127.0.0.1:35064: mux connection closed: read frame header: EOF

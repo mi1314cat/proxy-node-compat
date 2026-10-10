@@ -1,0 +1,287 @@
+# 由 client.sh 自动生成, 请勿手工编辑
+# 节点来自 conf/providers/, 每个文件一个 provider
+
+mixed-port: 7890
+allow-lan: true
+bind-address: '*'
+mode: rule
+log-level: info
+ipv6: true
+unified-delay: true
+tcp-concurrent: true
+find-process-mode: strict
+external-controller: 0.0.0.0:9090
+secret: a701d7121d86fc6fba526562e92b9f35
+external-ui: ui
+profile:
+  store-selected: true
+  store-fake-ip: true
+dns:
+  enable: true
+  listen: 0.0.0.0:1053
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+  - '*.lan'
+  - localhost
+  - '*.local'
+  - +.msftconnecttest.com
+  - +.stun.*
+  - +.stun.*.*
+  - time.*
+  - +.pool.ntp.org
+  - +.apple.com
+  - +.icloud.com
+  - +.icloud-content.com
+  - +.market.xiaomi.com
+  default-nameserver:
+  - 223.5.5.5
+  - 119.29.29.29
+  nameserver:
+  - https://dns.alidns.com/dns-query
+  - https://doh.pub/dns-query
+  proxy-server-nameserver:
+  - https://dns.alidns.com/dns-query
+  respect-rules: false
+  nameserver-policy:
+    +.cn:
+    - https://dns.alidns.com/dns-query
+sniffer:
+  enable: true
+  override-destination: true
+  force-dns-mapping: true
+  parse-pure-ip: true
+  sniff:
+    HTTP:
+      ports:
+      - 80
+      - 8080-8880
+    TLS:
+      ports:
+      - 443
+      - 8443
+proxy-providers:
+  2e87510582212b96dee445db66025188:
+    type: file
+    path: ./providers/2e87510582212b96dee445db66025188.yaml
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 300
+      timeout: 5000
+proxy-groups:
+- name: ds
+  type: select
+  use:
+  - 2e87510582212b96dee445db66025188
+- name: AUTO
+  type: url-test
+  use:
+  - 2e87510582212b96dee445db66025188
+  url: http://www.gstatic.com/generate_204
+  interval: 300
+  tolerance: 50
+  max-failed-times: 3
+- name: PROXY
+  type: select
+  proxies:
+  - AUTO
+  - ds
+rules:
+- IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+- IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+- IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+- IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+- IP-CIDR,169.254.0.0/16,DIRECT,no-resolve
+- GEOIP,private,DIRECT,no-resolve
+- GEOIP,CN,DIRECT,no-resolve
+- MATCH,PROXY
+=== PROVIDERS ===
+total 16
+drwxr-xr-x 2 root root 4096 Oct  9 18:45 .
+drwxr-xr-x 6 root root 4096 Oct 10 11:26 ..
+-rw------- 1 root root 4617 Oct  8 13:59 2e87510582212b96dee445db66025188.yaml
+### /root/catmi/mihomo-client/conf/providers/2e87510582212b96dee445db66025188.yaml
+proxies:
+- name: ds-mAnyTLS01-TLS
+  type: anytls
+  server: 2001:470:1f04:128:ac83:f2c0:c06b:5759
+  port: 27865
+  password: 83b484f0-d810-4f51-aa1d-7de99e4544b8
+  sni: aacanaps.6896698.xyz
+  skip-cert-verify: false
+  udp: true
+  client-fingerprint: chrome
+- name: ds-mHysteria201-TLS
+  type: hysteria2
+  server: 2001:470:1f04:128:ac83:f2c0:c06b:5759
+  port: 27863
+  password: 83b484f0-d810-4f51-aa1d-7de99e4544b8
+  sni: aacanaps.6896698.xyz
+  skip-cert-verify: false
+  up: '30'
+  down: '200'
+- name: ds-mVLESS01-REALITY
+  type: vless
+  server: 2001:470:1f04:128:ac83:f2c0:c06b:5759
+  port: 27852
+  uuid: 83b484f0-d810-4f51-aa1d-7de99e4544b8
+  network: tcp
+  tls: true
+  udp: true
+  flow: xtls-rprx-vision
+  servername: gateway.icloud.com
+  reality-opts:
+    public-key: waXWj5ncZIoCkSEj9Kzatu6hE4RQitOuB-PPiWLnHFg
+    short-id: 80c3898d
+  client-fingerprint: chrome
+- name: ds-mVLESS02-REALITY-gRPC
+  type: vless
+  server: 2001:470:1f04:128:ac83:f2c0:c06b:5759
+  port: 27853
+  uuid: 83b484f0-d810-4f51-aa1d-7de99e4544b8
+  network: grpc
+  tls: true
+  udp: true
+  servername: gateway.icloud.com
+  reality-opts:
+    public-key: waXWj5ncZIoCkSEj9Kzatu6hE4RQitOuB-PPiWLnHFg
+    short-id: 80c3898d
+  client-fingerprint: chrome
+  grpc-opts:
+    grpc-service-name: gs02befade
+- name: ds-mVLESS03-REALITY-XHTTP
+  type: vless
+  server: 2001:470:1f04:128:ac83:f2c0:c06b:5759
+  port: 27854
+  uuid: 83b484f0-d810-4f51-aa1d-7de99e4544b8
+  network: xhttp
+  tls: true
+  udp: true
+  servername: gateway.icloud.com
+  reality-opts:
+    public-key: waXWj5ncZIoCkSEj9Kzatu6hE4RQitOuB-PPiWLnHFg
+    short-id: 80c3898d
+  client-fingerprint: chrome
+  xhttp-opts:
+    mode: auto
+    path: /xhr-66889b36
+    x-padding-bytes: 100-1000
+- name: ds-mTrojan04-CDN-WS
+  type: trojan
+  server: aacanaps.6896698.xyz
+  port: 443
+  password: 83b484f0-d810-4f51-aa1d-7de99e4544b8
+  network: ws
+  tls: true
+  udp: true
+  client-fingerprint: chrome
+  ech-opts:
+    enable: true
+    query-server-name: aacanaps.6896698.xyz
+  ws-opts:
+    path: /cdnws-04cc0df3
+- name: ds-mTrojan01-REALITY
+  type: trojan
+  server: 2001:470:1f04:128:ac83:f2c0:c06b:5759
+  port: 27855
+  password: 83b484f0-d810-4f51-aa1d-7de99e4544b8
+  udp: true
+  sni: gateway.icloud.com
+  reality-opts:
+    public-key: waXWj5ncZIoCkSEj9Kzatu6hE4RQitOuB-PPiWLnHFg
+    short-id: 80c3898d
+  client-fingerprint: chrome
+- name: ds-mTrojan02-REALITY-gRPC
+  type: trojan
+  server: 2001:470:1f04:128:ac83:f2c0:c06b:5759
+  port: 27856
+  password: 83b484f0-d810-4f51-aa1d-7de99e4544b8
+  udp: true
+  sni: gateway.icloud.com
+  reality-opts:
+    public-key: waXWj5ncZIoCkSEj9Kzatu6hE4RQitOuB-PPiWLnHFg
+    short-id: 80c3898d
+  client-fingerprint: chrome
+  network: grpc
+  grpc-opts:
+    grpc-service-name: tg0275c93c
+- name: ds-mTrojan03-TLS
+  type: trojan
+  server: 2001:470:1f04:128:ac83:f2c0:c06b:5759
+  port: 27857
+  password: 83b484f0-d810-4f51-aa1d-7de99e4544b8
+  udp: true
+  sni: aacanaps.6896698.xyz
+  skip-cert-verify: false
+- name: ds-mTUIC01-TLS
+  type: tuic
+  server: 2001:470:1f04:128:ac83:f2c0:c06b:5759
+  port: 27864
+  uuid: 83b484f0-d810-4f51-aa1d-7de99e4544b8
+  password: 83b484f0-d810-4f51-aa1d-7de99e4544b8
+  sni: aacanaps.6896698.xyz
+  skip-cert-verify: false
+  alpn:
+  - h3
+  congestion-controller: bbr
+- name: ds-mVLESS04-CDN-WS
+  type: vless
+  server: aacanaps.6896698.xyz
+  port: 443
+  uuid: 83b484f0-d810-4f51-aa1d-7de99e4544b8
+  network: ws
+  tls: true
+  udp: true
+  servername: aacanaps.6896698.xyz
+  client-fingerprint: chrome
+  ech-opts:
+    enable: true
+    query-server-name: aacanaps.6896698.xyz
+  ws-opts:
+    path: /cdnws-1118b6de
+- name: ds-mVLESS01-TLS-WS
+  type: vless
+  server: 2001:470:1f04:128:ac83:f2c0:c06b:5759
+  port: 27858
+  uuid: 83b484f0-d810-4f51-aa1d-7de99e4544b8
+  network: ws
+  tls: true
+  udp: true
+  skip-cert-verify: false
+  servername: aacanaps.6896698.xyz
+  ws-opts:
+    path: /wss01
+- name: ds-mVLESS03-TLS-XHTTP-CDN
+  type: vless
+  server: aacanaps.6896698.xyz
+  port: 443
+  uuid: 83b484f0-d810-4f51-aa1d-7de99e4544b8
+  network: xhttp
+  tls: true
+  udp: true
+  servername: aacanaps.6896698.xyz
+  client-fingerprint: chrome
+  ech-opts:
+    enable: true
+    query-server-name: aacanaps.6896698.xyz
+  xhttp-opts:
+    mode: auto
+    path: /xhc-bcee017a
+    x-padding-bytes: 100-1000
+- name: ds-mVLESS02-TLS-XHTTP
+  type: vless
+  server: 2001:470:1f04:128:ac83:f2c0:c06b:5759
+  port: 27859
+  uuid: 83b484f0-d810-4f51-aa1d-7de99e4544b8
+  network: xhttp
+  tls: true
+  udp: true
+  skip-cert-verify: false
+  servername: aacanaps.6896698.xyz
+  client-fingerprint: chrome
+  xhttp-opts:
+    mode: auto
+    path: /xhttps-ad895fec
+    x-padding-bytes: 100-1000

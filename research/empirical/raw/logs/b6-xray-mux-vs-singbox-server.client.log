@@ -1,0 +1,15 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:42:10.448369 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/b6-xray-mux-vs-singbox-server.client.json Format:json}
+2026/10/10 03:42:10.448589 [Debug] app/log: Logger started
+2026/10/10 03:42:10.448602 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:49533
+2026/10/10 03:42:10.448610 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:49533
+2026/10/10 03:42:10.448615 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:42:10.520477 [Info] [1808025937] proxy/socks: Connection closed immediately, likely health check connection
+2026/10/10 03:42:10.550858 [Info] [1206393007] proxy/socks: TCP Connect request to tcp:127.0.0.1:38019
+2026/10/10 03:42:10.551549 [Info] [1206393007] app/dispatcher: default route for tcp:127.0.0.1:38019
+2026/10/10 03:42:10.551568 [Info] [1206393007] common/mux: dispatching request to tcp:127.0.0.1:38019
+2026/10/10 03:42:10.551844 from tcp:127.0.0.1:45386 accepted tcp:127.0.0.1:38019
+2026/10/10 03:42:10.552844 [Info] transport/internet/tcp: dialing TCP to tcp:127.0.0.1:47375
+2026/10/10 03:42:10.552864 [Debug] transport/internet: dialing to tcp:127.0.0.1:47375
+2026/10/10 03:42:10.554167 [Info] proxy/vless/outbound: tunneling request to tcp:v1.mux.cool:9527 via 127.0.0.1:47375

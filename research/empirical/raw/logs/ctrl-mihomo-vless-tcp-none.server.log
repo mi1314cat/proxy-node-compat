@@ -1,0 +1,16 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:41:38.294275 [Debug] app/log: Logger started
+2026/10/10 03:41:38.294551 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:38929
+2026/10/10 03:41:38.294443 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/ctrl-mihomo-vless-tcp-none.server.json Format:json}
+2026/10/10 03:41:38.295105 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:38929
+2026/10/10 03:41:38.295121 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:41:38.377806 [Info] [1786723833] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:41:38.533222 from 127.0.0.1:34106 accepted tcp:127.0.0.1:38019 [direct]
+2026/10/10 03:41:38.533298 [Info] [4177243023] proxy/vless/inbound: firstLen = 105
+2026/10/10 03:41:38.533309 [Info] [4177243023] proxy/vless/inbound: received request for tcp:127.0.0.1:38019
+2026/10/10 03:41:38.533354 [Info] [4177243023] app/dispatcher: default route for tcp:127.0.0.1:38019
+2026/10/10 03:41:38.533361 [Info] [4177243023] transport/internet/tcp: dialing TCP to tcp:127.0.0.1:38019
+2026/10/10 03:41:38.533366 [Debug] [4177243023] transport/internet: dialing to tcp:127.0.0.1:38019
+2026/10/10 03:41:38.533555 [Info] [4177243023] proxy/freedom: connection opened to tcp:127.0.0.1:38019, local endpoint 127.0.0.1:40280, remote endpoint 127.0.0.1:38019
+2026/10/10 03:41:38.533587 [Debug] [4177243023] proxy: CopyRawConn (maybe) readv

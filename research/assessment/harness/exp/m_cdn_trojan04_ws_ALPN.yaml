@@ -1,0 +1,18 @@
+mixed-port: 18080
+mode: rule
+log-level: info
+proxies:
+  - name: n
+    type: trojan
+    server: hxicc.catmicos.dpdns.org
+    port: 443
+    password: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    network: ws
+    tls: true
+    udp: true
+    servername: hxicc.catmicos.dpdns.org
+    client-fingerprint: chrome
+    alpn: [http/1.1]
+    ws-opts: {path: /cdnws-0ab96db5}
+rules:
+  - MATCH,n

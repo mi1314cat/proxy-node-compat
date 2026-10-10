@@ -1,0 +1,74 @@
+node-anytls02-REALITY.meta
+node-anytls02-REALITY.txt
+node-anytls02-TLS.meta
+node-anytls02-TLS.txt
+node-cf-CF官方优选1.json
+node-cf-CF官方优选1.meta
+node-cf-CF官方优选1.txt
+node-cf-CF官方优选10.json
+node-cf-CF官方优选10.meta
+node-cf-CF官方优选10.txt
+node-cf-CF官方优选11.json
+node-cf-CF官方优选11.meta
+node-cf-CF官方优选11.txt
+node-cf-CF官方优选12.json
+node-cf-CF官方优选12.meta
+node-cf-CF官方优选12.txt
+node-cf-CF官方优选13.json
+node-cf-CF官方优选13.meta
+node-cf-CF官方优选13.txt
+node-cf-CF官方优选14.json
+node-cf-CF官方优选14.meta
+node-cf-CF官方优选14.txt
+node-cf-CF官方优选15.json
+node-cf-CF官方优选15.meta
+node-cf-CF官方优选15.txt
+node-cf-CF官方优选16.json
+node-cf-CF官方优选16.meta
+node-cf-CF官方优选16.txt
+node-cf-CF官方优选17.json
+node-cf-CF官方优选17.meta
+node-cf-CF官方优选17.txt
+node-cf-CF官方优选18.json
+node-cf-CF官方优选18.meta
+node-cf-CF官方优选18.txt
+node-cf-CF官方优选19.json
+node-cf-CF官方优选19.meta
+node-cf-CF官方优选19.txt
+node-cf-CF官方优选2.json
+node-cf-CF官方优选2.meta
+node-cf-CF官方优选2.txt
+=== count ===
+203
+=== subscriptions.json ===
+{
+  "subs": [
+    {
+      "id": "e1b8d2502565",
+      "name": "der",
+      "prefix": "der",
+      "url": "http://[2001:470:1f04:128:ac83:f2c0:c06b:5759]:9292/share/9999cc2f9f28937df2d3a0ada39e95a7",
+      "kind": "self",
+      "nodes": 29,
+      "added_at": "2026-10-04T19:08:12+08:00"
+    },
+    {
+      "id": "698682519274",
+      "name": "cf",
+      "prefix": "cf",
+      "url": "https://cadacac.onecatmi.dpdns.org/sub?token=7fb783e6491d1bc3bb4f7e720c01aeec",
+      "kind": "external",
+      "nodes": 30,
+      "added_at": "2026-10-04T19:41:16+08:00"
+    },
+    {
+      "id": "937b0a233209",
+      "name": "rn",
+      "prefix": "rn",
+      "url": "http://[2001:470:c:cf:bf47:d1e0:cd4d:c6db]:9443/share/b52ee8aa5380f50d81a0dc592de18e17",
+      "kind": "self",
+      "nodes": 59,
+      "added_at": "2026-10-09T19:10:29+08:00"
+    }
+  ]
+}

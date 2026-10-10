@@ -1,0 +1,25 @@
+A_ws_SHIPPED_noalpn_ECH r1 NOLISTEN
+clean_exp.sh: line 9: 200931 Killed                  $MH -f "$cfg" -d /tmp/qeval/dc > /tmp/qeval/clog_$label.txt 2>&1
+B_ws_noalpn_noECH r1 ttfb=1.058846 dl=1214575|3000000|2.469998
+C_ws_alpn_noECH r1 ttfb=1.216988 dl=449272|3000000|6.677457
+D_ws_alpn_ECH r1 ttfb=0.000000 dl=0|0|5.002873
+E_hy2_down_bare5 r1 ttfb=0.934480 dl=535021|3000000|5.607249
+F_hy2_down_5Mbps r1 ttfb=0.860122 dl=554750|3000000|5.407833
+G_grpc_ECH r1 ttfb=0.000000 dl=0|0|3.803690
+A_ws_SHIPPED_noalpn_ECH r2 NOLISTEN
+clean_exp.sh: line 9: 208058 Killed                  $MH -f "$cfg" -d /tmp/qeval/dc > /tmp/qeval/clog_$label.txt 2>&1
+B_ws_noalpn_noECH r2 ttfb=1.095953 dl=1115588|3000000|2.689164
+C_ws_alpn_noECH r2 ttfb=0.000000 dl=1153552|3000000|2.600661
+D_ws_alpn_ECH r2 ttfb=0.000000 dl=0|0|5.006148
+E_hy2_down_bare5 r2 ttfb=0.761397 dl=545327|3000000|5.501279
+F_hy2_down_5Mbps r2 ttfb=0.927506 dl=546470|3000000|5.489776
+G_grpc_ECH r2 ttfb=0.000000 dl=0|0|4.103421
+A_ws_SHIPPED_noalpn_ECH r3 NOLISTEN
+clean_exp.sh: line 9: 215421 Killed                  $MH -f "$cfg" -d /tmp/qeval/dc > /tmp/qeval/clog_$label.txt 2>&1
+B_ws_noalpn_noECH r3 ttfb=1.063419 dl=1089639|3000000|2.753204
+C_ws_alpn_noECH r3 ttfb=1.260623 dl=1413744|3000000|2.122024
+D_ws_alpn_ECH r3 ttfb=0.000000 dl=0|0|5.004184
+E_hy2_down_bare5 r3 ttfb=0.961081 dl=525136|3000000|5.712800
+F_hy2_down_5Mbps r3 ttfb=0.000000 dl=0|0|4.573377
+G_grpc_ECH r3 ttfb=0.000000 dl=0|0|1.067109
+=== CLEAN DONE ===

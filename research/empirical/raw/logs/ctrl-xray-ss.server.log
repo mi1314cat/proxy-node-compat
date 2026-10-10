@@ -1,0 +1,17 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:41:38.940522 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/ctrl-xray-ss.server.json Format:json}
+2026/10/10 03:41:38.940668 [Warning] common/errors: The feature Shadowsocks (with no Forward Secrecy, etc.) is deprecated, not recommended for using and might be removed. Please migrate to VLESS Encryption as soon as possible.
+2026/10/10 03:41:38.940706 [Debug] app/log: Logger started
+2026/10/10 03:41:38.940717 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:50521
+2026/10/10 03:41:38.940725 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:50521
+2026/10/10 03:41:38.940729 [Info] transport/internet/udp: listening UDP on 127.0.0.1:50521
+2026/10/10 03:41:38.940734 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:41:39.169429 [Info] [2856334592] proxy/shadowsocks_2022: tunnelling request to tcp:127.0.0.1:38019
+2026/10/10 03:41:39.170728 from 127.0.0.1:42056 accepted 127.0.0.1:38019 [direct]
+2026/10/10 03:41:39.170872 [Info] [2856334592] app/dispatcher: default route for tcp:127.0.0.1:38019
+2026/10/10 03:41:39.170892 [Info] [2856334592] transport/internet/tcp: dialing TCP to tcp:127.0.0.1:38019
+2026/10/10 03:41:39.170903 [Debug] [2856334592] transport/internet: dialing to tcp:127.0.0.1:38019
+2026/10/10 03:41:39.171255 [Info] [2856334592] proxy/freedom: connection opened to tcp:127.0.0.1:38019, local endpoint 127.0.0.1:40288, remote endpoint 127.0.0.1:38019
+2026/10/10 03:41:39.171273 [Debug] [2856334592] proxy: CopyRawConn (maybe) readv
+2026/10/10 03:41:39.179396 [Debug] app/log: Logger closing

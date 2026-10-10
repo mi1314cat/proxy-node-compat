@@ -41,6 +41,13 @@
 
 ### 运行层：UNKNOWN（不猜）
 
+> **【已结案 · 2026-10-10】** 见 `cross-kernel-matrix.md` §2。回环后来跑通了，当时的失败原因
+> 不在内核：reality **服务端**的 mimicry 读循环有 8192 字节缓冲上限，用真实站点
+> （`www.microsoft.com`，Certificate 记录 8273B）当 `dest` 时会 `break` 掉握手流程；
+> 换成证书记录 ~466B 的本地 Go TLS 服务端作 `dest` 后，同一套 ss+reality 配置立刻回环成功。
+> 三个内核的最终结论：**Xray 能配且能用（回环实证）／ mihomo 静默忽略 `reality-opts`
+> （`ss` 上根本没这字段）／ sing-box 配置层硬报错（无模型）**。下面这段保留为当时的原始记录。
+
 用 Xray 起「SS2022 + REALITY」服务端 + socks 客户端做回环（同一密钥、SNI、shortId）：
 服务端确认在监听（`ss -tln` 命中），但客户端取内容为空，**回环未跑通**。
 可能原因尚未定位（reality handshake 细节 / uTLS 指纹 / 测试配置）。

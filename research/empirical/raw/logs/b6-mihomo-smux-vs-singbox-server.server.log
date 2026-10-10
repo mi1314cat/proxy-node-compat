@@ -1,0 +1,13 @@
+[36mINFO[0m[0000] inbound/vless[in]: tcp server started at 127.0.0.1:33725
+[36mINFO[0m[0000] network: updated default interface eth0, index 2
+[36mINFO[0m[0000] network: updated network environment: gateway 107.173.154.1, gateway_mac 00:21:59:c4:51:c1
+[36mINFO[0m[0000] sing-box started (0.00s)
+[36mINFO[0m[0000] [[38;5;206m1228485054[0m 0ms] inbound/vless[in]: inbound connection from 127.0.0.1:58286
+[31mERROR[0m[0000] [[38;5;206m1228485054[0m 0ms] inbound/vless[in]: process connection from 127.0.0.1:58286: EOF
+[36mINFO[0m[0000] [[38;5;82m740297282[0m 0ms] inbound/vless[in]: inbound connection from 127.0.0.1:58296
+[36mINFO[0m[0000] [[38;5;82m740297282[0m 2ms] inbound/vless[in]: [u] inbound connection to sp.mux.sing-box.arpa:444
+[36mINFO[0m[0000] [[38;5;44m2471762204[0m 0ms] inbound/vless[in]: inbound multiplex connection to 127.0.0.1:38019
+[36mINFO[0m[0000] [[38;5;44m2471762204[0m 0ms] outbound/direct[direct]: outbound connection to 127.0.0.1:38019
+[37mDEBUG[0m[0000] [[38;5;44m2471762204[0m 5ms] connection: connection download finished
+[37mDEBUG[0m[0000] [[38;5;44m2471762204[0m 6ms] connection: connection upload finished
+[37mDEBUG[0m[0000] [[38;5;82m740297282[0m 15ms] inbound/vless[in]: connection closed: EOF

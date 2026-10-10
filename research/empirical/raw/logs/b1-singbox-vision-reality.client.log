@@ -1,0 +1,11 @@
+-0700 2026-10-10 03:41:51 [36mINFO[0m inbound/socks[in]: tcp server started at 127.0.0.1:59855
+-0700 2026-10-10 03:41:51 [36mINFO[0m network: updated default interface eth0, index 2
+-0700 2026-10-10 03:41:51 [36mINFO[0m network: updated network environment: gateway 107.173.154.1, gateway_mac 00:21:59:c4:51:c1
+-0700 2026-10-10 03:41:51 [36mINFO[0m sing-box started (0.01s)
+-0700 2026-10-10 03:41:51 [36mINFO[0m [[38;5;110m705725790[0m 0ms] inbound/socks[in]: inbound connection from 127.0.0.1:39264
+-0700 2026-10-10 03:41:51 [37mDEBUG[0m [[38;5;110m705725790[0m 0ms] inbound/socks[in]: connection closed: EOF
+-0700 2026-10-10 03:41:51 [36mINFO[0m [[38;5;85m3250638917[0m 0ms] inbound/socks[in]: inbound connection from 127.0.0.1:39272
+-0700 2026-10-10 03:41:51 [36mINFO[0m [[38;5;85m3250638917[0m 1ms] inbound/socks[in]: inbound connection to 127.0.0.1:38019
+-0700 2026-10-10 03:41:51 [36mINFO[0m [[38;5;85m3250638917[0m 1ms] outbound/vless[out]: outbound connection to 127.0.0.1:38019
+-0700 2026-10-10 03:41:51 [36mINFO[0m [[38;5;85m3250638917[0m 29ms] outbound/vless[out]: outbound connection to 127.0.0.1:38019
+-0700 2026-10-10 03:41:51 [37mDEBUG[0m [[38;5;85m3250638917[0m 61ms] connection: connection upload finished

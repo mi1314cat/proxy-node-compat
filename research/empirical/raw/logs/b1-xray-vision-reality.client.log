@@ -1,0 +1,16 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:41:50.099337 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/b1-xray-vision-reality.client.json Format:json}
+2026/10/10 03:41:50.099645 [Debug] app/log: Logger started
+2026/10/10 03:41:50.099676 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:55331
+2026/10/10 03:41:50.099692 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:55331
+2026/10/10 03:41:50.099705 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:41:50.166858 [Info] [2788691068] proxy/socks: Connection closed immediately, likely health check connection
+2026/10/10 03:41:50.186681 from tcp:127.0.0.1:51836 accepted tcp:127.0.0.1:38019
+2026/10/10 03:41:50.186804 [Info] [168593969] proxy/socks: TCP Connect request to tcp:127.0.0.1:38019
+2026/10/10 03:41:50.187540 [Info] [168593969] app/dispatcher: default route for tcp:127.0.0.1:38019
+2026/10/10 03:41:50.187557 [Info] [168593969] transport/internet/tcp: dialing TCP to tcp:127.0.0.1:36181
+2026/10/10 03:41:50.187567 [Debug] [168593969] transport/internet: dialing to tcp:127.0.0.1:36181
+2026/10/10 03:41:50.199685 [Info] [168593969] proxy/vless/outbound: tunneling request to tcp:127.0.0.1:38019 via 127.0.0.1:36181
+2026/10/10 03:41:50.202527 [Debug] [168593969] proxy: XtlsPadding 79 187 0
+2026/10/10 03:41:50.205033 [Debug] [168593969] proxy: Xtls Unpadding new block, content 202 padding 61 command 0

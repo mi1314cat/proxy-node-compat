@@ -1,0 +1,16 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:41:48.442736 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/a1-neg-xray-ss-reality-wrongpbk.client.json Format:json}
+2026/10/10 03:41:48.442940 [Warning] common/errors: The feature Shadowsocks (with no Forward Secrecy, etc.) is deprecated, not recommended for using and might be removed. Please migrate to VLESS Encryption as soon as possible.
+2026/10/10 03:41:48.442966 [Debug] app/log: Logger started
+2026/10/10 03:41:48.442978 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:50985
+2026/10/10 03:41:48.442985 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:50985
+2026/10/10 03:41:48.443162 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:41:48.514333 [Info] [1829405740] proxy/socks: Connection closed immediately, likely health check connection
+2026/10/10 03:41:48.542060 from tcp:127.0.0.1:37760 accepted tcp:127.0.0.1:38019
+2026/10/10 03:41:48.542138 [Info] [2479440436] proxy/socks: TCP Connect request to tcp:127.0.0.1:38019
+2026/10/10 03:41:48.542151 [Info] [2479440436] app/dispatcher: default route for tcp:127.0.0.1:38019
+2026/10/10 03:41:48.542163 [Info] [2479440436] proxy/shadowsocks_2022: tunneling request to tcp:127.0.0.1:38019 via 127.0.0.1:44111
+2026/10/10 03:41:48.542174 [Info] [2479440436] transport/internet/tcp: dialing TCP to tcp:127.0.0.1:44111
+2026/10/10 03:41:48.542183 [Debug] [2479440436] transport/internet: dialing to tcp:127.0.0.1:44111
+2026/10/10 03:41:48.618035 [Info] [2479440436] app/proxyman/outbound: app/proxyman/outbound: failed to process outbound traffic > proxy/shadowsocks_2022: failed to connect to server > x509: certificate signed by unknown authority

@@ -1,0 +1,9 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:42:19.335997 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/b7-singbox-vision-none.server.json Format:json}
+2026/10/10 03:42:19.336170 [Debug] app/log: Logger started
+2026/10/10 03:42:19.336182 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:60397
+2026/10/10 03:42:19.336190 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:60397
+2026/10/10 03:42:19.336195 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:42:19.420566 [Info] [1460441132] app/proxyman/inbound: connection ends > EOF
+2026/10/10 03:42:19.622081 [Info] [62521315] app/proxyman/inbound: connection ends > EOF

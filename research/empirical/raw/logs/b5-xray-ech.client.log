@@ -1,0 +1,14 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:41:58.985845 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/b5-xray-ech.client.json Format:json}
+2026/10/10 03:41:58.986281 [Debug] app/log: Logger started
+2026/10/10 03:41:58.986308 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:46519
+2026/10/10 03:41:58.986385 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:46519
+2026/10/10 03:41:58.986401 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:41:59.048357 [Info] [3664191970] proxy/socks: Connection closed immediately, likely health check connection
+2026/10/10 03:41:59.071460 from tcp:127.0.0.1:46672 accepted tcp:127.0.0.1:38019
+2026/10/10 03:41:59.071543 [Info] [179613318] proxy/socks: TCP Connect request to tcp:127.0.0.1:38019
+2026/10/10 03:41:59.071552 [Info] [179613318] app/dispatcher: default route for tcp:127.0.0.1:38019
+2026/10/10 03:41:59.071558 [Info] [179613318] transport/internet/tcp: dialing TCP to tcp:127.0.0.1:59651
+2026/10/10 03:41:59.071563 [Debug] [179613318] transport/internet: dialing to tcp:127.0.0.1:59651
+2026/10/10 03:41:59.120324 [Info] [179613318] proxy/vless/outbound: tunneling request to tcp:127.0.0.1:38019 via 127.0.0.1:59651

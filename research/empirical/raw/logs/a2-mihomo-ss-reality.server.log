@@ -1,0 +1,13 @@
+Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)
+A unified platform for anti-censorship.
+2026/10/10 03:41:48.695528 [Debug] app/log: Logger started
+2026/10/10 03:41:48.696083 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xtest/cfg/a2-mihomo-ss-reality.server.json Format:json}
+2026/10/10 03:41:48.696103 [Warning] infra/conf: REALITY: Listening on non-443 ports may get your IP blocked by the GFW
+2026/10/10 03:41:48.696115 [Warning] common/errors: The feature Shadowsocks (with no Forward Secrecy, etc.) is deprecated, not recommended for using and might be removed. Please migrate to VLESS Encryption as soon as possible.
+2026/10/10 03:41:48.697398 [Debug] app/proxyman/inbound: creating stream worker on 127.0.0.1:50195
+2026/10/10 03:41:48.697423 [Info] transport/internet/tcp: listening TCP on 127.0.0.1:50195
+2026/10/10 03:41:48.697430 [Info] transport/internet/udp: listening UDP on 127.0.0.1:50195
+2026/10/10 03:41:48.697437 [Warning] core: Xray 26.3.27 started
+2026/10/10 03:41:48.785438 [Info] transport/internet/tcp: REALITY: processed invalid connection from 127.0.0.1:60096: failed to read client hello
+2026/10/10 03:41:49.066253 [Info] transport/internet/tcp: REALITY: processed invalid connection from 127.0.0.1:60110: failed to read client hello
+2026/10/10 03:41:49.077682 [Debug] app/log: Logger closing
