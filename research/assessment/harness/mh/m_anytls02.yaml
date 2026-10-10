@@ -1,0 +1,17 @@
+mixed-port: 18080
+mode: rule
+log-level: error
+allow-lan: false
+proxies:
+  - name: n
+    type: anytls
+    server: 107.173.154.178
+    port: 28725
+    password: f537cd201a21c199f874f254f9ac6c8b
+    sni: hxicc.catmicos.dpdns.org
+    client-fingerprint: chrome
+    skip-cert-verify: false
+    alpn: [h2, http/1.1]
+    udp: true
+rules:
+  - MATCH,n

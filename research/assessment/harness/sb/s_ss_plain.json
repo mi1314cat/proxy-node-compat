@@ -1,0 +1,31 @@
+{
+ "log": {
+  "level": "error"
+ },
+ "inbounds": [
+  {
+   "type": "mixed",
+   "tag": "in",
+   "listen": "127.0.0.1",
+   "listen_port": 18080
+  }
+ ],
+ "outbounds": [
+  {
+   "type": "shadowsocks",
+   "tag": "n",
+   "server": "107.173.154.178",
+   "server_port": 31004,
+   "method": "2022-blake3-aes-128-gcm",
+   "password": "6vjERiXdZoedH5UioIWDzQ==",
+   "udp_over_tcp": true
+  },
+  {
+   "type": "direct",
+   "tag": "direct"
+  }
+ ],
+ "route": {
+  "final": "n"
+ }
+}

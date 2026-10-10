@@ -1,0 +1,16 @@
+mixed-port: 18080
+mode: rule
+log-level: error
+allow-lan: false
+proxies:
+  - name: n
+    type: anytls
+    server: 107.173.154.178
+    port: 22812
+    password: d3cc09aa867186e5887515fcc95d8628
+    sni: www.apple.com
+    client-fingerprint: chrome
+    skip-cert-verify: true
+    udp: true
+rules:
+  - MATCH,n

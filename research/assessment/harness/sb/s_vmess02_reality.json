@@ -1,0 +1,50 @@
+{
+ "log": {
+  "level": "error"
+ },
+ "inbounds": [
+  {
+   "type": "mixed",
+   "tag": "in",
+   "listen": "127.0.0.1",
+   "listen_port": 18080
+  }
+ ],
+ "outbounds": [
+  {
+   "type": "vmess",
+   "tag": "n",
+   "server": "107.173.154.178",
+   "server_port": 31011,
+   "uuid": "d35b8824-0803-44c9-823b-d283a6ba3b52",
+   "alter_id": 0,
+   "transport": {
+    "type": "ws",
+    "path": "/7025f50c",
+    "headers": {
+     "Host": "python.org"
+    }
+   },
+   "tls": {
+    "enabled": true,
+    "server_name": "python.org",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    },
+    "reality": {
+     "enabled": true,
+     "public_key": "tnXodgtAkqwGSZBIQu-O9hRj1VsFG4PwMriVzy0cHwA",
+     "short_id": "a3baeab74472c469"
+    }
+   }
+  },
+  {
+   "type": "direct",
+   "tag": "direct"
+  }
+ ],
+ "route": {
+  "final": "n"
+ }
+}

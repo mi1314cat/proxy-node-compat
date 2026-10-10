@@ -1,0 +1,41 @@
+{
+ "log": {
+  "level": "error"
+ },
+ "inbounds": [
+  {
+   "type": "mixed",
+   "tag": "in",
+   "listen": "127.0.0.1",
+   "listen_port": 18080
+  }
+ ],
+ "outbounds": [
+  {
+   "type": "anytls",
+   "tag": "n",
+   "server": "107.173.154.178",
+   "server_port": 31002,
+   "password": "tjO9yFXg2zSmMh2ejDe6AZ0v",
+   "tls": {
+    "enabled": true,
+    "server_name": "hxicc.catmicos.dpdns.org",
+    "alpn": [
+     "h2",
+     "http/1.1"
+    ],
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    }
+   }
+  },
+  {
+   "type": "direct",
+   "tag": "direct"
+  }
+ ],
+ "route": {
+  "final": "n"
+ }
+}

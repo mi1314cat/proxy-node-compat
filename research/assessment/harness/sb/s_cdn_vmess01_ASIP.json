@@ -1,0 +1,42 @@
+{
+ "log": {
+  "level": "error"
+ },
+ "inbounds": [
+  {
+   "type": "mixed",
+   "tag": "in",
+   "listen": "127.0.0.1",
+   "listen_port": 18080
+  }
+ ],
+ "outbounds": [
+  {
+   "type": "vmess",
+   "tag": "n",
+   "server": "107.173.154.178",
+   "server_port": 443,
+   "uuid": "48af28ea-3cd0-4757-adc9-815a7b1c1e36",
+   "alter_id": 0,
+   "transport": {
+    "type": "ws",
+    "path": "/cba311b5"
+   },
+   "tls": {
+    "enabled": true,
+    "server_name": "hxicc.catmicos.dpdns.org",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    }
+   }
+  },
+  {
+   "type": "direct",
+   "tag": "direct"
+  }
+ ],
+ "route": {
+  "final": "n"
+ }
+}

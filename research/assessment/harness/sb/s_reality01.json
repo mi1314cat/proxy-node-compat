@@ -1,0 +1,43 @@
+{
+ "log": {
+  "level": "error"
+ },
+ "inbounds": [
+  {
+   "type": "mixed",
+   "tag": "in",
+   "listen": "127.0.0.1",
+   "listen_port": 18080
+  }
+ ],
+ "outbounds": [
+  {
+   "type": "vless",
+   "tag": "n",
+   "server": "107.173.154.178",
+   "server_port": 31000,
+   "uuid": "d9f866b2-3f4c-46f2-b3fd-f18f60861865",
+   "tls": {
+    "enabled": true,
+    "server_name": "apps.apple.com",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    },
+    "reality": {
+     "enabled": true,
+     "public_key": "tnXodgtAkqwGSZBIQu-O9hRj1VsFG4PwMriVzy0cHwA",
+     "short_id": "60656f4e153adc66"
+    }
+   },
+   "flow": "xtls-rprx-vision"
+  },
+  {
+   "type": "direct",
+   "tag": "direct"
+  }
+ ],
+ "route": {
+  "final": "n"
+ }
+}

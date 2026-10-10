@@ -1,0 +1,17 @@
+mixed-port: 18080
+mode: rule
+log-level: error
+allow-lan: false
+proxies:
+  - name: n
+    type: tuic
+    server: 107.173.154.178
+    port: 25683
+    uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    password: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    sni: hxicc.catmicos.dpdns.org
+    skip-cert-verify: false
+    alpn: [h3]
+    congestion-controller: bbr
+rules:
+  - MATCH,n

@@ -1,0 +1,38 @@
+{
+ "log": {
+  "level": "error"
+ },
+ "inbounds": [
+  {
+   "type": "mixed",
+   "tag": "in",
+   "listen": "127.0.0.1",
+   "listen_port": 18080
+  }
+ ],
+ "outbounds": [
+  {
+   "type": "hysteria2",
+   "tag": "n",
+   "server": "107.173.154.178",
+   "server_port": 31001,
+   "password": "f00f6744246c7c55e0cb96954e56b7d0",
+   "up_mbps": 100,
+   "down_mbps": 500,
+   "tls": {
+    "enabled": true,
+    "server_name": "hxicc.catmicos.dpdns.org",
+    "alpn": [
+     "h3"
+    ]
+   }
+  },
+  {
+   "type": "direct",
+   "tag": "direct"
+  }
+ ],
+ "route": {
+  "final": "n"
+ }
+}

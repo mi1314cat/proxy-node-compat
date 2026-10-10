@@ -1,0 +1,34 @@
+{
+ "log": {
+  "level": "error"
+ },
+ "inbounds": [
+  {
+   "type": "mixed",
+   "tag": "in",
+   "listen": "127.0.0.1",
+   "listen_port": 18080
+  }
+ ],
+ "outbounds": [
+  {
+   "type": "naive",
+   "tag": "n",
+   "server": "107.173.154.178",
+   "server_port": 31008,
+   "username": "e53bd040a419",
+   "password": "f695c3946d09",
+   "tls": {
+    "enabled": true,
+    "server_name": "hxicc.catmicos.dpdns.org"
+   }
+  },
+  {
+   "type": "direct",
+   "tag": "direct"
+  }
+ ],
+ "route": {
+  "final": "n"
+ }
+}

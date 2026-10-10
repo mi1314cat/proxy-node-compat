@@ -1,0 +1,42 @@
+{
+ "log": {
+  "level": "error"
+ },
+ "inbounds": [
+  {
+   "type": "mixed",
+   "tag": "in",
+   "listen": "127.0.0.1",
+   "listen_port": 18080
+  }
+ ],
+ "outbounds": [
+  {
+   "type": "anytls",
+   "tag": "n",
+   "server": "107.173.154.178",
+   "server_port": 31013,
+   "password": "g4RoPGzW3QLIHJNPgS8CoVB1",
+   "tls": {
+    "enabled": true,
+    "server_name": "apache.org",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    },
+    "reality": {
+     "enabled": true,
+     "public_key": "tnXodgtAkqwGSZBIQu-O9hRj1VsFG4PwMriVzy0cHwA",
+     "short_id": "5c102aa54237286f"
+    }
+   }
+  },
+  {
+   "type": "direct",
+   "tag": "direct"
+  }
+ ],
+ "route": {
+  "final": "n"
+ }
+}

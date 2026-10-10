@@ -1,0 +1,19 @@
+mixed-port: 18080
+mode: rule
+log-level: error
+allow-lan: false
+proxies:
+  - name: n
+    type: vless
+    server: 107.173.154.178
+    port: 25676
+    uuid: 0647a947-6f77-4a91-8df0-8ff9f2d5e720
+    network: xhttp
+    tls: true
+    udp: true
+    skip-cert-verify: false
+    servername: hxicc.catmicos.dpdns.org
+    client-fingerprint: chrome
+    xhttp-opts: {mode: auto, path: /xhttps-6ecedb76, x-padding-bytes: "100-1000"}
+rules:
+  - MATCH,n

@@ -57,11 +57,11 @@ TRANSPORT_MAP = {
 # 这些参数属于哪个 feature 的 params（用于把值挂到正确的 feature 上）
 PARAM_OWNER = {
     "path": "transport", "host": "transport", "serviceName": "transport",
-    "mode": "standard:xhttp", "extra": "standard:xhttp", "headerType": "transport",
+    "mode": "transport", "extra": "transport", "headerType": "transport",
     "seed": "transport", "mtu": "transport", "tti": "transport",
     "pbk": "standard:reality", "sid": "standard:reality", "spx": "standard:reality",
-    "ech": "standard:ech", "pqv": "standard:ech", "pcs": "standard:ech",
-    "vcn": "standard:ech",
+    "ech": "standard:ech", "pcs": "standard:ech", "vcn": "standard:ech",
+    "pqv": "standard:reality",
     "sni": "standard:tls", "servername": "standard:tls", "alpn": "standard:tls",
     "fp": "standard:tls", "allowInsecure": "standard:tls", "insecure": "standard:tls",
     "flow": "standard:flow",
@@ -339,10 +339,10 @@ def parse_uri(uri: str) -> NodeProfile:
                 feat = None
         if feat is not None:
             feat.params[pkey] = Field.explicit(v, Provenance.URI, k)
-        elif owner in ("standard:xhttp", "standard:ech", "standard:reality"):
+        elif owner in ("standard:ech", "standard:reality"):
             # 对应 feature 不存在 → 用参数本身反推一个 feature（如 pbk 隐含 reality）
-            implied = {"standard:reality": "standard:reality", "standard:ech": "standard:ech",
-                       "standard:xhttp": "standard:xhttp"}[owner]
+            implied = {"standard:reality": "standard:reality",
+                       "standard:ech": "standard:ech"}[owner]
             if profile.get_feature(implied) is None:
                 profile.add_feature(Feature(id=implied, presence=Presence.INFERRED,
                                             provenance=Provenance.INFERRED,

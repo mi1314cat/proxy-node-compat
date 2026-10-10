@@ -1,0 +1,49 @@
+{
+ "log": {
+  "level": "error"
+ },
+ "inbounds": [
+  {
+   "type": "mixed",
+   "tag": "in",
+   "listen": "127.0.0.1",
+   "listen_port": 18080
+  }
+ ],
+ "outbounds": [
+  {
+   "type": "shadowsocks",
+   "tag": "n",
+   "detour": "out",
+   "method": "2022-blake3-aes-128-gcm",
+   "password": "86XM+pgDCTgK8+oJz4/SOA==",
+   "multiplex": {
+    "enabled": true,
+    "padding": true
+   }
+  },
+  {
+   "type": "shadowtls",
+   "tag": "out",
+   "server": "107.173.154.178",
+   "server_port": 31009,
+   "version": 3,
+   "password": "LVrD7aD9fH1dlN1uKzsw",
+   "tls": {
+    "enabled": true,
+    "server_name": "apps.apple.com",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    }
+   }
+  },
+  {
+   "type": "direct",
+   "tag": "direct"
+  }
+ ],
+ "route": {
+  "final": "n"
+ }
+}

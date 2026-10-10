@@ -1,0 +1,17 @@
+mixed-port: 18080
+mode: rule
+log-level: error
+allow-lan: false
+proxies:
+  - name: n
+    type: hysteria2
+    server: 107.173.154.178
+    port: 20309
+    up: "50 Mbps"
+    down: "200 Mbps"
+    password: f71c235e1b5e8a510bd33f24dd0212f1
+    sni: www.amazon.com
+    fingerprint: b8f8fc0516c13230f65c2a4a728daa047353aaf8eadf76263562c60a9baa9a03
+    alpn: [h3]
+rules:
+  - MATCH,n

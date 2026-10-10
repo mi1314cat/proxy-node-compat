@@ -1,0 +1,52 @@
+{
+ "log": {
+  "level": "error"
+ },
+ "inbounds": [
+  {
+   "type": "mixed",
+   "tag": "in",
+   "listen": "127.0.0.1",
+   "listen_port": 18080
+  }
+ ],
+ "outbounds": [
+  {
+   "type": "trojan",
+   "tag": "n",
+   "server": "107.173.154.178",
+   "server_port": 31012,
+   "password": "T9CtGP1lML2jxLrveA5Z",
+   "tls": {
+    "enabled": true,
+    "server_name": "ibm.com",
+    "alpn": [
+     "http/1.1"
+    ],
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    },
+    "reality": {
+     "enabled": true,
+     "public_key": "tnXodgtAkqwGSZBIQu-O9hRj1VsFG4PwMriVzy0cHwA",
+     "short_id": "c1f47cd762b2fa17"
+    }
+   },
+   "transport": {
+    "type": "ws",
+    "path": "/9b527228",
+    "headers": {
+     "Host": "ibm.com"
+    }
+   }
+  },
+  {
+   "type": "direct",
+   "tag": "direct"
+  }
+ ],
+ "route": {
+  "final": "n"
+ }
+}
