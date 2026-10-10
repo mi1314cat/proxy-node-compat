@@ -193,6 +193,20 @@ sublink-worker 的 `resolveSingboxConfigVersion`），其"解析失败就回落�
 的兜底值得照抄；反之 subconverter `intSurgeVer` **默认 3** 导致不带 `&ver=4` 时
 VMess/Trojan/WireGuard/Hysteria2/AnyTLS **整类凭空消失**（issue #643）——默认值选错就是静默丢节点。
 
+### 4.9 v2rayN + sing-box-subscribe：两条最贵的教训
+
+- **v2rayN** 已经有 `NodeValidator.cs`（`NodeValidatorResult{Errors,Warnings}`）——形态可抄，
+  但它把 `{kcp, xhttp}` 这类判断**硬编码在三个静态集合里**，而且**同一个判断在 3 处重复实现、
+  其中 1 处因归一化永久不可达**（`CoreConfigV2rayService.cs:23`）。→ 教训：
+  **检查点必须唯一**，判定只在 compat 里发生一次。
+- 它的 sing-box 路径**完全没有引用** `VerifyPeerCertByName / CertSha / SpiderX / Mldsa65Verify / Finalmask`
+  → 证书钉扎、域校验、后量子验证**静默消失且零告警**。→ 这就是
+  `SUPPORTED_WITH_LOSS` 必须**逐条列出丢了哪些能力**的原因（只给一个状态码是不够的）。
+- **sing-box-subscribe** 把同一个"不支持"演化出**四种结局**：跳过 / 生成坏配置 / 崩掉
+  （`node` 只在 try 内绑定 → 首行畸形抛 `UnboundLocalError`）/ **降级直连**（分组 0 节点时
+  该组被填成 `Direct`，即用户以为在走代理、实际裸奔）。→ 未知必须上浮为 `UNKNOWN`，
+  绝不允许任何一条路径"静默变成直连"。
+
 **没有现成实现的**（= 我们的核心工作）：
 
 - 内核 **× 发行版 × 版本** 维度的能力表

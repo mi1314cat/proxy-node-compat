@@ -120,10 +120,10 @@ for (const addon of addons.split('&')) { ... params[key] = decodeURIComponent(va
 
 | 层 | 位置 | 作用 |
 |---|---|---|
-| 预处理 | `core/proxy-utils/index.js:51-63`（`preprocess`）+ `preprocessors/index.js:187-194`（注册表） | 按序试 `HTML`→`Clash YAML`→`Base64`→`SSD`→`FullConfig`→`Fallback Base64`，命中即返回 |
+| 预处理 | `core/proxy-utils/index.js:51-63`（`preprocess`）+ `preprocessors/index.js:197-204`（注册表） | 按序试 `HTML`→`Clash YAML`→`Base64`→`SSD`→`FullConfig`→`Fallback Base64`，命中即返回 |
 | 主循环 | `core/proxy-utils/index.js:65-137`（`parse`） | **逐行**解析；先试"上一行成功的 parser"（热点优化，`:74-85`），失败再遍历注册表 |
-| 注册表 | `parsers/index.js:3150-3197` | 49 个 parser 的**有序数组** |
-| 失败处理 | `core/proxy-utils/index.js:104-106` | ❌ `$.error('Failed to parse line: ...')` 后**该行被丢弃**（节点直接消失，产物里无任何痕迹） |
+| 注册表 | `parsers/index.js:3150-3197` | 47 个 parser 的**有序数组** |
+| 失败处理 | `core/proxy-utils/index.js:100-102` | ❌ `$.error('Failed to parse line: ...')` 后**该行被丢弃**（节点直接消失，产物里无任何痕迹） |
 
 ### 2.2 支持的 scheme（URI 形态，全部 `✅`）
 
@@ -237,7 +237,7 @@ proxies = proxies.filter((proxy) => {
 const list = proxies.filter((proxy) => {
     if (opts['include-unsupported-proxy']) return true;
     if (!['ss','ssr','vmess','vless','socks5','http','snell','trojan','wireguard'].includes(proxy.type)
-        || (proxy.type === 'ss' && ![/* 15 种 cipher */].includes(proxy.cipher))
+        || (proxy.type === 'ss' && ![/* 14 种 cipher */].includes(proxy.cipher))
         || (proxy.type === 'snell' && proxy.version >= 4)
         || (proxy.type === 'vless' && (typeof proxy.flow !== 'undefined' || proxy['reality-opts']))) {
         return false;                                  // ← clash.js:57：没有任何日志
@@ -316,7 +316,7 @@ const produce = (proxies, type, opts = {}) => {
                     case 'ss': if (proxy.plugin === 'shadow-tls') { ... }
                                else list.push(ssParser(proxy)); break;
                     case 'ssr': if (opts['include-unsupported-proxy']) list.push(ssrParser(proxy));
-                                else throw new Error(`Platform sing-box does not support proxy type: ${proxy.type}`); break;  // :1545-1555
+                                else throw new Error(`Platform sing-box does not support proxy type: ${proxy.type}`); break;  // :1548-1556
                     case 'vless': if (proxy.encryption && proxy.encryption !== 'none') throw new Error(`VLESS encryption is not supported`);
                                   if (!proxy.flow || proxy.flow === 'xtls-rprx-vision') list.push(vlessParser(proxy));
                                   else throw new Error(`... does not support proxy type: ${proxy.type} with flow ${proxy.flow}`); break;
@@ -412,9 +412,10 @@ function isSupportedMihomoVersion(version, supportedVersions) {
 
 `version` 的来源是 **Snell 协议版本 / ShadowTLS 插件版本**，与 mihomo 内核版本毫无关系。
 
-**❌ 全仓库没有任何"目标内核版本"概念**：`grep -rn "mihomo.*version\|clash.*version\|MihomoVersion"` 无命中；
-`produce(proxies, targetPlatform, ...)` 的 `targetPlatform` 只是 §3 表格里那串字符串别名，
-**没有 `{kernel, version}` 结构**。
+**❌ 全仓库没有任何"目标内核版本"概念**：`grep -rniE "mihomo[_a-z]*version|clash[_a-z]*version|core[_a-z]*version|kernel[_a-z]*version" backend/src`
+只命中 `isSupportedMihomoVersion`（`:463`）与 `getMihomoShadowTlsVersion`（`:492`）——**两者比的都是节点/插件的
+`proxy.version`，不是内核版本**；`produce(proxies, targetPlatform, ...)` 的 `targetPlatform`
+只是 §3 表格里那串字符串别名，**没有 `{kernel, version}` 结构**。
 
 ### 4.8 唯一一个"我真的存不下这个能力"的显式建模：`_extra_unsupported`
 
@@ -434,9 +435,9 @@ if (unsupportedExtra) {
 ```
 
 采集逻辑（`parsers/index.js:1087-1226`）逐字段判断"这个字段 mihomo 能不能结构化建模"：
-能 → 写进 `xhttp-opts` 的结构化字段（`applyXhttpExtraFields`，`:1566-1660`）；
+能 → 写进 `xhttp-opts` 的结构化字段（`applyXhttpExtraFields`，`:1571-1665`）；
 不能/类型非法 → 塞进 `unsupportedExtra`。例如 `xPaddingBytes` 必须是严格正数区间，
-否则进 sidecar（`:1117-1128`）；`noGRPCHeader` 必须恰好是 `true`，否则进 sidecar（`:1106-1116`）。
+否则进 sidecar（`:1117-1128`）；`noGRPCHeader` 必须恰好是 `true`，否则进 sidecar（`:1107-1116`）。
 
 导出侧（`producers/uri.js:520-557`）再把它合并回 URI 的 `extra=`：
 
@@ -555,9 +556,9 @@ trojan / hysteria2 / hysteria / tuic / anytls / wireguard`。**没有 `default`�
 | **`_` 前缀 sidecar 字段（除 `_extra`/`_extra_unsupported`）** | `uri.js:1584/1446/1383` 显式 `!/^_/i.test(key)` 跳过 | 设计如此 |
 | **任意非 `_` 的自定义字段** | 实测 E10：`Script Operator` 加的 `customTag` → `clashmeta` ✅ 有、`uri` ❌ 无 | ⚠️ 只有 JSON/Clash 出口能带走 |
 | **hysteria2 的 `tls-fingerprint`（`pinSHA256`）** | 实测 E14：回环 URI 里消失 | ⚠️ 静默 |
-| **`tls` 布尔在 `tuic/hysteria/hysteria2/juicity/trusttunnel` 上被显式删除** | `uri.js:507-516` `delete proxy.tls` | 设计如此（URI 里 TLS 隐含） |
-| **`subName/collectionName/id/resolved/no-resolve/ip-cidr/ipv6-cidr`** | `uri.js:804-810` 显式 delete | 设计如此 |
-| **值恰好为 `null` 的字段** | `uri.js:811-815` 全量 `delete` | 设计如此 |
+| **`tls` 布尔在 `tuic/hysteria/hysteria2/juicity/trusttunnel` 上被显式删除** | `uri.js:818-824` `delete proxy.tls` | 设计如此（URI 里 TLS 隐含） |
+| **`subName/collectionName/id/resolved/no-resolve/ip-cidr/ipv6-cidr`** | `uri.js:804-808` 显式 delete | 设计如此 |
+| **值恰好为 `null` 的字段** | `uri.js:809-812` 全量 `delete` | 设计如此 |
 
 **唯一被认真对待的回环**：VLESS xhttp 的 `extra`（`_extra` ⊃ `_extra_unsupported` ⊃ 结构化字段），
 `uri.js:520-557`。**其余协议没有对应的"回环保险"。**
@@ -634,7 +635,7 @@ Sub-Store 走到了"给它一个专门的 Error 类"，再往前一步就是我�
 
 ### 8.3⭐ 报错文案里带全上下文
 
-`clashmeta.js:60-63`：`mihomo does not support HTTP/2 CONNECT proxy type. Proxy ${proxy.name} has been filtered.`
+`clashmeta.js:59-63`：`mihomo does not support HTTP/2 CONNECT proxy type. Proxy ${proxy.name} has been filtered.`
 —— 目标 + 能力 + 节点名 + 处置结果，四个要素齐全。我们的 `reason` 文案应该照这个标准写。
 
 ### 8.4 数据化管线 + 前向兼容
