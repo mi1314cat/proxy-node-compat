@@ -75,6 +75,8 @@ failure_mode:
   silent_ignore    # 字段不认识 → 忽略（可能回落默认值）
   silent_drop      # 字段存在、解析器也认，但内核不再读它
   runtime_fail     # 配置合法，拨号时才失败
+  crash            # 进程直接崩溃（畸形值触发上游 panic）
+  silent_noop_then_runtime_fail  # 字段被识别但不生效，运行期才失败
 ```
 
 `silent_*` 在最终结果里**必须升级成 `SUPPORTED_WITH_LOSS`**，不能显示成 `SUPPORTED`。

@@ -18,6 +18,12 @@
 | `silent_ignore` | **字段不认识，被忽略**（可能回落默认值） | **Tier A 抓不到**，必须靠能力表或 Tier B | mihomo 未知 `network` → 静默当 tcp（实测 4/4 连通） |
 | `silent_drop` | **字段存在、解析器也认，但内核不再读它** | 只有源码/版本表能抓 | Xray ≥26.9.30：mKCP `header`/`seed` 字段还在结构体里，但 Build 不读不校验 |
 | `runtime_fail` | 配置合法，**拨号时才失败** | 只有 Tier B 能抓 | Xray Vision 在 `security∉{tls,reality}` 时不是配置错，是拨号时才报；ECH 失败时塞无效 ECHConfig 让连接失败 |
+| `crash` | **进程直接崩**（不是报错、不是拒绝） | Tier A 就能抓，但要按崩溃识别 | Xray 26.3.27 对**畸形 `encryption` 值** panic：`slice bounds out of range [19:18]`，exit 2（上游 bug，`infra/conf/vless.go:355`）——实测见 `research/empirical/vless-encryption-mlkem.md` |
+| `silent_noop_then_runtime_fail` | 字段被识别但不生效，**运行期才炸** | 静态层抓不到 | mihomo `encryption: none`／空值：`mihomo -t` 通过，连接时服务端 `ML-KEM-768 handshake failed > unexpected EOF` |
+
+> 后两条是 Phase 4 验证阶段**实测**出来的（不是推演），因此枚举从四态扩到六态。
+> 它们的处理动作与旧值不同：`crash` 客户端要提示"该配置会让内核崩溃，请勿使用"；
+> `silent_noop_then_runtime_fail` 要提示"这个字段写了等于没写" —— 所以必须分开，不能塞进 `hard_error` / `silent_ignore`。
 
 **对引擎的硬要求**：
 
