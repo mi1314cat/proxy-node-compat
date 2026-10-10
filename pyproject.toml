@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "proxy-node-compat"
+version = "0.1.0"
+description = "跨代理内核的节点能力识别与兼容性判断层（离线、只判断不生成配置）"
+requires-python = ">=3.9"
+dependencies = []          # 零第三方依赖：判定必须能完全离线完成
+
+[project.scripts]
+proxy-node-compat = "proxy_node_compat.cli:main"
+
+[tool.setuptools]
+packages = ["proxy_node_compat"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+proxy_node_compat = ["data/*.json"]
