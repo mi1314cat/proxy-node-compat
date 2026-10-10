@@ -186,6 +186,40 @@ stream: dict = {"network": transport, "method": transport}
 
 → 这直接印证 §3：`runtime_options`（乃至"用户意图是否被抵消"）必须进判定签名。
 
+## 9. 两件可复用的东西
+
+### 9.1 检测"死字段"的手法（silent_drop 的静态发现法）
+
+`silent_drop`（字段存在但内核不再读）过去只能靠翻 release note 猜。mihomo 调研给出一个
+**可机械执行**的判据：
+
+> 在整个仓库里数某个结构体字段被引用的次数。**只有声明处 1 次 = 死字段**。
+
+用这个方法确证：`vless.ws-headers` 在 v1.19.32 中**是死字段**（声明处之外全仓库 0 引用）。
+→ 可以把它做成一个**自动化扫描**：对每个内核的每个 proxy option 结构体字段统计引用数，
+引用数 ≤1 的字段自动进能力表的 `failure_mode: silent_drop` 候选，再人工确认。
+
+（注意区分：`mux:` 这类**顶层块**不能用这个手法 —— 它可能在多个版本里都不存在，
+所以只断言"当前版本中它是未知键、静默丢弃"，不推断历史。）
+
+### 9.2 mihomo 版本门槛速查（源码/ release note 双重确认过的）
+
+| 能力 / 字段 | 最早版本 | 在更老内核上的后果 |
+|---|---|---|
+| `client-fingerprint` | v1.14.2 | 未知键 → 静默丢弃 |
+| `reality-opts` | v1.14.3 | 静默丢弃（且无 fingerprint 时**运行期**才报错） |
+| `smux` 块 / `dialer-proxy` / `tfo` | v1.14.4 | 静默丢弃 |
+| `mptcp` | v1.15.1 | 静默丢弃 |
+| `ech-opts` | v1.19.9 | 静默丢弃 |
+| **`xhttp`（network）** | **v1.19.22** | 未知值 → **静默按 tcp**，节点废掉但不报错 |
+| `tlsmirror` | v1.19.28 | 静默丢弃 |
+| `name-cert-verify` / `jls-opts` / `restls-opts` / `shadow-tls-opts` | v1.19.29 | **静默丢弃 → 节点"裸奔"**（用户以为有这层保护） |
+
+弃用→移除两条时间线：`relay` 组 v1.18.6 弃用 → v1.19.17 移除；
+`global-client-fingerprint` v1.19.19 弃用 → v1.19.27 移除。
+新增 type 仍在持续出现（rematch v1.19.28、shadowquic v1.19.29、zerotier v1.19.30、easytier v1.19.31）
+→ **能力表必须可增量维护**，这也是"版本维度不能漏"的最直接理由。
+
 ## 待办（本文件引发的后续工作）
 
 1. Capability Registry 的数据行必须包含：`valid_from` / `valid_until` / `timeline[]` /

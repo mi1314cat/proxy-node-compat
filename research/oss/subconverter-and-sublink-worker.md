@@ -716,7 +716,7 @@ YAML/Clash 源里类型不认识 → `convertYamlProxyToObject` `default: return
 
 | 主张 | 证据 |
 |---|---|
-| "能生成合法配置" ≠ "能用" | subconverter `buildSingBoxTransport` `default: break`（`subexport.cpp:2276`）+ 调用方 `if (!transport.ObjectEmpty())`（`:2403`）→ 未知 transport 的节点被输出成纯 TCP |
+| "能生成合法配置" ≠ "能用" | subconverter `buildSingBoxTransport` `default: break`（`subexport.cpp:2276`）+ 调用方 `if (!transport.ObjectEmpty())`（`:2391`、`:2401`）→ 未知 transport 的节点被输出成纯 TCP |
 | 参数缺失会被翻译成节点消失 | `intSurgeVer` 默认 3（`interfaces.cpp:309`）+ `surge_ver < 4 → continue`（`subexport.cpp:845`） |
 | 未知 = 丢弃（无第三种状态） | `subparser.cpp:2658`（`Type == Unknown → continue`）、`ProxyParser.js:33`（`return undefined`） |
 | 注释是唯一的不支持提示 | `SurgeConfigBuilder.js:132` |
