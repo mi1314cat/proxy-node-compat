@@ -375,6 +375,8 @@ class TestRealLinkVmess(unittest.TestCase):
         self.assertIn("VMESS_BODY_UNPARSED", [d["code"] for d in p.diagnostics])
         self.assertEqual(p.raw_uri, uri)                          # 原文保留
         self.assertEqual(p.raw_fields["_vmess_body"], "!!!not-base64-json!!!")
+        self.assertIsNotNone(p.get_feature("unknown:vmess.body-unparsed"))  # 未解析 = 未知 feature
+        self.assertRaises(ValueError, generate_uri, p)            # 拒绝用空 JSON 覆盖原文
         r = evaluate(p, T("mihomo", "1.19.32"), REG)
         self.assertIn(r.status, ("UNKNOWN", "UNSUPPORTED"))       # 未知不猜, 也不让整批失败
 

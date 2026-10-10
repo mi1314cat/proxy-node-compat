@@ -71,8 +71,10 @@ PARAM_OWNER = {
     "plugin": "standard:shadowsocks.plugin",
 }
 
-# vmess:// 载荷(JSON)里已被解析器消费的键 —— 不再走"参数归属"循环
-_VMESS_CONSUMED = {"v", "ps", "add", "port", "id", "uuid", "aid", "scy", "security",
+# vmess:// 载荷(JSON)里已被解析器消费的键 —— 不再走"参数归属"循环。
+# 注意: **不包含 "v"**（载荷格式版本号）—— 它读了但没建模, 必须走循环落进 extensions,
+# 而不是被这里静默吃掉（不变式 I2: 读了未建模的键至少要在 extensions[] 或 raw.fields 里）。
+_VMESS_CONSUMED = {"ps", "add", "port", "id", "uuid", "aid", "scy", "security",
                    "net", "tls"}
 
 # security=reality 时, 这些 query 键是 REALITY 的握手身份 → 挂到 standard:reality 的 params
@@ -202,8 +204,14 @@ def parse_uri(uri: str) -> NodeProfile:
         # ★ vmess://: 载荷是 base64(JSON), 不在 query 里
         cfg = _decode_vmess_body(uri)
         if cfg is None:
-            # 解不出来也要能保存并标记（不丢、不猜、不让整批解析失败）
+            # 解不出来也要能保存并标记（不丢、不猜、不让整批解析失败）:
+            # 载荷本身进 raw.fields, 同时登记一个 unknown: feature —— 引擎据此判 UNKNOWN,
+            # 不会被"protocol=standard:vmess"骗成 SUPPORTED（未知 ≠ 支持）。
             profile.raw_fields["_vmess_body"] = _vmess_payload(uri)
+            profile.add_feature(Feature(
+                id="unknown:vmess.body-unparsed", presence=Presence.EXPLICIT,
+                provenance=Provenance.URI,
+                note="vmess 载荷无法解码为 JSON: 只登记原文, 不猜任何字段"))
             profile.diagnostics.append({
                 "code": "VMESS_BODY_UNPARSED",
                 "detail": "base64(JSON) 载荷无法解码; 原文保留在 raw.uri 与 raw.fields._vmess_body"})
@@ -419,6 +427,10 @@ def _generate_vmess_uri(profile: NodeProfile, *, allow_extensions: bool = False)
     （reality/ech/mux…）不写回 —— 该损失由 URI 表达力规则报告, 不在这里假装能表达。
     extensions 默认丢弃, 仅在 allow_extensions=True 时原样写回。
     """
+    if any(d.get("code") == "VMESS_BODY_UNPARSED" for d in profile.diagnostics):
+        # 载荷没解析出来就回写 = 用空 JSON 覆盖原文（静默丢字段）→ 拒绝, 让调用方用 raw.uri
+        raise ValueError("vmess 载荷未解析(VMESS_BODY_UNPARSED), 拒绝回写以免丢字段; "
+                         "请原样使用 profile.raw_uri")
     body: dict[str, object] = {}
     host = profile.endpoint.get("host")
     port = profile.endpoint.get("port")
