@@ -145,7 +145,7 @@ for (const addon of addons.split('&')) { ... params[key] = decodeURIComponent(va
 QuantumultX 配置行（`:2629-2708`），后三者的语法用 **Peggy 语法文件** 解析
 （`parsers/peggy/{surge,loon,qx,trojan-uri}.js`）。
 
-**❌ 没有 URI 解析器的类型**（只能从 Clash/Surge/Loon/QX 配置行进来）：
+**❌ 没有 URI 解析器的类型**（只能从 Clash YAML / Surge / Loon / QX 配置行进来）：
 `ssh` / `snell` / `direct` / `external` / `trusttunnel` / `masque` / `h2-connect` / `tailscale` / `juicity` / `naive` / `shadowquic`。
 
 > 实测 E8：`h2-connect://user:pass@example.com:443#h2c` →
@@ -364,7 +364,7 @@ if (includeUnsupportedProxy && ['http'].includes(proxy.network)) {
 ### 4.5 机制 E：SINGLE producer **没有 default 分支** → 零诊断丢弃（❌❌）
 
 URI producer 的 `produce` 以 `let result = '';`（`producers/uri.js:803`）开头，
-`switch (proxy.type)` 只有 12 个 case（`:832-1620`），**没有 `default`**。
+`switch (proxy.type)` 只有 11 个 case（`:832-1620`），**没有 `default`**。
 于是任何它不认识的类型都返回 `''` → 被 `index.js:598` 的 `.filter(line => line.length > 0)` 丢掉。
 
 > 实测 E18：Clash YAML 里一个 `type: masque` 的节点
@@ -477,7 +477,7 @@ function buildVlessExtra(proxy) {
 ### 5.1 设计
 
 Operator = **可序列化的数据**：`{ type: string, args: object, disabled?: bool, customName?: string }`。
-注册表是一张 `字符串 → 工厂函数` 的表（`processors/index.js:1582-1602`，16 个）：
+注册表是一张 `字符串 → 工厂函数` 的表（`processors/index.js:1582-1602`，17 个）：
 
 ```js
 export default {
@@ -499,12 +499,12 @@ export default {
 | 行为 | 位置 | 意义 |
 |---|---|---|
 | 响应修改器在节点管线里被**跳过并记日志** | `index.js:154-166` | 两类 operator 共用一张注册表，按类型分流 |
-| `context.process = {type:'enable'|'disable', customNames:[...]}` 动态开关 | `index.js:113-131` | **运行时按上下文裁剪管线** |
-| `item.disabled` 跳过 | `index.js:181-190` | 管线是数据，可被 UI 逐条开关 |
-| **未知 operator 类型 → `$.error` + continue（不 fatal）** | `index.js:194-197` | 前向兼容：新配置落到旧实例上不会炸 |
+| `context.process = {type:'enable'|'disable', customNames:[...]}` 动态开关 | `index.js:123-136` | **运行时按上下文裁剪管线** |
+| `item.disabled` 跳过 | `index.js:173-182` | 管线是数据，可被 UI 逐条开关 |
+| **未知 operator 类型 → `$.error` + continue（不 fatal）** | `index.js:193-197` | 前向兼容：新配置落到旧实例上不会炸 |
 | 每个 operator 执行前**深拷贝**输入 | `processors/index.js:1676` | operator 之间无副作用传染 |
 | 两种脚本契约：函数式 `func(proxies)` 与逐节点 `nodeFunc`（`$server` 循环变量） | `processors/index.js:447-475`、`:477-512` | 见下 |
-| 脚本来源：内联 / 远程 URL / 本地文件 / Sub-Store 模块 | `index.js:236-345` | 可复用的脚本分发 |
+| 脚本来源：内联 / 远程 URL / 本地文件 / Sub-Store 模块 | `index.js:279-392` | 可复用的脚本分发 |
 
 脚本沙箱契约（`processors/index.js:1752-1838`）注入的是**显式参数表**而不是全局：
 `$arguments, $options, $substore, lodash, ProxyUtils, yaml, Buffer, b64d, b64e, DOMAIN_RESOLVERS,
@@ -545,7 +545,7 @@ return list
 | `produce(proxies,'v2ray')` | `producers/v2ray.js:9-21` | `Base64.encode(uri列表.join('\n'))` |
 | 单节点分享链接 API | `restful/node-info.js:15` `producer.URI.produce(proxy)` | 前端「节点信息」面板用 |
 
-`uri.js` 覆盖 12 个类型（`switch (proxy.type)`，`:832-1620`）：`socks5 / ss / ssr / vmess / vless /
+`uri.js` 覆盖 11 个类型（`switch (proxy.type)`，`:832-1620`）：`socks5 / ss / ssr / vmess / vless /
 trojan / hysteria2 / hysteria / tuic / anytls / wireguard`。**没有 `default`。**
 
 ### 6.2 会丢什么
@@ -731,7 +731,7 @@ Capability/support 数据必须是**唯一真源**，并且要有测试断言它
    （`parsers/index.js:2090`）和一个读出点（`producers/uri.js:549`）。
    但该 commit 之后是否新增、以及是否有分支/未合并 PR 在做同样的事，**未验证**。
 3. **`include-unsupported-proxy` 在每个 producer 里的完整语义**：我只逐段确认了
-   `surge.js:1343-1346`、`clash.js:22`、`clashmeta.js:57`、`sing-box.js:1545-1555/1699-1712` 的用法；
+   `surge.js:1343-1346`、`clash.js:22`、`clashmeta.js:57`、`sing-box.js:1549-1550/1667-1676` 的用法；
    `loon.js` / `qx.js` / `egern.js` / `surfboard.js` / `stash.js` / `shadowrocket.js` 里该开关的**全部分支未穷举**。
 4. **Peggy 语法文件的覆盖度**：`parsers/peggy/{surge,loon,qx,trojan-uri}.js` 只做了粗读，
    没有逐条产生式比对"官方客户端支持的选项 vs Sub-Store 能解析的选项"，因此

@@ -220,6 +220,40 @@ stream: dict = {"network": transport, "method": transport}
 新增 type 仍在持续出现（rematch v1.19.28、shadowquic v1.19.29、zerotier v1.19.30、easytier v1.19.31）
 → **能力表必须可增量维护**，这也是"版本维度不能漏"的最直接理由。
 
+## 10. 能力键还要加第四维：**构建标签 / 平台**（sing-box 调研，含真 [test]）
+
+sing-box 那份是唯一带**真 [test]** 的（自建两个二进制 + ~55 条 `check` 用例，并在官方 1.14.1 上交叉复现），
+它给出一个把 §3 的签名再改一次的理由：
+
+```
+能力 = f(内核, 发行版/fork, 版本, 构建标签, 平台)
+```
+
+- Reality / uTLS 需要 `with_utls`；hysteria2 / tuic 需要 `with_quic`。
+  缺标签时不是配置错，而是**运行期 FATAL**（`QUIC is not included in this build`）。
+- 官方二进制的 `sing-box version` 会打印 `Tags:` → **能力识别层应当直接读它**，
+  而不是只信版本号。
+
+另外三条必须记下的事实：
+
+1. **官方 sing-box 的 gRPC 不是标准 gRPC**：`grpc.go`（`with_grpc`）与 `grpc_lite.go`（无 tag）是两套实现，
+   官方二进制符号表里只有 `v2raygrpclite`。→ "gRPC 校验通过"是**静态层幻觉**，Tier A 原理上抓不到。
+2. **没有 Mux.Cool**：`protocol: "mux.cool"` → `FATAL unknown protocol`；只有 smux/yamux/h2mux。
+   Xray 的 `mux.enabled` 映射到 sing-box 的 `multiplex` **语义不同构**（映射成默认 h2mux 会静默连不上）。
+3. **sing-box 完全不解析分享 URI**（零 URI 解析、零 import 子命令），且 JSON 是**双层严格**
+   （未知字段在顶层/outbound/transport/tls 任一层都 FATAL）→ **未知 URI 参数的处理必须发生在兼容层**，
+   透传即 FATAL，没有"静默忽略"这个中间态。
+
+### 10.1 对我们自己探针数据的两条修正（诚实记录）
+
+- `research/empirical/probe-results.json` 里记的内核版本是探针**自报**的 `1.14.2`，
+  而该路径的二进制在另一份调研中自报 `1.14.1`（tags 含 with_purego）→ 需要核对实际二进制来源。
+- `transport.tcp` 用例对 sing-box 的 `accepted` **容易被误读**：sing-box 根本没有 `tcp` transport，
+  写 `{"type":"tcp"}` 实测是 `FATAL`；该用例实际表达的是"**不写 transport**"。**用例需要改名**
+  （`transport.none`），否则矩阵会让人以为 sing-box 支持 `tcp` transport。
+- 同理 `advanced.mux` 用例把 Xray 的 `mux` 与 sing-box 的 `multiplex` 并列，
+  **因此抓不到"语义不同构"这个风险** —— 需要拆成两个 feature 并补一条跨内核回环。
+
 ## 待办（本文件引发的后续工作）
 
 1. Capability Registry 的数据行必须包含：`valid_from` / `valid_until` / `timeline[]` /

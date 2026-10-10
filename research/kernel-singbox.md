@@ -152,9 +152,9 @@
 
 | sing-box transport | 支持（版本） | Xray 传输名 | mihomo 传输名 | 证据 |
 |---|---|---|---|---|
-| `http` | ✅ ≥1.1.0 | `http`（历史名 `h2`；`[doc]` Xray 现列 `RAW`） | `h2` / `http` | `[src]`；`[doc]` D1；`[test]` accepted |
+| `http` | ✅ ≥1.1.0 | ⚠️ **现行无对应**：Xray 传输列表已不含 HTTP/2；`/config/transports/{http,h2}.html` 只剩一行 "See XHTTP: Beyond REALITY"（并入 XHTTP） | `h2` / `http`（mihomo VLESS `network` 仍列） | `[src]`；`[doc]` D1 + Xray 传输列表页；`[test]` accepted |
 | `ws` | ✅ ≥1.1.0 | `ws`（WebSocket） | `ws` | `[src]`；`[test]` accepted |
-| `quic` | ✅ ≥1.1.0 | `quic` | **未在上表出现**（mihomo VLESS 文档 `network` 列 `ws/http/h2/grpc/xhttp`） | `[src]`；`[test]` 无 TLS ⇒ `create client transport: quic: TLS required`（说明类型被识别，**不是** build tag 缺失） |
+| `quic` | ✅ ≥1.1.0 | ⚠️ **现行无对应**：`/config/transports/quic.html` 只剩 "See XHTTP: Beyond REALITY" | 未在 VLESS/Trojan 文档的 `network` 列出 | `[src]`；`[doc]` Xray 传输列表页；`[test]` 无 TLS ⇒ `create client transport: quic: TLS required`（说明类型被识别，**不是** build tag 缺失） |
 | `grpc` | ✅ ≥1.1.0，**但默认构建是 lite 实现** | `grpc`（标准 gRPC） | `grpc` | `[src]` `grpc.go`/`grpc_lite.go` 双实现；`[test]` 官方二进制 tags 无 `with_grpc`，符号表仅含 `v2raygrpclite`（`v2raygrpc.NewClient` = 0 命中）；`[doc]` D1/D12 |
 | `httpupgrade` | ✅ **≥1.7.0** | `httpupgrade` | 未在 VLESS/Trojan 文档的 `network` 列出 | `[src]` `constant/v2ray.go` v1.6.0 无、v1.7.0 有；`[test]` accepted |
 | **`xhttp`** | ❌ **完全不存在（任何版本）** | ✅ `xhttp`（旧名 `splithttp`） | ✅ `xhttp`（VLESS `network` 取值之一） | `[src]` 全树 0 命中 + enum 无此项；`[test]` FATAL；`[doc]` Xray 传输列表含 XHTTP，mihomo VLESS 页 `network` 含 `xhttp` |
@@ -163,6 +163,16 @@
 | **DomainSocket** | ❌ 不存在 | 不在 Xray 现行传输列表 | — | `[doc]` D1（"No DomainSocket transport"） |
 | （独立 outbound 而非 transport）`hysteria` | ✅ `type:"hysteria"` | ✅ 作为**传输**：Xray 传输列表含 `Hysteria` | — | `[src]` `constant/proxy.go`；`[doc]` Xray 传输列表 —— **模型差异，见 §7** |
 | SIP003 `obfs-local` / `v2ray-plugin` | ✅（shadowsocks `plugin` 字段） | shadowsocks SIP003 | shadowsocks SIP003 | `[src]` 仅 2 处 `RegisterPlugin("obfs-local")`、`RegisterPlugin("v2ray-plugin")`；`[test]` 其它插件名 ⇒ `plugin not found: simple-obfs` |
+
+> ⚠️ **两边的传输集合交集比预期更小（重要结论）**
+> Xray 现行 7 种传输 = `RAW, XHTTP, mKCP, gRPC, WebSocket, HTTPUpgrade, Hysteria`；
+> sing-box 5 种 = `http, ws, quic, grpc, httpupgrade`。
+> 逐项取交集后**真正同名的只有 3 个：`ws` / `grpc` / `httpupgrade`**。
+> - sing-box 的 `http`、`quic` 在 Xray 侧**已无对应**（页面并入 XHTTP）；
+> - Xray 的 `RAW`/`XHTTP`/`mKCP`/`Hysteria` 在 sing-box 侧**均无对应**；
+> - 更糟的是 `grpc` 虽然同名，官方 sing-box 走的是 grpc-lite（§7.5），**同名不等于互通**。
+> ⇒ 跨内核（Xray↔sing-box）真正可无损映射的传输，**目前只有 `ws` 与 `httpupgrade` 两个是"同名且实现标准"的**，
+> `grpc` 需 `with_grpc` 构建，其余全部需要"降级 / 改写 / 判 UNSUPPORTED"。
 
 > **参考 URL**：Xray 传输列表 https://xtls.github.io/en/config/transports/index.html ；
 > mihomo VLESS `network` 取值 https://wiki.metacubex.one/en/config/proxies/vless/ ；
