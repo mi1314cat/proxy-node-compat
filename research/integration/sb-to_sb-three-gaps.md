@@ -174,18 +174,23 @@ tls 段被无声忽略后裸连 → 000 / reality 握手 panic ×6、明文连�
 
 ## 6. 证据与复现
 
-| 内容 | 位置 |
+原始实验在 `/tmp/sbgap`（本机）与 CC `/tmp/cc-sbgap`，验收后**已清理**；压缩存档在
+`research/integration/evidence/sb-to_sb-gaps/`（含索引 `README.md`）：
+
+| 内容 | 文件 |
 |---|---|
-| 改前/改后产物 + compat 报告 | `/tmp/sbgap/evidence/{pre,post}-outbounds.json`、`{pre,post}-report.json`（临时目录，验收后清理） |
-| 改前/改后真连逐节点结果（CC / xiaomi） | `/tmp/sbgap/evidence/{pre,post}-realconn.json`、CC `/tmp/cc-sbgap/{cc-pre,cc-post}.res` |
-| 内核探针（xhttp/未知名/FATAL、ECH base64 vs PEM） | `/tmp/sbgap/evidence/{tr-xhttp,tr-foobar,ech-b64,ech-pem}.json` |
-| 复现命令 | `python3 to_sb.py <payload> --prefix e2e --compat-report r.json`；`bash tools/check_compat_wiring.sh` |
+| 改前/改后产物 + compat 报告 | `pre-outbounds.json` / `post-outbounds.json`、`pre-report.json` / `post-report.json` |
+| 改前/改后真连逐节点结果（CC / 本机） | `cc-pre.res` / `cc-post.res`（+ `.log`）、`pre-realconn.json` / `post-realconn.json`（+ `.log`） |
+| 单条修复探针（anytls 204 + 104.28.201.80） | `probe-anytls.json.res` |
+| 内核探针（xhttp/未知名 → FATAL、httpupgrade rc=0、ECH base64 vs PEM、无 enabled 的 tls 被忽略） | `tr-xhttp.json`、`tr-foobar.json`、`tr-httpupgrade.json`、`ech-b64.json`、`ech-pem.json`、`tls-noenabled.json` |
+| 门禁全量输出（22/0） | `gate-22-0.txt` |
+| 复现命令 | `python3 to_sb.py <payload> --prefix e2e --compat-report r.json`；`python3 realconn.py out.json res.json`；`bash tools/check_compat_wiring.sh` |
 
 ## 7. 纪律与边界
 
 - 只改 `sing-box-core`：`src/client/to_sb.py`、`tools/check_compat_wiring.sh`。
   `xray--core` / `mihomo--core` 只读（读了 X 的 `echcli.py` 与 M 的 `nodecompat.py` 作为语义依据）。
-- **未写任何生产路径**：客户端机器上用 `/tmp/sbgap`（xiaomi）/`/tmp/cc-sbgap`（CC）；
+- **未写任何生产路径**：客户端机器上用 `/tmp/sbgap`（xiaomi）/`/tmp/cc-sbgap`（CC），**跑完已删除**；
   RN 只做只读（`scp` 取内核二进制、读 share 记录），未跑任何生产生成脚本、**未重启任何服务**。
 - vendored compat 与 `compat2.py` **一行未改**（门禁 §2 逐字节比对通过）。
 - 本地 commit，**未 push**。

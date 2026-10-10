@@ -1,0 +1,14 @@
+{
+ "outbounds": [
+  {
+   "type": "vless",
+   "tag": "e",
+   "server": "1.2.3.4",
+   "server_port": 443,
+   "uuid": "11111111-1111-1111-1111-111111111111",
+   "tls": {
+    "server_name": "a.com"
+   }
+  }
+ ]
+}

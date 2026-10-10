@@ -1,0 +1,17 @@
+OK   e2e-🇺🇸 mAnyTLS02-TLS               check=0 start=True  204=204  ip=104.28.201.80    
+OK   e2e-🇺🇸 mAnyTLS03-TLS               check=0 start=True  204=204  ip=104.28.201.80    
+OK   e2e-🇺🇸 mAnyTLS01-TLS               check=0 start=True  204=204  ip=104.28.201.80    
+FAIL e2e-🇺🇸 mHysteria201-TLS            check=0 start=True  204=502  ip=                 +0800 2026-10-11 00:34:51 [31mERROR[0m [[38;5;51m3693156858[0m 223ms] connection: open connection to api.ipify.org:4
+OK   e2e-🇺🇸 mVLESS01-REALITY            check=0 start=True  204=204  ip=104.28.201.80    
+OK   e2e-🇺🇸 mVLESS02-REALITY-gRPC       check=0 start=True  204=204  ip=104.28.201.80    
+FAIL e2e-🇺🇸 mTrojan05-CDN-gRPC          check=0 start=True  204=502  ip=                 +0800 2026-10-11 00:34:56 [31mERROR[0m [[38;5;223m340843471[0m 426ms] connection: connection download closed: v2ray-
+OK   e2e-🇺🇸 mTrojan04-CDN-WS            check=0 start=True  204=204  ip=104.28.201.80    
+OK   e2e-🇺🇸 mTrojan01-REALITY           check=0 start=True  204=204  ip=104.28.201.80    
+OK   e2e-🇺🇸 mTrojan02-REALITY-gRPC      check=0 start=True  204=204  ip=104.28.201.80    
+OK   e2e-🇺🇸 mTrojan03-TLS               check=0 start=True  204=204  ip=104.28.201.80    
+FAIL e2e-🇺🇸 mTUIC01-TLS                 check=0 start=True  204=502  ip=                 +0800 2026-10-11 00:35:06 [31mERROR[0m [[38;5;210m3395430338[0m 223ms] connection: open connection to api.ipify.org:
+FAIL e2e-🇺🇸 mVLESS05-CDN-gRPC           check=0 start=True  204=502  ip=                 +0800 2026-10-11 00:35:07 [31mERROR[0m [[38;5;79m2183255871[0m 214ms] connection: connection download closed: v2ray-
+OK   e2e-🇺🇸 mVLESS04-CDN-WS             check=0 start=True  204=204  ip=104.28.201.80    
+OK   e2e-🇺🇸 mVLESS01-TLS-WS             check=0 start=True  204=204  ip=104.28.201.80    
+
+== 真连(204 + 出口 104.28.x.x) 11/15 ==

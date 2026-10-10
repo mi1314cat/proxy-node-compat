@@ -1,0 +1,634 @@
+{
+ "total": 19,
+ "ok": 18,
+ "skip": 1,
+ "reasons": {
+  "不支持的 clash type: hysteria2": 1
+ },
+ "format": "mihomo-yaml",
+ "compat": {
+  "target": {
+   "kernel": "singbox",
+   "distribution": "upstream",
+   "version": null,
+   "build_tags": null,
+   "platform": null,
+   "runtime_options": {},
+   "evaluated_at": null
+  },
+  "nodes": [
+   {
+    "tag": "e2e-🇺🇸 mAnyTLS02-TLS",
+    "type": "anytls",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mAnyTLS03-TLS",
+    "type": "anytls",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mAnyTLS01-TLS",
+    "type": "anytls",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mHysteria201-TLS",
+    "type": "hysteria2",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.protocol.hysteria2: build tags",
+      "why": "未提供 build_tags, 无法判断可选依赖是否编入"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS01-REALITY",
+    "type": "vless",
+    "verdict": "UNKNOWN",
+    "verdict_source": "legacy（compat 判 UNKNOWN, 无确定结论）",
+    "ok": true,
+    "reason_codes": [
+     "UNKNOWN_CAPABILITY"
+    ],
+    "message": [
+     "没有覆盖该组合的证据（未知 ≠ 不支持, 所以不据此判死）"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.reality.build_tags: build tags",
+      "why": "未提供 build_tags, 无法判断可选依赖是否编入"
+     },
+     {
+      "what": "singbox.support.reality: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "singbox.support.flow: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS02-REALITY-gRPC",
+    "type": "vless",
+    "verdict": "UNKNOWN",
+    "verdict_source": "legacy（compat 判 UNKNOWN, 无确定结论）",
+    "ok": true,
+    "reason_codes": [
+     "UNKNOWN_CAPABILITY"
+    ],
+    "message": [
+     "没有覆盖该组合的证据（未知 ≠ 不支持, 所以不据此判死）"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.reality.build_tags: build tags",
+      "why": "未提供 build_tags, 无法判断可选依赖是否编入"
+     },
+     {
+      "what": "singbox.support.reality: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS03-REALITY-XHTTP",
+    "type": "vless",
+    "verdict": "UNKNOWN",
+    "verdict_source": "legacy（compat 判 UNKNOWN, 无确定结论）",
+    "ok": true,
+    "reason_codes": [
+     "UNKNOWN_CAPABILITY"
+    ],
+    "message": [
+     "没有覆盖该组合的证据（未知 ≠ 不支持, 所以不据此判死）"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.reality.build_tags: build tags",
+      "why": "未提供 build_tags, 无法判断可选依赖是否编入"
+     },
+     {
+      "what": "singbox.support.reality: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mTrojan05-CDN-gRPC",
+    "type": "trojan",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mTrojan04-CDN-WS",
+    "type": "trojan",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mTrojan01-REALITY",
+    "type": "trojan",
+    "verdict": "UNKNOWN",
+    "verdict_source": "legacy（compat 判 UNKNOWN, 无确定结论）",
+    "ok": true,
+    "reason_codes": [
+     "UNKNOWN_CAPABILITY"
+    ],
+    "message": [
+     "没有覆盖该组合的证据（未知 ≠ 不支持, 所以不据此判死）"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.reality.build_tags: build tags",
+      "why": "未提供 build_tags, 无法判断可选依赖是否编入"
+     },
+     {
+      "what": "singbox.support.reality: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mTrojan02-REALITY-gRPC",
+    "type": "trojan",
+    "verdict": "UNKNOWN",
+    "verdict_source": "legacy（compat 判 UNKNOWN, 无确定结论）",
+    "ok": true,
+    "reason_codes": [
+     "UNKNOWN_CAPABILITY"
+    ],
+    "message": [
+     "没有覆盖该组合的证据（未知 ≠ 不支持, 所以不据此判死）"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.reality.build_tags: build tags",
+      "why": "未提供 build_tags, 无法判断可选依赖是否编入"
+     },
+     {
+      "what": "singbox.support.reality: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mTrojan03-TLS",
+    "type": "trojan",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mTUIC01-TLS",
+    "type": "tuic",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.protocol.tuic: build tags",
+      "why": "未提供 build_tags, 无法判断可选依赖是否编入"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS05-CDN-gRPC",
+    "type": "vless",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS04-CDN-WS",
+    "type": "vless",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS01-TLS-WS",
+    "type": "vless",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS03-TLS-XHTTP-CDN",
+    "type": "vless",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS02-TLS-XHTTP",
+    "type": "vless",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   }
+  ]
+ }
+}

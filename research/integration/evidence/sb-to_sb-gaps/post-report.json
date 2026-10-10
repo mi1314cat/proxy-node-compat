@@ -1,0 +1,782 @@
+{
+ "total": 19,
+ "ok": 15,
+ "skip": 4,
+ "reasons": {
+  "不支持的 clash type: hysteria2": 1,
+  "compat[KERNEL_NEVER_SUPPORTED,UNKNOWN_CAPABILITY] 不支持的传输方式 type='xhttp'（sing-box 内核从来没有 xhttp/splithttp 出站）。本内核可用: ws、grpc、httpupgrade（tcp、http(h2)、quic 注册表未收录, 未知≠不支持）": 2,
+  "compat[KERNEL_NEVER_SUPPORTED] 不支持的传输方式 type='xhttp'（sing-box 内核从来没有 xhttp/splithttp 出站）。本内核可用: ws、grpc、httpupgrade（tcp、http(h2)、quic 注册表未收录, 未知≠不支持）": 1
+ },
+ "format": "mihomo-yaml",
+ "compat": {
+  "target": {
+   "kernel": "singbox",
+   "distribution": "upstream",
+   "version": null,
+   "build_tags": null,
+   "platform": null,
+   "runtime_options": {},
+   "evaluated_at": null
+  },
+  "nodes": [
+   {
+    "tag": "e2e-🇺🇸 mAnyTLS02-TLS",
+    "type": "anytls",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mAnyTLS03-TLS",
+    "type": "anytls",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mAnyTLS01-TLS",
+    "type": "anytls",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mHysteria201-TLS",
+    "type": "hysteria2",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.protocol.hysteria2: build tags",
+      "why": "未提供 build_tags, 无法判断可选依赖是否编入"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS01-REALITY",
+    "type": "vless",
+    "verdict": "UNKNOWN",
+    "verdict_source": "legacy（compat 判 UNKNOWN, 无确定结论）",
+    "ok": true,
+    "reason_codes": [
+     "UNKNOWN_CAPABILITY"
+    ],
+    "message": [
+     "没有覆盖该组合的证据（未知 ≠ 不支持, 所以不据此判死）"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.reality.build_tags: build tags",
+      "why": "未提供 build_tags, 无法判断可选依赖是否编入"
+     },
+     {
+      "what": "singbox.support.reality: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "singbox.support.flow: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS02-REALITY-gRPC",
+    "type": "vless",
+    "verdict": "UNKNOWN",
+    "verdict_source": "legacy（compat 判 UNKNOWN, 无确定结论）",
+    "ok": true,
+    "reason_codes": [
+     "UNKNOWN_CAPABILITY"
+    ],
+    "message": [
+     "没有覆盖该组合的证据（未知 ≠ 不支持, 所以不据此判死）"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.reality.build_tags: build tags",
+      "why": "未提供 build_tags, 无法判断可选依赖是否编入"
+     },
+     {
+      "what": "singbox.support.reality: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS03-REALITY-XHTTP",
+    "type": "vless",
+    "verdict": "UNSUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": false,
+    "reason_codes": [
+     "KERNEL_NEVER_SUPPORTED",
+     "UNKNOWN_CAPABILITY"
+    ],
+    "message": [
+     "不支持的传输方式 type='xhttp'（sing-box 内核从来没有 xhttp/splithttp 出站）。本内核可用: ws、grpc、httpupgrade（tcp、http(h2)、quic 注册表未收录, 未知≠不支持）",
+     "该内核从来没有支持过这个能力（不是版本问题, 换版本也没用）"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.reality.build_tags: build tags",
+      "why": "未提供 build_tags, 无法判断可选依赖是否编入"
+     },
+     {
+      "what": "singbox.support.reality: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mTrojan05-CDN-gRPC",
+    "type": "trojan",
+    "verdict": "UNKNOWN",
+    "verdict_source": "legacy（compat 判 UNKNOWN, 无确定结论）",
+    "ok": true,
+    "reason_codes": [
+     "UNKNOWN_CAPABILITY"
+    ],
+    "message": [
+     "ECH 的表示法不一致: sing-box 的 tls.ech.config 要 PEM（-----BEGIN ECH CONFIGS-----）, 不是 base64 —— 喂 base64 会 FATAL: invalid ECH configs pem",
+     "没有覆盖该组合的证据（未知 ≠ 不支持, 所以不据此判死）",
+     "sing-box 的 tls.ech.config 要 PEM（-----BEGIN ECH CONFIGS-----），不是 base64；喂 base64 会 FATAL: invalid ECH configs pem",
+     "分享里的 ECH（mihomo ech-opts/hxicc.catmicos.dpdns.org）写不成 sing-box 的 tls.ech.config —— 内核只认 PEM（-----BEGIN ECH CONFIGS-----）, 给的是 运行时查 DNS(HTTPS/SVCB) 的形态; 转换器不联网、不能现场取 ECHConfig, 也绝不写 base64（实测喂 base64 = FATAL invalid ECH configs pem, 整份配置作废）。**这条节点的 ECH 没有启用**; 若它必须靠 ECH 才能连通, 表现就是连不上。"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.support.ech: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [
+     {
+      "feature": "standard:ech",
+      "source": "to_sb",
+      "what": "分享里的 ECH（mihomo ech-opts/hxicc.catmicos.dpdns.org）写不成 sing-box 的 tls.ech.config —— 内核只认 PEM（-----BEGIN ECH CONFIGS-----）, 给的是 运行时查 DNS(HTTPS/SVCB) 的形态; 转换器不联网、不能现场取 ECHConfig, 也绝不写 base64（实测喂 base64 = FATAL invalid ECH configs pem, 整份配置作废）。**这条节点的 ECH 没有启用**; 若它必须靠 ECH 才能连通, 表现就是连不上。"
+     }
+    ],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [
+     {
+      "code": "SEMANTIC_MISMATCH",
+      "detail": "sing-box 的 tls.ech.config 要 PEM（-----BEGIN ECH CONFIGS-----），不是 base64；喂 base64 会 FATAL: invalid ECH configs pem",
+      "rule": "singbox.ech.representation"
+     }
+    ],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mTrojan04-CDN-WS",
+    "type": "trojan",
+    "verdict": "UNKNOWN",
+    "verdict_source": "legacy（compat 判 UNKNOWN, 无确定结论）",
+    "ok": true,
+    "reason_codes": [
+     "UNKNOWN_CAPABILITY"
+    ],
+    "message": [
+     "ECH 的表示法不一致: sing-box 的 tls.ech.config 要 PEM（-----BEGIN ECH CONFIGS-----）, 不是 base64 —— 喂 base64 会 FATAL: invalid ECH configs pem",
+     "没有覆盖该组合的证据（未知 ≠ 不支持, 所以不据此判死）",
+     "sing-box 的 tls.ech.config 要 PEM（-----BEGIN ECH CONFIGS-----），不是 base64；喂 base64 会 FATAL: invalid ECH configs pem",
+     "分享里的 ECH（mihomo ech-opts/hxicc.catmicos.dpdns.org）写不成 sing-box 的 tls.ech.config —— 内核只认 PEM（-----BEGIN ECH CONFIGS-----）, 给的是 运行时查 DNS(HTTPS/SVCB) 的形态; 转换器不联网、不能现场取 ECHConfig, 也绝不写 base64（实测喂 base64 = FATAL invalid ECH configs pem, 整份配置作废）。**这条节点的 ECH 没有启用**; 若它必须靠 ECH 才能连通, 表现就是连不上。"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.support.ech: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [
+     {
+      "feature": "standard:ech",
+      "source": "to_sb",
+      "what": "分享里的 ECH（mihomo ech-opts/hxicc.catmicos.dpdns.org）写不成 sing-box 的 tls.ech.config —— 内核只认 PEM（-----BEGIN ECH CONFIGS-----）, 给的是 运行时查 DNS(HTTPS/SVCB) 的形态; 转换器不联网、不能现场取 ECHConfig, 也绝不写 base64（实测喂 base64 = FATAL invalid ECH configs pem, 整份配置作废）。**这条节点的 ECH 没有启用**; 若它必须靠 ECH 才能连通, 表现就是连不上。"
+     }
+    ],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [
+     {
+      "code": "SEMANTIC_MISMATCH",
+      "detail": "sing-box 的 tls.ech.config 要 PEM（-----BEGIN ECH CONFIGS-----），不是 base64；喂 base64 会 FATAL: invalid ECH configs pem",
+      "rule": "singbox.ech.representation"
+     }
+    ],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mTrojan01-REALITY",
+    "type": "trojan",
+    "verdict": "UNKNOWN",
+    "verdict_source": "legacy（compat 判 UNKNOWN, 无确定结论）",
+    "ok": true,
+    "reason_codes": [
+     "UNKNOWN_CAPABILITY"
+    ],
+    "message": [
+     "没有覆盖该组合的证据（未知 ≠ 不支持, 所以不据此判死）"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.reality.build_tags: build tags",
+      "why": "未提供 build_tags, 无法判断可选依赖是否编入"
+     },
+     {
+      "what": "singbox.support.reality: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mTrojan02-REALITY-gRPC",
+    "type": "trojan",
+    "verdict": "UNKNOWN",
+    "verdict_source": "legacy（compat 判 UNKNOWN, 无确定结论）",
+    "ok": true,
+    "reason_codes": [
+     "UNKNOWN_CAPABILITY"
+    ],
+    "message": [
+     "没有覆盖该组合的证据（未知 ≠ 不支持, 所以不据此判死）"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.reality.build_tags: build tags",
+      "why": "未提供 build_tags, 无法判断可选依赖是否编入"
+     },
+     {
+      "what": "singbox.support.reality: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mTrojan03-TLS",
+    "type": "trojan",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mTUIC01-TLS",
+    "type": "tuic",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.protocol.tuic: build tags",
+      "why": "未提供 build_tags, 无法判断可选依赖是否编入"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS05-CDN-gRPC",
+    "type": "vless",
+    "verdict": "UNKNOWN",
+    "verdict_source": "legacy（compat 判 UNKNOWN, 无确定结论）",
+    "ok": true,
+    "reason_codes": [
+     "UNKNOWN_CAPABILITY"
+    ],
+    "message": [
+     "ECH 的表示法不一致: sing-box 的 tls.ech.config 要 PEM（-----BEGIN ECH CONFIGS-----）, 不是 base64 —— 喂 base64 会 FATAL: invalid ECH configs pem",
+     "没有覆盖该组合的证据（未知 ≠ 不支持, 所以不据此判死）",
+     "sing-box 的 tls.ech.config 要 PEM（-----BEGIN ECH CONFIGS-----），不是 base64；喂 base64 会 FATAL: invalid ECH configs pem",
+     "分享里的 ECH（mihomo ech-opts/hxicc.catmicos.dpdns.org）写不成 sing-box 的 tls.ech.config —— 内核只认 PEM（-----BEGIN ECH CONFIGS-----）, 给的是 运行时查 DNS(HTTPS/SVCB) 的形态; 转换器不联网、不能现场取 ECHConfig, 也绝不写 base64（实测喂 base64 = FATAL invalid ECH configs pem, 整份配置作废）。**这条节点的 ECH 没有启用**; 若它必须靠 ECH 才能连通, 表现就是连不上。"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.support.ech: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [
+     {
+      "feature": "standard:ech",
+      "source": "to_sb",
+      "what": "分享里的 ECH（mihomo ech-opts/hxicc.catmicos.dpdns.org）写不成 sing-box 的 tls.ech.config —— 内核只认 PEM（-----BEGIN ECH CONFIGS-----）, 给的是 运行时查 DNS(HTTPS/SVCB) 的形态; 转换器不联网、不能现场取 ECHConfig, 也绝不写 base64（实测喂 base64 = FATAL invalid ECH configs pem, 整份配置作废）。**这条节点的 ECH 没有启用**; 若它必须靠 ECH 才能连通, 表现就是连不上。"
+     }
+    ],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [
+     {
+      "code": "SEMANTIC_MISMATCH",
+      "detail": "sing-box 的 tls.ech.config 要 PEM（-----BEGIN ECH CONFIGS-----），不是 base64；喂 base64 会 FATAL: invalid ECH configs pem",
+      "rule": "singbox.ech.representation"
+     }
+    ],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS04-CDN-WS",
+    "type": "vless",
+    "verdict": "UNKNOWN",
+    "verdict_source": "legacy（compat 判 UNKNOWN, 无确定结论）",
+    "ok": true,
+    "reason_codes": [
+     "UNKNOWN_CAPABILITY"
+    ],
+    "message": [
+     "ECH 的表示法不一致: sing-box 的 tls.ech.config 要 PEM（-----BEGIN ECH CONFIGS-----）, 不是 base64 —— 喂 base64 会 FATAL: invalid ECH configs pem",
+     "没有覆盖该组合的证据（未知 ≠ 不支持, 所以不据此判死）",
+     "sing-box 的 tls.ech.config 要 PEM（-----BEGIN ECH CONFIGS-----），不是 base64；喂 base64 会 FATAL: invalid ECH configs pem",
+     "分享里的 ECH（mihomo ech-opts/hxicc.catmicos.dpdns.org）写不成 sing-box 的 tls.ech.config —— 内核只认 PEM（-----BEGIN ECH CONFIGS-----）, 给的是 运行时查 DNS(HTTPS/SVCB) 的形态; 转换器不联网、不能现场取 ECHConfig, 也绝不写 base64（实测喂 base64 = FATAL invalid ECH configs pem, 整份配置作废）。**这条节点的 ECH 没有启用**; 若它必须靠 ECH 才能连通, 表现就是连不上。"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.support.ech: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [
+     {
+      "feature": "standard:ech",
+      "source": "to_sb",
+      "what": "分享里的 ECH（mihomo ech-opts/hxicc.catmicos.dpdns.org）写不成 sing-box 的 tls.ech.config —— 内核只认 PEM（-----BEGIN ECH CONFIGS-----）, 给的是 运行时查 DNS(HTTPS/SVCB) 的形态; 转换器不联网、不能现场取 ECHConfig, 也绝不写 base64（实测喂 base64 = FATAL invalid ECH configs pem, 整份配置作废）。**这条节点的 ECH 没有启用**; 若它必须靠 ECH 才能连通, 表现就是连不上。"
+     }
+    ],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [
+     {
+      "code": "SEMANTIC_MISMATCH",
+      "detail": "sing-box 的 tls.ech.config 要 PEM（-----BEGIN ECH CONFIGS-----），不是 base64；喂 base64 会 FATAL: invalid ECH configs pem",
+      "rule": "singbox.ech.representation"
+     }
+    ],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS01-TLS-WS",
+    "type": "vless",
+    "verdict": "SUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": true,
+    "reason_codes": [],
+    "message": [],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS03-TLS-XHTTP-CDN",
+    "type": "vless",
+    "verdict": "UNSUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": false,
+    "reason_codes": [
+     "KERNEL_NEVER_SUPPORTED",
+     "UNKNOWN_CAPABILITY"
+    ],
+    "message": [
+     "不支持的传输方式 type='xhttp'（sing-box 内核从来没有 xhttp/splithttp 出站）。本内核可用: ws、grpc、httpupgrade（tcp、http(h2)、quic 注册表未收录, 未知≠不支持）",
+     "ECH 的表示法不一致: sing-box 的 tls.ech.config 要 PEM（-----BEGIN ECH CONFIGS-----）, 不是 base64 —— 喂 base64 会 FATAL: invalid ECH configs pem",
+     "该内核从来没有支持过这个能力（不是版本问题, 换版本也没用）",
+     "sing-box 的 tls.ech.config 要 PEM（-----BEGIN ECH CONFIGS-----），不是 base64；喂 base64 会 FATAL: invalid ECH configs pem",
+     "分享里的 ECH（mihomo ech-opts/hxicc.catmicos.dpdns.org）写不成 sing-box 的 tls.ech.config —— 内核只认 PEM（-----BEGIN ECH CONFIGS-----）, 给的是 运行时查 DNS(HTTPS/SVCB) 的形态; 转换器不联网、不能现场取 ECHConfig, 也绝不写 base64（实测喂 base64 = FATAL invalid ECH configs pem, 整份配置作废）。**这条节点的 ECH 没有启用**; 若它必须靠 ECH 才能连通, 表现就是连不上。"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "singbox.support.ech: 目标版本未知",
+      "why": "未提供 version —— 版本相关的规则无法判定（不影响版本无关的规则）"
+     },
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [
+     {
+      "feature": "standard:ech",
+      "source": "to_sb",
+      "what": "分享里的 ECH（mihomo ech-opts/hxicc.catmicos.dpdns.org）写不成 sing-box 的 tls.ech.config —— 内核只认 PEM（-----BEGIN ECH CONFIGS-----）, 给的是 运行时查 DNS(HTTPS/SVCB) 的形态; 转换器不联网、不能现场取 ECHConfig, 也绝不写 base64（实测喂 base64 = FATAL invalid ECH configs pem, 整份配置作废）。**这条节点的 ECH 没有启用**; 若它必须靠 ECH 才能连通, 表现就是连不上。"
+     }
+    ],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [
+     {
+      "code": "SEMANTIC_MISMATCH",
+      "detail": "sing-box 的 tls.ech.config 要 PEM（-----BEGIN ECH CONFIGS-----），不是 base64；喂 base64 会 FATAL: invalid ECH configs pem",
+      "rule": "singbox.ech.representation"
+     }
+    ],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   },
+   {
+    "tag": "e2e-🇺🇸 mVLESS02-TLS-XHTTP",
+    "type": "vless",
+    "verdict": "UNSUPPORTED",
+    "verdict_source": "compat（旧判定无意见）",
+    "ok": false,
+    "reason_codes": [
+     "KERNEL_NEVER_SUPPORTED"
+    ],
+    "message": [
+     "不支持的传输方式 type='xhttp'（sing-box 内核从来没有 xhttp/splithttp 出站）。本内核可用: ws、grpc、httpupgrade（tcp、http(h2)、quic 注册表未收录, 未知≠不支持）",
+     "该内核从来没有支持过这个能力（不是版本问题, 换版本也没用）"
+    ],
+    "raw_uri": null,
+    "extensions": [],
+    "unknowns": [
+     {
+      "what": "层级 uri（scheme=singbox-json）",
+      "why": "没有覆盖该 scheme × feature 的 URI 表达力规则"
+     },
+     {
+      "what": "层级 parse",
+      "why": "没有任何证据覆盖该层级"
+     }
+    ],
+    "client_losses": [],
+    "downgrades": [],
+    "losses": [],
+    "warnings": [],
+    "legacy": {
+     "verdict": "UNKNOWN",
+     "source": "无（客户端只做整份 sing-box check + 真实拨测）",
+     "detail": "客户端不逐节点判定"
+    }
+   }
+  ]
+ },
+ "conversion_losses": [
+  {
+   "feature": "standard:ech",
+   "source": "to_sb",
+   "what": "分享里的 ECH（mihomo ech-opts/hxicc.catmicos.dpdns.org）写不成 sing-box 的 tls.ech.config —— 内核只认 PEM（-----BEGIN ECH CONFIGS-----）, 给的是 运行时查 DNS(HTTPS/SVCB) 的形态; 转换器不联网、不能现场取 ECHConfig, 也绝不写 base64（实测喂 base64 = FATAL invalid ECH configs pem, 整份配置作废）。**这条节点的 ECH 没有启用**; 若它必须靠 ECH 才能连通, 表现就是连不上。"
+  },
+  {
+   "feature": "standard:ech",
+   "source": "to_sb",
+   "what": "分享里的 ECH（mihomo ech-opts/hxicc.catmicos.dpdns.org）写不成 sing-box 的 tls.ech.config —— 内核只认 PEM（-----BEGIN ECH CONFIGS-----）, 给的是 运行时查 DNS(HTTPS/SVCB) 的形态; 转换器不联网、不能现场取 ECHConfig, 也绝不写 base64（实测喂 base64 = FATAL invalid ECH configs pem, 整份配置作废）。**这条节点的 ECH 没有启用**; 若它必须靠 ECH 才能连通, 表现就是连不上。"
+  },
+  {
+   "feature": "standard:ech",
+   "source": "to_sb",
+   "what": "分享里的 ECH（mihomo ech-opts/hxicc.catmicos.dpdns.org）写不成 sing-box 的 tls.ech.config —— 内核只认 PEM（-----BEGIN ECH CONFIGS-----）, 给的是 运行时查 DNS(HTTPS/SVCB) 的形态; 转换器不联网、不能现场取 ECHConfig, 也绝不写 base64（实测喂 base64 = FATAL invalid ECH configs pem, 整份配置作废）。**这条节点的 ECH 没有启用**; 若它必须靠 ECH 才能连通, 表现就是连不上。"
+  },
+  {
+   "feature": "standard:ech",
+   "source": "to_sb",
+   "what": "分享里的 ECH（mihomo ech-opts/hxicc.catmicos.dpdns.org）写不成 sing-box 的 tls.ech.config —— 内核只认 PEM（-----BEGIN ECH CONFIGS-----）, 给的是 运行时查 DNS(HTTPS/SVCB) 的形态; 转换器不联网、不能现场取 ECHConfig, 也绝不写 base64（实测喂 base64 = FATAL invalid ECH configs pem, 整份配置作废）。**这条节点的 ECH 没有启用**; 若它必须靠 ECH 才能连通, 表现就是连不上。"
+  }
+ ]
+}
