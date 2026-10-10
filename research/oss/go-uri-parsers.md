@@ -224,7 +224,7 @@ func (s *Shadowsocks) BuildOutboundDetourConfig(allowInsecure bool) (*conf.Outbo
 
 （`parser.go:1-3` 的包注释原文：*"把各类代理节点 URI(vless/vmess/ss/trojan/hysteria2/tuic/naive 等) 解析为 clash-meta 风格的 map[string]any。零第三方依赖,供 miaomiaowu / miaomiaowux 共用。"*）
 
-> **对文档说法的核验**：「解析为 clash-meta 风格 map」→ **确认**。「零第三方依赖」→ **基本准确但不严格**：`go.mod` 只有 `require gopkg.in/yaml.v3 v3.0.1` 一行（那是 `substore/` 子包用于 YAML 的），`parser.go`/`preprocess.go`/`fields.go` 这三个顶层文件**只用标准库**（`encoding/base64, encoding/json, fmt, net/netip, net/url, regexp, strconv, strings, unicode`）。作为对照，A 有 ~20 个直接依赖 + 完整 xray-core，C 直接依赖 sing-box 本体。**论"零依赖"B 是三者中唯一接近的。**
+> **对文档说法的核验**：「解析为 clash-meta 风格 map」→ **确认**。「零第三方依赖」→ **基本准确但不严格**：`go.mod` 只有 `require gopkg.in/yaml.v3 v3.0.1` 一行（那是 `substore/` 子包用于 YAML 的），`parser.go`/`preprocess.go`/`fields.go` 这三个顶层文件**只用标准库**（`encoding/base64, encoding/json, fmt, net/netip, net/url, regexp, strconv, strings, unicode`）。作为对照，A 有 **22 个直接依赖（+101 间接）** 且含完整 xray-core，C 直接依赖 sing-box 本体（4 个直接依赖，其余全是传递依赖）。**论"零依赖"B 是三者中唯一接近的。**
 
 ### 2.1 数据模型：**直接产出"目标内核的 map"——三者中风险最高**
 

@@ -21,8 +21,9 @@
 | [Toperlock/sing-box-subscribe](https://github.com/Toperlock/sing-box-subscribe) | Python | 模板 + 订阅 → sing-box 配置 | 模板化生成的对照样本（调研进行中） |
 | [Leadaxe/LxBox](https://github.com/Leadaxe/LxBox) | Java/Kotlin | Android 客户端，内核是 **sing-box 的 fork** `sing-box-lx` | ⚠️ 引出本报告最重要的架构修正：见 §4.3 |
 
-> 待补：Sub-Store / v2rayN + sing-box-subscribe 两份源码级报告仍在调研中，落地后补入本节与 §3、§4。
-> xray-knife + proxyparser 的调研已完成，见 §4.5（其中一条修正了本报告 §7 的初稿）。
+> 已完成 3 份：Proxylink、subconverter + sublink-worker、xray-knife + proxyparser + sub2sing-box（见 §4.5–§4.7）。
+> 仍在调研：Sub-Store、v2rayN + sing-box-subscribe；另有 sing-box 内核能力调研未回。
+> §4.5 的一条结论修正了本报告 §7 的初稿。
 
 ---
 
@@ -139,6 +140,29 @@ reality 细节另挂 `reality-opts`。map 一旦生成，**"用户原始写了�
 **不参与任何判断**。
 
 → 这精确地印证了你定的第 6 条要求（Kernel + Version）不是洁癖，而是生态真实缺口。
+
+### 4.7 生态里已有的"能力判定雏形"——以及它们距我们还有多远
+
+这一节是本次调研最出乎意料的收获：**能力判定不是没人做过，而是都做了一半。**
+
+| 项目 | 它已经有的 | 它缺的 | 证据 |
+|---|---|---|---|
+| **xray-knife v11** | `xrayUnsupported()` / `SingboxReason(p, insecure)` / `removedTransport()`；粒度到协议级 + 传输级 + **参数值级**（SS cipher 白名单）；`Report{Converted, Skipped[]{Index,Name,Reason}}` **节点级跳过报告**，4 个导出器都在填；`OrigLink` 字段让 `GetLink()` 优先返回原文 | **零版本维度**（全仓库 grep 无命中）；报告只到节点级、没有字段级 loss；`prune`/`removeEmptyValues` 递归删 `false/0/""`，把 presence 抹平 | `pkg/core/xray/interface.go`、`shadowsocks.go:180`、`convert/xray.go:120,143` |
+| **proxyparser** | `ProduceOptions{IncludeUnsupportedProxy, ClientCompatibilityMode}` + 各目标的闸门表（34 项 SS cipher 白名单、`anytls+reality`、`xhttp`、juicity/naive…）；sing-box 闸门细到 `"VLESS encryption is not supported"` | 无内核版本（唯一提到版本的是注释）；闸门是**硬编码**而非数据；未知参数解析后仍被丢 | 报告 §2 |
+| **sub2sing-box** | 唯一**把版本写进代码**的项目：`unsupportedProxyReasons` 里写着 `"ssr outbound was removed in sing-box 1.6.0"`、`"wireguard outbound was removed in 1.13.0"`；订阅路径按 reason 计数+排序+写 stderr | 版本信息是**散文注释**、非结构化数据；不看内核实际版本；字段级 loss 完全没有；`allowInsecure` 只认 `"1"`（`true` 静默变 false）；`type=xhttp/kcp` → Transport 保持 nil = **静默降级为裸 TCP** | `parser/unsupported.go`、`model/options.go:73` |
+
+**结论**：我们要做的不是"从零发明能力判定"，而是把这三家各自做了一半的东西——
+**判定函数 + 闸门表 + 版本事实**——合成一张**数据化、带版本、带字段级 loss** 的表。
+顺带注意 sub2sing-box 天然给出的**理由三分法**，它必须进我们的 `reason_code`：
+
+```
+内核移除    (removed in <version>)   → 版本相关：老内核反而 SUPPORTED
+内核从来没有 (never existed)          → 与版本无关的 UNSUPPORTED
+URI 表达不了 (no share-link form)     → 与内核无关，属于 URI 层的 LOSS
+```
+
+第三类是纯 URI 问题，跟内核毫无关系 —— 混在一起就会得出"sing-box 不支持 snell"这种错结论
+（真实原因是 **snell 没有通用分享链接格式**）。
 
 ## 5. 哪些协议/能力已经有成熟实现（不必自己造）
 

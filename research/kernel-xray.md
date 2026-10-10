@@ -257,7 +257,7 @@ v26.7.11, v26.7.28, v26.9.8, v26.9.30, main(2026-10-10)`
 | `pqv` | REALITY `mldsa65Verify` | **规范 2025-07-22 新增** | 老客户端丢弃 → 后量子校验丢失 |
 | `serviceName` / `mode` / `authority` | gRPC | `mode` = `gun`(默认)/`multi`/`guna` | `guna` 非 Xray-core 原生（规范引用第三方实现） |
 | `path` / `host` | ws / httpupgrade / xhttp | — | — |
-| `headerType` | RAW 的 `header.type` / 历史 mKCP 伪装 | **mKCP 的 `headerType`/`seed` 已随内核移除而失去意义**（见 §7） | — |
+| `headerType` / `seed` | RAW 的 `header.type` / 历史 mKCP 伪装 | **当前规范正文里没有这两个参数**：抓取到的 #716 章节号从 `4.3.7` 直接跳到 `4.3.11`（4.3.8–4.3.10 缺失，疑似已删除），只有 §5 的**历史示例**还写着 `type=kcp&headerType=wireguard&seed=…` | 老订阅里带 `seed=`/`headerType=` 的 mKCP 节点：**内核侧已移除该能力**（见 §5、R2），URI 侧也无现行规范 |
 | `mtu` / `tti` | mKCP | **规范 2026-03-27 新增** | 新参数，老客户端丢弃 |
 | **`fm`** | `finalmask` | **规范 2026-01-31 新增**，整段 JSON 直接进 URI | **极新**：几乎只有最新客户端能表达 |
 | XHTTP `mode` / `extra` | `mode` / `extra` | 规范 2024-11-11 新增；`extra` 整段 JSON | `extra` 内字段是"客户端自定义 JSON"，不同客户端实现差异大 |
@@ -306,7 +306,7 @@ v26.7.11, v26.7.28, v26.9.8, v26.9.30, main(2026-10-10)`
 | R13 | **B** | `fallbacks` / `certificates` / REALITY 服务端字段 / sockopt 全组 / mux 全组 / `testseed` / `echSockopt` **URI 无法表达** | — | 从订阅导入即损失；必须标 `SUPPORTED_WITH_LOSS` | `[doc]` #716 参数表；`[src]` 字段清单 |
 | R14 | **B** | `pcs`/`vcn`/`ech`/`pqv`/`fm`/`mtu`/`tti` 都是 **2025-07 之后才加入规范**的参数 | 见 §6.2 | 老客户端解析器会**静默丢弃**（SIP002 精神：忽略未知参数）→ 安全能力降级 | `[doc]` #716 修订时间戳 |
 | R15 | **C** | `method`（≥26.7.28）、`hysteria`/`finalmask`/`pcs`/TUN（≥26.1.23）、`masque`/`xdrive`（≥26.9.30）、`mkcp-legacy`（≥26.7.28）、`sessionIDPlacement`（≥26.7.11）、`vcn`（≥26.2.6）、ECH/`mldsa65*`（≥25.7.26）、VLESS Encryption（≥25.9.11）、`curvePreferences`（≥v24.12.31）、`raw` 别名（≥v24.9.30）、`xhttp` 别名（≥v24.10.31） | 见左 | 版本判断必须按"字段首次出现"逐项建表 | `[src]` 跨 tag 探测（§0.2 的 tag 集合） |
-| R16 | **C** | **"当前稳定版"本身有歧义**：GitHub 上 `v26.3.27` 是最后一个 `prerelease=false`；`main` 已支持 masque/xdrive/TUN/`sessionIDPlacement` 等 26.3.27 完全没有的能力 | — | 兼容性判定必须让用户**明确选版本**，不能写"Xray 支持 X" | `[src]` GitHub Releases API 的 `prerelease` 字段 |
+| R16 | **C** | **"当前稳定版"本身有歧义**：GitHub 上 `v26.3.27` 是最后一个 `prerelease=false`；`main`/26.9.30 已支持 masque/xdrive/`sessionIDPlacement`/`sessionIDTable` 等 26.3.27 完全没有的能力 | — | 兼容性判定必须让用户**明确选版本**，不能写"Xray 支持 X" | `[src]` GitHub Releases API 的 `prerelease` 字段 |
 | R17 | **D** | **同一个二进制、同一份配置，行为随系统时间变化**：`allowInsecure` 在 26.2.6–26.5.9 上，系统时间 < 2026-06-01 UTC 时可用，≥ 时配置加载失败（26.3.27 亦然；26.7.11+ 恒报错） | 26.2.6–26.5.9 | 判定结果必须带"当前日期"维度，否则结果不可复现 | `[src]` `if time.Now().After(time.Date(2026,6,1,…))` |
 | R18 | **A** | VLESS `encryption`/`decryption` **不能留空**（必须显式 `"none"`），但很多客户端生成的配置不带该字段 | 长期行为（≤v24.9.19 已如此） | 配置加载失败 | `[src]` `infra/conf/vless.go` |
 | R19 | **A** | REALITY 客户端的 `fingerprint` **不接受 `unsafe`/`hellogolang`**，而 TLS 路径接受 `unsafe` | — | 同一 `fp` 值在不同 security 下结局不同 | `[src]` `transport_security.go` REALITY 客户端分支 |
@@ -334,16 +334,18 @@ v26.7.11, v26.7.28, v26.9.8, v26.9.30, main(2026-10-10)`
 10. **`cMaxLifetimeMs`**：仅在 #4113 讨论中被顺带提及，官方文档与内核源码中**未找到** → UNKNOWN（可能是历史名）。
 11. **"VLESS without flow 被弃用"**：我无法在任何 main 源码中找到该 warning（已全树 grep `without flow` /
    所有 `Print*FeatureWarning` 调用点 → 无此条）。若某处（如 discussion #5568）确有该文案，**其对应版本与是否生效均 UNKNOWN**。
-12. **about/news.html 中我未用源码复核的条目**：MTProto/Starlark/VMess-MD5 移除（v1.8.3）、
+12. **#716 规范中缺失的 4.3.8–4.3.10 三节**：章节号不连续，内容已从当前正文消失（疑似删除）。
+    **这三节原本定义什么参数、何时删除 → UNKNOWN**（推测与 mKCP `seed`/`headerType` 有关，但**未证实，不作为结论**）。
+13. **about/news.html 中我未用源码复核的条目**：MTProto/Starlark/VMess-MD5 移除（v1.8.3）、
     QUIC/DomainSocket 移除（v24.9.7）、SplitHTTP 仅兼容 v1.8.24（移除了 `ok`）、XUDP 控制项（v1.8.1）→
     均为**新闻页单一来源**，未逐版本源码复核。
-13. **masque / xdrive 的字段完整语义与运行时行为**：只确认 v26.9.30 起存在 `case "masque"`/`case "xdrive"` 与 JSON 结构体 →
+14. **masque / xdrive 的字段完整语义与运行时行为**：只确认 v26.9.30 起存在 `case "masque"`/`case "xdrive"` 与 JSON 结构体 →
     字段级语义、与分享 URI 的关系 **UNKNOWN**。
-14. **TUN 入站**：已确认 `infra/conf/tun.go` 自 v26.1.23 存在、main 无 `with_gvisor`/`with_wintun` 构建标签（只有 OS/arch 约束）。
+15. **TUN 入站**：已确认 `infra/conf/tun.go` 自 v26.1.23 存在、main 无 `with_gvisor`/`with_wintun` 构建标签（只有 OS/arch 约束）。
     但**"Xray 是否仍需特殊构建才带 gVisor 栈"在 v26.1.23 时期的情况未核对**，且 TUN 的字段语义/平台差异未展开 → UNKNOWN。
-15. **各字段在"入站 vs 出站"的有效性差异**（例如 `acceptProxyProtocol` 仅入站、`rejectUnknownSni` 仅服务端）：
+16. **各字段在"入站 vs 出站"的有效性差异**（例如 `acceptProxyProtocol` 仅入站、`rejectUnknownSni` 仅服务端）：
     文档有说明的部分已标注，**未逐字段穷举** → UNKNOWN。
-16. **`sniffing` / `routeOnly` / `targetStrategy` / `sendThrough` 等非节点能力字段**：与"节点能否完整使用"弱相关，本轮未展开 → UNKNOWN。
+17. **`sniffing` / `routeOnly` / `targetStrategy` / `sendThrough` 等非节点能力字段**：与"节点能否完整使用"弱相关，本轮未展开 → UNKNOWN。
 
 ---
 

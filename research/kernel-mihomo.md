@@ -18,22 +18,33 @@
 | `[meta]` | GitHub Releases API `https://api.github.com/repos/MetaCubeX/mihomo/releases/latest`；Release Atom feed `https://github.com/MetaCubeX/mihomo/releases.atom` | 仅用于确定版本号与发布时间 |
 | `[test]` | **无** | 本次无内核运行环境，0 条 |
 
-### 0.2 版本时间线（`[meta]` Atom feed，`releases.atom` 仅返回最近 10 条）
+### 0.2 版本时间线
 
-| 版本 | 发布时间 |
-|---|---|
-| Prerelease-Alpha | 2026-10-08（滚动预发布，非稳定版） |
-| **v1.19.32** | **2026-09-30** |
-| v1.19.31 | 2026-09-14 |
-| v1.19.30 | 2026-08-16 |
-| v1.19.29 | 2026-07-18 |
-| v1.19.28 | 2026-07-08 |
-| v1.19.27 | 2026-06-06 |
-| v1.19.26 | 2026-05-31 |
-| v1.19.25 | 2026-05-16 |
-| v1.19.24 | 2026-04-20 |
+`[meta]` 先确认：Atom feed 只返回**最新 10 条**，且 `?page=N` 无效（第 2/3/4 页字节完全相同，各 389,877 B）。因此完整历史改用**完整 git clone**（`origin/Meta`，4330 commits）取 tag 列表 + 逐个 `releases/tag/<tag>` 页面取正文：
 
-> Feed 的 `?page=N` 不生效（每次返回同一批），因此 **v1.19.24 之前的历史版本时间线本文未能取得** → 见 `## 8. UNKNOWN 清单`。
+- **共 114 个版本 tag**：`v0.x` 25 个（继承自 Clash 线）+ `v1.x` 89 个（其中 7 个 `_tun` 变体）。
+- 滚动/非版本 tag：`Prerelease-`、**`Prerelease-Alpha`**（2026-10-08）、`core`、`mini`、`plus`、`plus_pro`、`premium`、`test`。
+- **v1.19.32 是当前稳定版**；除滚动 `Prerelease-Alpha` 外没有更新的版本。
+- ⚠️ `v1.0.0`–`v1.8.0` 的 release **正文为空**（`v1.9.1`、`v1.11.4`、`v1.11.8`、`v1.13.0` 亦为空），v1.9.0 起才有内容 → **早期能力的版本门槛不可考**（见 §8）。
+- ⚠️ **git 图不连续**：`v1.14.x`–`v1.18.5` 这些 tag **不是** `origin/Meta` tip 的祖先。因此本文所有 v1.19.x 的门槛都额外用「该 tag 下的 raw 文件」二次确认。
+
+最近 25 个版本（git `creatordate`；最新 10 个以 release 页 UTC 为准）：
+
+| tag | 日期 | tag | 日期 |
+|---|---|---|---|
+| **v1.19.32** | **2026-09-30** | v1.19.19 | 2026-01-16 |
+| v1.19.31 | 2026-09-14 | v1.19.18 | 2025-12-21 |
+| v1.19.30 | 2026-08-16 | v1.19.17 | 2025-12-01 |
+| v1.19.29 | 2026-07-18 | v1.19.16 | 2025-11-09 |
+| v1.19.28 | 2026-07-08 | v1.19.15 | 2025-10-15 |
+| v1.19.27 | 2026-06-06 | v1.19.14 | 2025-09-24 |
+| v1.19.26 | 2026-05-30 | v1.19.13 | 2025-08-27 |
+| v1.19.25 | 2026-05-16 | v1.19.12 | 2025-07-27 |
+| v1.19.24 | 2026-04-20 | v1.19.11 | 2025-06-25 |
+| v1.19.23 | 2026-04-08 | v1.19.10 | 2025-05-29 |
+| v1.19.22 | 2026-04-01 | v1.19.9 | 2025-05-21 |
+| v1.19.21 | 2026-03-09 | v1.19.8 | 2025-05-13 |
+| v1.19.20 | 2026-02-08 | | |
 
 ### 0.3 文档中出现的版本号（`[doc]`，全文仅此几处）
 
@@ -64,36 +75,38 @@
 
 | type | 支持(版本) | 必填字段（解码器级） | 证据 |
 |---|---|---|---|
-| `ss` | v1.19.32 存在 | `name`,`server`,`port`,`password`,`cipher` | `[src] adapter/parser.go:33`；`adapter/outbound/shadowsocks.go:44-56` |
-| `ssr` | v1.19.32 存在 | `name`,`server`,`port`,`password`,`cipher`,`obfs`,`protocol` | `[src] adapter/parser.go:41`；`adapter/outbound/shadowsocksr.go:33-42` |
-| `socks5` | v1.19.32 存在（**字面量是 `socks5`，不是 `socks`**） | `name`,`server`,`port` | `[src] adapter/parser.go:49`；`adapter/outbound/socks5.go:31-46`；`[doc]` 页面标题写 “SOCKS” 但示例是 `type: socks5` <https://wiki.metacubex.one/en/config/proxies/socks/> |
-| `http` | v1.19.32 存在 | `name`,`server`,`port` | `[src] adapter/parser.go:57`；`adapter/outbound/http.go:30-43` |
-| `vmess` | v1.19.32 存在 | `name`,`server`,`port`,`uuid`,**`alterId`**,**`cipher`** | `[src] adapter/parser.go:65`；`adapter/outbound/vmess.go:57-89`（`AlterID`/`Cipher` 均无 `omitempty`） |
-| `vless` | v1.19.32 存在 | `name`,`server`,`port`,`uuid` | `[src] adapter/parser.go:73`；`adapter/outbound/vless.go:61-91` |
-| `snell` | v1.19.32 存在 | `name`,`server`,`port`,`psk` | `[src] adapter/parser.go:81`；`adapter/outbound/snell.go:33-43` |
-| `trojan` | v1.19.32 存在 | `name`,`server`,`port`,`password` | `[src] adapter/parser.go:89`；`adapter/outbound/trojan.go:45-70` |
-| `hysteria` | v1.19.32 存在 | `name`,`server`,**`up`**,**`down`**（**`port` 非必填**） | `[src] adapter/parser.go:97`；`adapter/outbound/hysteria.go:100-120` |
-| `hysteria2` | v1.19.32 存在 | 仅 `name`,`server`（`port`/`ports`/`password` 全部可选） | `[src] adapter/parser.go:105`；`adapter/outbound/hysteria2.go:40-70` |
-| `wireguard` | v1.19.32 存在 | `name`,`private-key`（**`server`/`port` 非必填**，多 peer 时忽略） | `[src] adapter/parser.go:113`；`adapter/outbound/wireguard.go:63-90`；`[doc] wg` 页 “top-level fields such as `server`… are ignored” |
-| `tuic` | v1.19.32 存在 | `name`,`server`,`port`（**`token`/`uuid`/`password` 源码里全可选**，见 §3 冲突） | `[src] adapter/parser.go:121`；`adapter/outbound/tuic.go:36-70` |
-| `shadowquic` | v1.19.32 存在 | `name`,`server`,`port`（`username`/`password` **可选**） | `[src] adapter/parser.go:129`；`adapter/outbound/shadowquic.go:30-55` |
-| `gost-relay` | v1.19.32 存在 | `name`,`server`,`port` | `[src] adapter/parser.go:137`；`adapter/outbound/gost_relay.go` |
-| `direct` | v1.19.32 存在 | `name` | `[src] adapter/parser.go:145`；`adapter/outbound/direct.go` |
-| `dns` | v1.19.32 存在 | `name` | `[src] adapter/parser.go:153`；`adapter/outbound/dns.go` |
-| `reject` | v1.19.32 存在 | `name` | `[src] adapter/parser.go:161`；`adapter/outbound/reject.go` |
-| `rematch` | v1.19.32 存在 | `name` | `[src] adapter/parser.go:169`；`adapter/outbound/rematch.go` |
-| `ssh` | v1.19.32 存在 | `name`,`server`,`port`,`username` | `[src] adapter/parser.go:177`；`adapter/outbound/ssh.go` |
-| `mieru` | v1.19.32 存在 | `name`,`server`,`transport`,`username`,`password` | `[src] adapter/parser.go:185`；`adapter/outbound/mieru.go:31-43` |
-| `anytls` | v1.19.32 存在 | `name`,`server`,`port`,`password` | `[src] adapter/parser.go:193`；`adapter/outbound/anytls.go:27-49` |
-| `sudoku` | v1.19.32 存在 | `name`,`server`,`port`,`key` | `[src] adapter/parser.go:201`；`adapter/outbound/sudoku.go:33-57` |
-| `masque` | v1.19.32 存在 | `name`,`server`,`port`,`private-key`,`public-key` | `[src] adapter/parser.go:209`；`adapter/outbound/masque.go:55-75` |
-| `trusttunnel` | v1.19.32 存在 | `name`,`server`,`port` | `[src] adapter/parser.go:217`；`adapter/outbound/trusttunnel.go:23-45` |
-| `openvpn` | v1.19.32 存在 | `name`,`server`,`port`,`ca` | `[src] adapter/parser.go:225`；`adapter/outbound/openvpn.go:45-75` |
-| `tailscale` | v1.19.32 存在 | `name` | `[src] adapter/parser.go:233`；`adapter/outbound/tailscale.go` |
-| `zerotier` | v1.19.32 存在 | `name`,`network` | `[src] adapter/parser.go:241`；`adapter/outbound/zerotier.go:105-125` |
-| `easytier` | v1.19.32 存在 | `name` | `[src] adapter/parser.go:249`；`adapter/outbound/easytier.go` |
+| `ss` | ≤ **v1.6.5**（更早无证据） | `name`,`server`,`port`,`password`,`cipher` | `[src] adapter/parser.go:33`；`adapter/outbound/shadowsocks.go:44-56`；版本：`[src]` tag `v1.6.5` 树中已有 `adapter/outbound/snell.go` 等同类文件，v1.0.0–v1.8.0 的 release 正文为空故无法精确定位 |
+| `ssr` | ≤ **v1.6.5** | `name`,`server`,`port`,`password`,`cipher`,`obfs`,`protocol` | `[src] adapter/parser.go:41`；`adapter/outbound/shadowsocksr.go:33-42` |
+| `socks5` | ≤ **v1.6.5**（**字面量是 `socks5`，不是 `socks`**） | `name`,`server`,`port` | `[src] adapter/parser.go:49`；`adapter/outbound/socks5.go:31-46`；`[doc]` 页面标题写 “SOCKS” 但示例是 `type: socks5` <https://wiki.metacubex.one/en/config/proxies/socks/> |
+| `http` | ≤ **v1.6.5** | `name`,`server`,`port` | `[src] adapter/parser.go:57`；`adapter/outbound/http.go:30-43` |
+| `vmess` | ≤ **v1.6.5** | `name`,`server`,`port`,`uuid`,**`alterId`**,**`cipher`** | `[src] adapter/parser.go:65`；`adapter/outbound/vmess.go:57-89`（`AlterID`/`Cipher` 均无 `omitempty`）；`alterId` 至今仍被接受：`[src] v1.19.32 vmess.go:59` |
+| `vless` | **v1.10.0** | `name`,`server`,`port`,`uuid` | `[src] adapter/parser.go:73`；`adapter/outbound/vless.go:61-91`；`[meta]` RN v1.10.0 “支持出站传输协议 VLESS XTLS / Trojan XTLS” |
+| `snell` | ≤ **v1.6.5** | `name`,`server`,`port`,`psk` | `[src] adapter/parser.go:81`；`adapter/outbound/snell.go:33-43`；`snell.version` 4/5 支持在 **v1.19.26**（RN “52edebd feat: add snell version 4/5 outbound and inbound (#2817)”） |
+| `trojan` | ≤ **v1.6.5** | `name`,`server`,`port`,`password` | `[src] adapter/parser.go:89`；`adapter/outbound/trojan.go:45-70` |
+| `hysteria` | **≤ v1.12.0** | `name`,`server`,**`up`**,**`down`**（**`port` 非必填**） | `[src] adapter/parser.go:97`；`adapter/outbound/hysteria.go:100-120`；`[meta]` RN v1.12.0 “Hysteria协议支持” |
+| `hysteria2` | **v1.16.0** | 仅 `name`,`server`（`port`/`ports`/`password` 全部可选） | `[src] adapter/parser.go:105`；`adapter/outbound/hysteria2.go:40-70`；`[meta]` RN v1.16.0 “feat: support Hysteria2” |
+| `wireguard` | **v1.14.0** | `name`,`private-key`（**`server`/`port` 非必填**，多 peer 时忽略） | `[src] adapter/parser.go:113`；`adapter/outbound/wireguard.go:63-90`；`[meta]` RN v1.14.0 “support wireguard outbound”；`[doc] wg` 页 “top-level fields such as `server`… are ignored” |
+| `tuic` | **v1.14.0**（TUIC v4）/ **v1.15.0**（v5） | `name`,`server`,`port`（**`token`/`uuid`/`password` 源码里全可选**，见 §1.2） | `[src] adapter/parser.go:121`；`adapter/outbound/tuic.go:36-70`；`[meta]` RN v1.14.0 “add tuic outbound”、RN v1.15.0 “feat: support tuicV5” |
+| `shadowquic` | **v1.19.29** | `name`,`server`,`port`（`username`/`password` **可选**） | `[src] adapter/parser.go:129`；`adapter/outbound/shadowquic.go:30-55`；`[meta]` RN v1.19.29 “aea5ce4 feat: support shadowquic outbound and listener”；`[src]` v1.19.28 的 `parser.go` 无该 case |
+| `gost-relay` | **v1.19.25** | `name`,`server`,`port` | `[src] adapter/parser.go:137`；`[meta]` RN v1.19.25 “5e22035 feat: add GOST relay outbound proxy type (#2795)”（注意与 ss 插件 `gost-plugin`（v1.19.4）不是同一个东西） |
+| `direct` | ≤ **v1.6.5** | `name` | `[src] adapter/parser.go:145`；`adapter/outbound/direct.go` |
+| `dns` | ≤ **v1.6.5** | `name` | `[src] adapter/parser.go:153`；`adapter/outbound/dns.go` |
+| `reject` | ≤ **v1.6.5** | `name` | `[src] adapter/parser.go:161`；`adapter/outbound/reject.go` |
+| `rematch` | **v1.19.28** | `name` | `[src] adapter/parser.go:169`；`[meta]` RN v1.19.28 “ea19cda feat: add rematch outbound type and REMATCH-NAME rule type (#2862)”；`[src]` v1.19.27 无 / v1.19.28 有 |
+| `ssh` | ≤ **v1.6.5** | `name`,`server`,`port`,`username` | `[src] adapter/parser.go:177`；`adapter/outbound/ssh.go` |
+| `mieru` | **v1.19.0** | `name`,`server`,`transport`,`username`,`password` | `[src] adapter/parser.go:185`；`adapter/outbound/mieru.go:31-43`；`[meta]` RN v1.19.0 “613becd feat: support mieru protocol (#1702)” |
+| `anytls` | **v1.19.3** | `name`,`server`,`port`,`password` | `[src] adapter/parser.go:193`；`adapter/outbound/anytls.go:27-49`；`[meta]` RN v1.19.3 “9962a0d feat: implement anytls client and server (#1844)”；`[src]` v1.19.2 无 / v1.19.3 有 |
+| `sudoku` | **v1.19.17** | `name`,`server`,`port`,`key` | `[src] adapter/parser.go:201`；`adapter/outbound/sudoku.go:33-57`；`[meta]` RN v1.19.17 “6cf1743 feat: add Sudoku protocol inbound & outbound support (#2397)” |
+| `masque` | **v1.19.20** | `name`,`server`,`port`,`private-key`,`public-key` | `[src] adapter/parser.go:209`；`adapter/outbound/masque.go:55-75`；`[meta]` RN v1.19.20 “e45c896 feat: support masque outbound” |
+| `trusttunnel` | **v1.19.21** | `name`,`server`,`port` | `[src] adapter/parser.go:217`；`adapter/outbound/trusttunnel.go:23-45`；`[meta]` RN v1.19.21 “4ca5158 feat: support trusttunnel inbound and outbound” |
+| `openvpn` | **v1.19.25** | `name`,`server`,`port`,`ca` | `[src] adapter/parser.go:225`；`adapter/outbound/openvpn.go:45-75`；`[meta]` RN v1.19.25 “7af9eeb feat: add OpenVPN outbound support (#2785)” |
+| `tailscale` | **v1.19.25** | `name` | `[src] adapter/parser.go:233`；`adapter/outbound/tailscale.go`；`[meta]` RN v1.19.25 “571925d feat: add Tailscale outbound support (#2786)” |
+| `zerotier` | **v1.19.30** | `name`,`network` | `[src] adapter/parser.go:241`；`adapter/outbound/zerotier.go:105-125`；`[meta]` RN v1.19.30 “b082515 feat: add Zerotier outbound support” |
+| `easytier` | **v1.19.31** | `name` | `[src] adapter/parser.go:249`；`adapter/outbound/easytier.go`；`[meta]` RN v1.19.31 “dca26db feat: add EasyTier outbound (#3194)” |
 
 **共 28 个 `type` 字面量**（其中 `direct`/`dns`/`reject`/`rematch` 不是远程节点）。
+
+> **版本维度要点**：`v1.19.24` 之后仍持续新增 type —— `openvpn`/`tailscale`/`gost-relay` 在 **v1.19.25**，`rematch` 在 **v1.19.28**，`shadowquic` 在 **v1.19.29**，`zerotier` 在 **v1.19.30**，`easytier` 在 **v1.19.31**。兼容性判断**必须带内核版本**，否则 “支持 easytier” 这种结论在 v1.19.30 上就是错的。
 
 ### 1.1 内部 AdapterType 与 type 的关系
 
@@ -185,6 +198,22 @@ mihomo **v1.19.32 中 `network` 字段没有任何枚举校验**。vmess/vless/t
 - `[src] adapter/outbound/vmess.go:572-578` / `vless.go:559-564`：`network: h2` 且未给 `h2-opts.host` 时，**静默注入默认值 `www.example.com`**。
 - `[src] adapter/outbound/vless.go:190-196`：`network: ws` 且 `tls: false` 且没有 Host 头时，**静默注入随机 Host 与 UA**（`convert.RandHost()` / `convert.SetUserAgent`）。这属于「运行时自造字段」，兼容性判断时不能把「节点没写 Host」当成错误。
 
+### 2.6 transport 版本门槛（`[meta]` release notes + `[src]` 逐 tag 文件比对）
+
+| 能力 | 最早版本 | 证据 |
+|---|---|---|
+| `network: xhttp` | **v1.19.22** | RN v1.19.22 “530c6b4 feat: add xhttp transport support (#2645) by @Nemu-x”；`[src]` v1.19.21 的 `vless.go` 有 0 个 `case "xhttp"`，v1.19.22 有 3 个 |
+| `xhttp-opts` 基础集（`path`,`host`,`mode`,`headers`,`no-grpc-header`,`x-padding-bytes`,`download-settings`） | **v1.19.22** | `[src]` v1.19.22 `XHTTPOptions` 结构体 |
+| `xhttp-opts.reuse-settings`（即 XMUX）、`sc-max-each-post-bytes` | **v1.19.23** | RN v1.19.23 “d131991 feat: add reuse-settings support for vless xhttp (aka xmux) (#2670)”、“8b37e99 feat: support sc-max-each-post-bytes…” |
+| `mode: h3` / `mode: http1.1`、`x-padding-obfs-mode/key/header/placement/method`、`uplink-http-method`、`session-placement/key`、`seq-placement/key`、`uplink-data-placement/key`、`uplink-chunk-size`、`sc-min-posts-interval-ms` | **v1.19.24** | RN v1.19.24 “cacd01a feat: add h3 mode support for xhttp client (#2686)”、“61dc7b1 … http1.1 mode”、“2337d70 feat: support xhttp new options for bypassing CDN's potential detection” |
+| `xhttp-opts.session-table` / `session-length` | **v1.19.28** | RN v1.19.28 “1f80d91 feat: support session-table and session-length for xhttp client”；`[src]` v1.19.27 无、v1.19.28 有 |
+| `network: mekya`（vmess） | **v1.19.28** | RN v1.19.28 “e10a1a7 feat: support mekya for vmess” |
+| **vmess 的 `mkcp` 支持本身也是 v1.19.28 新增** | **v1.19.28** | RN v1.19.28 “a198581 feat: support mkcp for vmess”（与上一行同一 release） |
+| `ws-opts` / `http-opts` / `h2-opts` / `grpc-opts` / `network: http` | 长期存在，v1.19.32 仍有效 | `[src] v1.19.32 vmess.go:79-82`、`vless.go:226` |
+| `network: splithttp` | **从未存在** | 全历史 `git log --all -S'splithttp'` 无提交；`[doc]` 全语言 0 命中 |
+
+> ⚠️ **v1.19.22 内部的自我否定**：RN v1.19.22 还含 “7fdc122 fix: remove incomplete xhttp config options (#2648)”，**被移除的选项清单未被枚举** → 见 §8。
+
 ---
 
 ## 3. TLS / Reality / ECH
@@ -245,6 +274,28 @@ mihomo **v1.19.32 中 `network` 字段没有任何枚举校验**。vmess/vless/t
 - **安全模式必须 TLS**：`securityMode != "" && !option.TLS` → `"%s requires TLS"`（`vless.go:552-555`）。
 - **vmess**：`mkcp`/`kcp` + `ShadowTLS`/`Restls`/`JLS` → `"%s only supports TCP transports"`（`vmess.go:565-571`）。
 - **xhttp HTTP/3**：`!option.TLS` → `xhttp HTTP/3 requires TLS`；有 `securityMode` → `xhttp HTTP/3 does not support %s`（`vless.go:693-698`）。
+
+### 3.6 TLS / Reality / ECH 版本门槛（`[meta]` release notes）
+
+| 能力 | 最早版本 | 证据 |
+|---|---|---|
+| `client-fingerprint`（uTLS） | **v1.14.2** | RN v1.14.2 “feat: Add utls for modifying client's fingerprint.” |
+| `reality-opts` | **v1.14.3** | RN v1.14.3 “feat: Support REALITY protocol by @H1JK”（同页头部注明 REALITY 为实验性支持） |
+| `reality-opts.support-x25519mlkem768` | **v1.19.9** | RN v1.19.9 “5cf0f18 feat: reality add support-x25519mlkem768, it only works with new version server” |
+| SHARE-URI 里转换 Reality ML-KEM 参数 | **v1.19.31** | RN v1.19.31 “518c703 chore: convert support REALITY ML-KEM option (#3199)” |
+| `ech-opts`（anytls/ss/trojan/vmess/vless） | **v1.19.9** | RN v1.19.9 “c6d7ef8 feat: add ech-opts for anytls/shadowsocks/trojan/vmess/vless outbound” |
+| `ech-opts`（hysteria/hysteria2/tuic） | **v1.19.9** | RN v1.19.9 “dc958e6 feat: add ech-opts for hysteria/hysteria2/tuic outbound” |
+| `ech-opts.query-server-name` | **v1.19.20** | RN v1.19.20 “3c526ae feat: add query-server-name for ech-opts” |
+| `name-cert-verify` | **v1.19.29** | RN v1.19.29 “5677fd3 feat: add name-cert-verify to support separate certificate verification name” |
+| `jls-opts` | **v1.19.29** | RN v1.19.29 “611a448 feat: support jls for vmess/vless/trojan outbound and listener”（+ ss/anytls/snell 同 release） |
+| `restls-opts`（统一字段名） | **v1.19.29** | RN v1.19.29 “769ea6f feat: support restls for vmess/vless/trojan outbound and listener”；更早只作为 ss 插件：RN v1.14.3 “feat: Support Restls-V1 in Clash.Meta (#441)” |
+| `shadow-tls-opts`（统一字段名） | **v1.19.29** | RN v1.19.29 “c015694 feat: support shadowtls for vmess/vless/trojan outbound and listener”；ss 插件形式在 v1.18.0 已存在；inbound 侧 v1.19.6 |
+| `tlsmirror-opts`（**仅 vmess**） | **v1.19.28** | RN v1.19.28 “2f510e8 feat: support tlsmirror for vmess” |
+| VLESS `encryption`（`mlkem768x25519plus…`） | **v1.19.13** | RN v1.19.13 “1b0c72b feat: support vless encryption by @wwqgtxx” |
+| VLESS XTLS **Vision**（`xtls-rprx-vision`） | **v1.14.3** | RN v1.14.3 “feat: Support VLESS XTLS Vision (#406) by @H1JK” |
+| legacy XTLS flow（非 Vision） | **v1.15.1 移除** | RN v1.15.1 “chore: Remove legacy XTLS support (#645) by @hellojack” |
+
+> **兼容性含义**：`name-cert-verify` / `jls-opts` / `restls-opts` / `shadow-tls-opts` 四个字段在 **v1.19.29 之前的内核上会被当作未知键静默丢弃**（§5.A1）—— 也就是说，一个“用了 shadow-tls-opts 的 vmess 节点”在 v1.19.28 上**不会报错，只会裸奔**。
 
 ---
 
@@ -382,6 +433,33 @@ if option.XUDP { option.PacketAddr = false }
 | `amnezia-wg-option` | `wireguard` | 字段面极大；`j1/j2/j3/itime` 仅 AmneziaWG v1.5 | `[src] adapter/outbound/wireguard.go:95-130`；`[doc]` wg 页注释 |
 | `trusttunnel.health-check` / `quic` | `trusttunnel` | — | `[src] adapter/outbound/trusttunnel.go:23-45` |
 
+### 4.9 其它能力的版本门槛（`[meta]` release notes + `[src]` 逐 tag 比对）
+
+| 能力 | 最早版本 | 证据 |
+|---|---|---|
+| per-proxy `smux:` 块（sing-mux） | **v1.14.4** | RN v1.14.4 “feat: add proxy and sing-based listener support sing-mux”；`[src]` v1.14.3 `parser.go` 无 `mapping["smux"]`，v1.14.4 有 |
+| `smux.statistic` / `smux.only-tcp` | **v1.14.4** | RN v1.14.4 “feat: add statistic and only-tcp options for smux by @wwqgtxx” |
+| `smux.brutal-opts`（TCP Brutal） | **v1.17.0** | RN v1.17.0 “feat: Add outbound sing-mux tcp-brutal support by @H1JK” |
+| `dialer-proxy`（对所有 outbound） | **v1.14.4** | RN v1.14.4 “feat: support dialer-proxy config for all outbound” |
+| `tfo`（outbound） | **v1.14.3** | RN v1.14.3 “chore: support TFO for outbounds”（listener 侧 v1.13.1） |
+| `mptcp`（所有 proxy）+ `inbound-mptcp` | **v1.15.1** | RN v1.15.1 “feat: add mptcp for all proxy” / “feat: add inbound-mptcp for listeners” |
+| `ip-version` | **v1.13.0**（v1.13.1 补文档） | RN v1.13.1 “Add ip-version param for proxy, wiki by @Skyxim” |
+| `interface-name` / `routing-mark`（节点级） | **pre-v1.14** | git 首次出现打标 v0.18.0 / v1.8.0；v1.19.32 仍存在（`base.go`） |
+| ss 2022 ciphers（`2022-blake3-*`） | **v1.12.0** | RN v1.12.0 “Shadowsocks-2022加密方式支持” |
+| ss `udp-over-tcp`（UOT） | **v1.12.0** | RN v1.12.0 “Shadowsocks 支持UDP over TCP(Xray-core v1.5.7)”；RN v1.14.5 “chore: switch ss uot default back to version 1” |
+| vmess `packet-addr` | **v1.12.0** | commit d8dc44e78 “Refactor: vmess” |
+| vmess `packet-encoding` + `xudp` | **v1.13.2** | RN v1.13.2 “chore: add xudp and packet-encoding support for vmess by @wwqgtxx” |
+| vless `packet-addr` / `xudp` | **v1.14.1**；**默认开启在 v1.14.2** | RN v1.14.1 “Feat: VLESS support packet encodings by @H1JK”；RN v1.14.2 “adjust: VLESS enable XUDP by default”；`[src] v1.19.32 vless.go:478-481` |
+| hysteria2 `ports` + `hop-interval` | **v1.18.2** | RN v1.18.2 “feedc9e feat: implement port hopping (#1064) by @keakon”；`[src]` v1.18.1 无、v1.18.2 有 |
+| hysteria2 `hop-interval` **区间格式**（`int` → `string`，如 `"15-30"`） | **v1.19.24** | RN v1.19.24 “80072eb feat: support range format for hysteria2 hop-interval” |
+| hysteria2 `obfs`（salamander）+ `obfs-password` | **v1.16.0** | `[src]` v1.16.0 `hysteria2.go` 已有 `Obfs`/`ObfsPassword` |
+| hysteria2 **gecko** obfs + `obfs-min/max-packet-size` | **v1.19.26** | RN v1.19.26 “f30a64f feat: support hysteria2 gecko obfs” |
+| hysteria2 `realm-opts` | **v1.19.25** | RN v1.19.25 “98aa7e6 feat: support realm-opts for hysteria2 outbound and listener” |
+| `bbr-profile`（hy2/tuic/trusttunnel/masque） | **v1.19.24** | RN v1.19.24 “db25932 feat: support bbr-profile for …” |
+| `alterId` | 长期存在，**v1.19.32 仍被接受** | `[src] v1.19.32 vmess.go:59` |
+
+> **兼容性含义**：`smux` / `dialer-proxy` / `tfo` / `mptcp` / `ip-version` 这类“高级能力”在 **v1.14 之前的内核上全部是未知键 → 静默丢弃**。若目标用户群包含老内核，这些字段必须单独做版本判定。
+
 ---
 
 ## 5. 静默忽略 / 静默降级清单
@@ -395,7 +473,7 @@ if option.XUDP { option.PacketAddr = false }
 |---|---|---|---|---|
 | A1 | **任意 proxy 内的未知键** | `structure` 解码器把未匹配的输入键收集进 `dataValKeysUnused`，**该集合只在结构体带 `remain` tag 时才消费**；proxy option 结构体无一使用 `remain`，也**没有 `ErrorUnused` 开关** → 未知键被静默丢弃 | 拼错/写错字段名 = 字段消失 | `[src] common/structure/structure.go:403-406`（收集）、`:540`（命中即删）、`:566-585`（仅 `remain` 消费）、`:585-593`（只对**缺失的必填**报错）。`structure.Option` 只有 `TagName/WeaklyTypedInput/KeyReplacer`（`:16-20`），无严格模式 |
 | A2 | **顶层 YAML 未知键** | `yaml.Unmarshal(buf, rawCfg)` 未启用 `KnownFields` | 顶层写错键 = 静默丢弃 | `[src] config/config.go:617`（`go.yaml.in/yaml/v3 v3.0.5`，见 `go.mod:63`）；`common/yaml/yaml.go:9` 是对 `yaml.Unmarshal` 的直通包装 |
-| A3 | **legacy 全局 `mux:`** | `RawConfig` **没有 `mux` 字段**（28 个字段逐一核对） | 顶层 `mux:` 块（含 `enabled`/`protocol`/`padding`/`brutal`）**整体静默失效，连日志都没有** | `[src] config/config.go:403-471`；`grep -rn 'yaml:"mux' --include=*.go .` 只命中 `listener/config/{hysteria2,shadowquic,shadowsocks,tuic,vless,vmess}.go` 的 inbound `mux-option` |
+| A3 | **顶层 `mux:` 块（legacy 全局多路复用）** | `RawConfig` **没有 `mux` 字段**（28 个字段逐一核对） | 顶层 `mux:` 块（含 `enabled`/`protocol`/`padding`/`brutal`）**整体静默失效，连日志都没有**。⚠️ **但「它曾经有效过」这一点无法确证**：字面量 `"mux"` 在 tag v1.6.5 / v1.8.0 / v1.10.0 / v1.12.0 / v1.14.0 / v1.17.0 / v1.18.10 / v1.19.32 的 `config/` 下**均不出现**，`git log -S'"mux"'` 无任何提交，Meta-Docs 也没有全局 `mux` 章节（只有 `smux.*`、inbound `mux-option:`、ss 插件里的 `mux: true`）→ **很可能是从未存在过的 Clash Premium 特性**，见 §8 | `[src] config/config.go:403-471`；`grep -rn 'yaml:"mux' --include=*.go .` 只命中 `listener/config/{hysteria2,shadowquic,shadowsocks,tuic,vless,vmess}.go` 的 inbound `mux-option` |
 | A4 | **`global-client-fingerprint`** | 字段还在 `RawConfig`，但只 `log.Errorln` 后继续 | 配置能加载，指纹不生效；**只有 error 日志，不影响 `-t` 通过与否**（该分支在 `parseGeneral` 里，不在 `Unmarshal` 阶段） | `[src] config/config.go:444, 761-763`：`log.Errorln("The \`global-client-fingerprint\` configuration is removed, ...")` |
 | A5 | **`vless.ws-headers`** | **声明了但全仓库只出现 1 次（就是声明本身）→ 死字段** | 写了完全无效果 | `[src] adapter/outbound/vless.go:83`；对全部 `adapter/outbound/*.go` 的 `proxy:`/`obfs:` tag 做「Go 字段名在全仓库非测试代码中的引用数 ≤ 1」扫描，**唯一命中就是它** |
 
@@ -417,7 +495,7 @@ if option.XUDP { option.PacketAddr = false }
 | # | 字段/位置 | 现象 | 后果 | 证据 |
 |---|---|---|---|---|
 | C1 | **`reality-opts` 无 `public-key`（或为空串）** | `Parse()` 直接 `return nil, nil` | Reality **完全不启用**，`short-id` 白写 | `[src] adapter/outbound/reality.go:20-23, 44-46` |
-| C2 | **`reality-opts` + `network: ws`** | ws 分支构造的 `TLSConfig` **不含 `Reality`** | Reality 静默失效（且因为走的是 `ca.GetTLSConfig` 普通 TLS，也不会触发 §5.C3 的 fp 报错） | `[src] vless.go:190-224`（ws 分支）vs `vless.go:306-329`（`streamTLSConn`，含 `Reality:`）；`vmess.go:203-244` vs `vmess.go:350-370`；`trojan.go:120-140` vs `trojan.go:160-175` |
+| C2 | **`reality-opts` + `network: ws`** | ws 分支构造的 `TLSConfig` **不含 `Reality`**（也不含 `ECH`） | Reality 静默失效（且因为走的是 `ca.GetTLSConfig` 普通 TLS，也不会触发 §5.C3 的 fp 报错） | `[src]` vless：ws 分支 `vless.go:190-224` 无 `Reality:`，`streamTLSConn` `vless.go:306-329` 有 → `grep -n 'Reality:' adapter/outbound/vless.go` 只命中 `:322`（streamTLSConn）、`:598`（grpc）、`:687`（xhttp h3）、`:850/:878`（download-settings）。vmess：ws 分支 `vmess.go:205-244` 的三个子分支均无 `Reality:`，`streamTLSConn` `vmess.go:346-370` 有。trojan：ws 分支 `trojan.go:120-140` 无，`streamTLSConn` 等价路径 `trojan.go:160-175` 有。**精确例外**：vmess 在 ws 且 `tlsmirror-opts.primary-key != ""` 时会改走 `v.streamTLSConn(ctx, c, false)`（`vmess.go:222-223`），该路径**会**带上 Reality/TLSMirror —— 即「ws + tlsmirror + reality」这一组合下 Reality 反而是生效的 |
 | C3 | **`reality-opts` 无 `client-fingerprint`** | **连接时**硬错误 `REALITY is based on uTLS, please set a client-fingerprint` | `-t` 通过、运行失败；错误信息指向 fp 而不是 Reality 配置缺失 | `[src] transport/vmess/tls.go:130-132` |
 | C4 | **`client-fingerprint` 未知值** | `log.Warnln("wrong clientFingerprint:%s")` + 回退 Go 原生 TLS（非 uTLS） | **TLS 指纹伪装失效**；若同时有 Reality 则升级为 C3 的硬错误 | `[src] component/tls/utls.go:42-60` |
 | C5 | **`client-fingerprint: iOS`（文档写法）** | map key 是 `ios`，查找大小写敏感 | 文档推荐值直接落到 C4 分支 | `[src] utls.go:53, 82` vs `[doc]` tls 页 “Options: `chrome`, …, `iOS`, …” |
@@ -479,11 +557,14 @@ if option.XUDP { option.PacketAddr = false }
 
 | 旧形式 | 新形式 | 版本 | 后果 | 证据 |
 |---|---|---|---|---|
-| 顶层全局 `mux:`（`enabled`/`protocol`/`padding`/`brutal`…） | 每个 proxy 的 `smux:` 块 | 移除版本 **UNKNOWN**（v1.19.32 中已无该字段） | **完全静默失效，无日志**（§5.A3） | `[src] config/config.go:403-471`（`RawConfig` 无 `mux`）；全仓库 `yaml:"mux` 只命中 inbound `mux-option` |
-| `global-client-fingerprint` | 各 proxy 内的 `client-fingerprint` | 移除版本 **UNKNOWN**；v1.19.32 有显式 error 日志 | 配置可加载，指纹不生效 | `[src] config/config.go:444, 761-763`；`[doc] general 页 warning` “Global TLS fingerprinting has been deprecated. Please set the client-fingerprint directly within the proxy.” |
-| `type: relay` 代理组 | `dialer-proxy` | 已弃用 | 解析层已无 `type: relay`（`adapter/parser.go` 的 28 个 case 里没有它）→ `unsupport proxy type: relay` | `[src] adapter/parser.go:14-281`；`[doc]` relay 页 warning “The relay strategy has been deprecated. Please use dialer-proxy.” |
-| 代理组上的 `interface-name` / `routing-mark` | 节点上的同名字段 | 已弃用（优先级：节点 > 策略组 > 全局） | — | `[doc]` proxy-groups 页两条 warning |
-| `vless.ws-headers` | `vless.ws-opts.headers` | 已死（v1.19.32 中是死字段） | **完全无效果** | `[src] vless.go:83`（孤引用，见 §5.A5） |
+| 顶层全局 `mux:`（`enabled`/`protocol`/`padding`/`brutal`…） | 每个 proxy 的 `smux:` 块（**v1.14.4** 引入） | ⚠️ **无证据表明它曾在 mihomo 中存在过**（不是「移除」，而是「未知键」） | **完全静默失效，无日志**（§5.A3） | `[src] config/config.go:403-471`（`RawConfig` 无 `mux`）；字面量 `"mux"` 在 v1.6.5/v1.8.0/v1.10.0/v1.12.0/v1.14.0/v1.17.0/v1.18.10/v1.19.32 的 `config/` 均不出现；`git log -S'"mux"'` 无提交；全仓库 `yaml:"mux` 只命中 inbound `mux-option` |
+| `global-client-fingerprint` | 各 proxy 内的 `client-fingerprint` | 引入 **v1.14.2** → 弃用 **v1.19.19** → **移除 v1.19.27** | v1.19.27+ 写它 = 未知键静默丢弃；v1.19.19–v1.19.26 会打一条 error 日志但配置照常加载（v1.19.32 的 `log.Errorln` 分支即此残留） | `[src] config/config.go:444, 761-763`；`[meta]` RN v1.19.19 “97bce45 chore: deprecated global-client-fingerprint, please set client-fingerprint directly on the proxy instead”；RN v1.19.27 “bd72c65 feat: remove global-client-fingerprint”；`[doc]` general 页 warning |
+| 代理组 `type: relay` | `dialer-proxy` | 弃用 **v1.18.6** → **完全移除 v1.19.17** | v1.19.17+ 写 `type: relay` → `unsupport proxy type: relay`（硬错误） | `[src] adapter/parser.go:14-281`（28 个 case 无 relay）；`[meta]` RN v1.18.6 “ad5bc51 chore: deprecated the relay group type”；RN v1.19.17 “The group with relay type … was completely removed, please using dialer-proxy instead” |
+| 代理组上的 `interface-name` / `routing-mark` | 节点上的同名字段 | 弃用 **v1.19.2** → **移除 v1.19.6** | v1.19.6+ 写在 proxy-group 上 = 未知键静默丢弃 | `[meta]` RN v1.19.2 “b69e52d chore: deprecated routing-mark and interface-name of the group”、RN v1.19.6 “7e7016b chore: removed routing-mark and interface-name of the group”；`[doc]` proxy-groups 页两条 warning |
+| legacy XTLS flow（`xtls-rprx-direct` 等非 Vision 形式） | `xtls-rprx-vision`（**v1.14.3** 引入） | **移除 v1.15.1** | v1.15.1+ 写 16 字符的旧 flow → `unsupported xtls flow type: %s`（硬错误） | `[meta]` RN v1.15.1 “chore: Remove legacy XTLS support (#645)”；RN v1.14.3 “feat: Support VLESS XTLS Vision (#406)”；`[src] vless.go:464-472` |
+| ss 插件形式的 `restls` / `shadow-tls` | 统一的 `restls-opts` / `shadow-tls-opts` / `jls-opts` | **v1.19.29** | 旧的 ss-plugin 写法仍可用，但新字段在 v1.19.29 之前的内核上**静默无效** | `[meta]` RN v1.19.29 769ea6f / c015694 / 611a448；`[src] v1.19.32` 两套并存（`shadowsocks.go:396,422` 与各 outbound 的 `*-opts`） |
+| `splithttp`（Xray 旧名） | 无（mihomo 从未有过该值；对应能力叫 `xhttp`） | **从未存在** | 写 `network: splithttp` → 静默按 TCP | `[meta]` 全历史 `git log --all -S'splithttp'` 无提交；`[doc]` 全语言 0 命中 |
+| `vless.ws-headers` | `vless.ws-opts.headers` | 字段从 v1.14.0 起一直存在（release note 层面「仍有效」） | **但 v1.19.32 源码中它是死字段**（除了声明处没有任何读取点，见 §5.A5）→ 写了完全无效果 | `[src] v1.19.32 vless.go:83`；`git grep -l ws-headers v1.19.32` = 仅 `vless.go`；字段名全仓库引用数扫描 = 1 |
 
 ### 6.2 行为变更（有明确版本号）
 
@@ -492,7 +573,14 @@ if option.XUDP { option.PacketAddr = false }
 | AnyTLS `client-metadata` | 默认不再发送 | **v1.19.30** | `[doc]` anytls 页 `!!! warning` |
 | `fingerprint`（证书固定）用于中间/根证书时 | 额外要求 SNI/servername 匹配 | **v1.19.20** | `[doc]` tls 页 warning |
 | 全局 TLS（API 用）的 `certificate`/`private-key`/`ech-key` | 本地文件时支持自动重载 | **v1.19.18** | `[doc]` general 页 note |
-| `client-metadata`（服务器侧语义） | — | — | 见上 |
+| 配置文件里的所有路径 | 出于安全被限制在 workdir 内（除非设 `SAFE_PATHS`） | **v1.19.6**（v1.19.7–v1.19.11 重复声明） | `[meta]` RN v1.19.6 “Incompatible changes: … For security reasons, all paths appearing in the configuration file will be limited to workdir …” |
+| `dialer-proxy` 静态配置 | 新增强校验（引用存在性） | **v1.19.20** | `[meta]` RN v1.19.20 “710772f chore: add simple validation for static dialer-proxy config (#2551)”；`[src] config/utils.go:147-176` |
+| 被移除配置项 | 改善日志 | **v1.19.21** | `[meta]` RN v1.19.21 “c3399fd chore: better logging for removed configurations by @wwqgtxx” |
+| Decoder 非法值处理 | `decode` 中对非法值的处理被修复 | **v1.19.1** | `[meta]` RN v1.19.1 “3f6823b fix: handle invalid values in Decoder's decode method by @wwqgtxx” |
+| hysteria2 `udp-mtu` 默认值 | 默认值改为 1200−3 | **v1.18.1** | `[meta]` RN v1.18.1 “chore: hysteria2 add udp-mtu option default value is 1200-3…” |
+| `reject` / `dns` outbound | 不再需要解析；UDP DNS 解析推迟到连接建立时 | **v1.19.10 / v1.19.11** | `[meta]` RN v1.19.10/11 “For reject and DNS outbound, no resolution is required.” |
+| 无效 Clash 域名规则 | 报更详细的错误 | **v1.19.31** | `[meta]` RN v1.19.31 “2f7eae5 chore: report detailed errors for invalid Clash-style domain patterns by @wwqgtxx” |
+| amd64 构建产物命名 | `-amd64` / `-amd64-compatible` → `-amd64-v1/v2/v3` | **v1.19.12**（v1.19.13/14 重复提示） | `[meta]` RN v1.19.12 |
 
 ### 6.3 AmneziaWG 方言内部版本（不是 mihomo 版本）
 
@@ -601,33 +689,37 @@ proxy-provider payload/http/file 内容
 
 以下均为**查不到 / 无法确证**，按纪律一律标 UNKNOWN，不得据推测填写。
 
-### 8.1 版本门槛类（最重要缺口）
+### 8.1 版本门槛类（剩余缺口）
 
-1. **UNKNOWN** — 每个 proxy type 的**最早引入版本**（`vless`/`hysteria2`/`tuic`/`anytls`/`shadowquic`/`mieru`/`sudoku`/`masque`/`trusttunnel`/`openvpn`/`tailscale`/`zerotier`/`easytier`/`gost-relay`/`snell` 等）。本次只确证它们在 **v1.19.32 存在**（`[src] adapter/parser.go`），`[meta]` 只能回溯到 v1.19.24。
-2. **UNKNOWN** — **v1.19.24 之前的版本时间线**（Atom feed 的 `?page=` 不生效，GitHub REST API 被限流）。
-3. **UNKNOWN** — `xhttp` network、`encryption`（`mlkem768x25519plus…`）、`packet-encoding`、`xudp`、`ech-opts`、`reality-opts`、`client-fingerprint`、`smux`（新块）、`dialer-proxy`、`name-cert-verify`、`jls-opts`、`restls-opts`、`shadow-tls-opts`、hysteria2 `ports`、`obfs` 各自的最早版本。
-4. **UNKNOWN** — 全局 `mux:` 块与 `global-client-fingerprint` **具体在哪一版被移除**（v1.19.32 中确证已无/已弃用）。
-5. **UNKNOWN** — `type: relay` 具体在哪一版被移除。
-6. **UNKNOWN** — `vless.ws-headers` 从「有效」变成「死字段」的版本。
+1. **UNKNOWN** — **pre-v1.10 的 proxy type 门槛**：`v1.0.0`–`v1.8.0` 的 release 正文为空，`ss`/`ssr`/`vmess`/`trojan`/`socks5`/`http`/`ssh`/`snell`/`direct`/`dns`/`reject` 无法从 release note 定位。现有最早确凿证据是 **tag v1.6.5 的源码树**（见 §1 表中标 “≤ v1.6.5” 的行）。
+2. **UNKNOWN** — **git 图不连续带来的偏差**：`v1.14.x`–`v1.18.5` 不是 `origin/Meta` tip 的祖先，该窗口内「首个包含某 commit 的 tag」可能不准。本文在该窗口只采信 release note 或 raw 文件 diff 双重确认过的门槛。
+3. **UNKNOWN** — `smux.max-connections` / `min-streams` / `max-streams` 三个子选项的最早版本（只确证了 `statistic`/`only-tcp` = v1.14.4、`brutal-opts` = v1.17.0）。
+4. **UNKNOWN** — v1.19.22 当版被移除的 xhttp 选项清单：RN v1.19.22 只有一句 “7fdc122 fix: remove incomplete xhttp config options (#2648)”，**未枚举被删的选项**。
+5. **UNKNOWN** — **全局 `mux:` 块是否曾经存在过**。字面量 `"mux"` 在 v1.6.5 / v1.8.0 / v1.10.0 / v1.12.0 / v1.14.0 / v1.17.0 / v1.18.10 / v1.19.32 的 `config/` 下均不出现，`git log -S'"mux"'` 无提交，Meta-Docs 也没有全局 `mux` 章节。**若曾存在，则早于可获得 release note 的时间（v1.9.0 / 2022-01-04）**。§5.A3 只能断言「v1.19.32 中它是未知键 → 静默丢弃」。
+6. **UNKNOWN** — `smux.enabled` / `smux.padding` / `smux.brutal-opts.enabled` 的**文档化默认值**（文档只给了 `smux.protocol` 默认 `h2mux`）。
+11. **UNKNOWN** — **snell `version: 5` 是否有真正的 v5 线协议**。RN v1.19.26 加入 v4/v5，但无任何说明解释 v1.19.32 为何把 5 直接改写成 4。
+12. **UNKNOWN** — `vless.ws-headers` 从「有效」变成「死字段」的版本（release note 层面该字段一直「存在」，但 v1.19.32 源码中已无读取点 —— 见 §5.A5）。
+13. **UNKNOWN** — **ECH（listener 侧）与 jls/restls/shadow-tls 的组合矩阵**：除文档里各协议页的零散说明外，未系统验证。
+14. **UNKNOWN** — `openvpn` 的 `tls-auth`/`tls-crypt`/`tls-crypt-v2` 互斥是否被源码强制（`[doc]` 声明互斥，`[src]` 未逐行确认）。
 
 ### 8.2 校验/行为未确证
 
-7. **UNKNOWN** — `snell.obfs-opts.version`（ShadowTLS 版本 1/2/3）传入越界值（如 `4`）时的行为；`[src] snell.go` 把 `opt.Version` 直接交给 `shadowtls.ShadowTLSOption{Version: …}`，**未在 outbound 层看到校验**；下游是否校验未读。
-8. **UNKNOWN** — `smux.protocol` 传入未知值（如 `foo`）时是否报错。`SingMuxOption.Protocol` 被直接传给外部依赖 `github.com/metacubex/sing-mux` 的 `mux.NewClient`（`[src] adapter/outbound/singmux.go:96-110`），该依赖**不在源码 tarball 内**（`go mod` 依赖，本地无 module cache），故 mihomo 侧无校验这一点可确认，**依赖侧是否报错未确证**。
-9. **UNKNOWN** — `ssr` 的 `obfs`/`protocol` 是否有枚举校验（outbound 层没看到；`[doc]` ssr 页也没给允许值列表）。
-10. **UNKNOWN** — 服务端**不支持 smux** 时 mihomo 的行为（`[doc]` 明确没有描述，源码层只是包装连接，实际协商失败的表现未验证）。
-11. **UNKNOWN** — `interface-name` 指向不存在的网卡、`routing-mark` 无权限、`mptcp`/`tfo` 在内核不支持时的**具体错误形态**（是拨号期报错、还是静默回退）。`[src]` 只看到选项被传递（`base.go:146-172`、`component/dialer/dialer.go:158, 186-187`），未追踪 socket 选项失败路径。
-12. **UNKNOWN** — `openvpn` 的 `tls-auth`/`tls-crypt`/`tls-crypt-v2` 互斥是否被源码强制（`[doc]` 声明互斥，`[src]` 未逐行确认）。
-13. **UNKNOWN** — `hysteria`(v1) 的 `protocol` 未知值行为。`[src] hysteria.go:195-197` 只在空值时兜底 `DefaultProtocol = "udp"`，非空值原样传给 `core.NewClient(...)`；服务端是否拒绝未验证。
-14. **UNKNOWN** — `xhttp-opts.session-*` / `seq-*` / `uplink-*` 组合约束（如 `session-length` 起点不能为 0、`total ID space > 2.1e9`、`seq-placement` 必须在 `session-placement: path` 时也为 `path`、`uplink-chunk-size` 最小 64 字节）**是否被 mihomo 校验**。`[doc]` 只说约束，未说会报错；`[src] transport/xhttp/` 只确证了 `mode` 与 `sc-max-each-post-bytes`/`sc-min-posts-interval-ms` 走 `GetNormalized*` 归一化（`client.go:253-262`），其余未逐一读完。（**`xhttp-opts.mode` 本身不在此列 —— 它已被确证为配置期硬错误，见 §2.4。**）
-15. **UNKNOWN** — `masque.network` 未知值、`sudoku.aead-method` 未知值、`trusttunnel.health-check` 结构的具体校验。
-16. **UNKNOWN** — `provider.health-check` / `override` 之外的 provider 键（`size-limit`、`age-secret-key`、`header`）的校验细节。
+11. **UNKNOWN** — `snell.obfs-opts.version`（ShadowTLS 版本 1/2/3）传入越界值（如 `4`）时的行为；`[src] snell.go` 把 `opt.Version` 直接交给 `shadowtls.ShadowTLSOption{Version: …}`，**未在 outbound 层看到校验**；下游是否校验未读。
+12. **UNKNOWN** — `smux.protocol` 传入未知值（如 `foo`）时是否报错。`SingMuxOption.Protocol` 被直接传给外部依赖 `github.com/metacubex/sing-mux` 的 `mux.NewClient`（`[src] adapter/outbound/singmux.go:96-110`），该依赖**不在源码 tarball 内**（`go mod` 依赖，本地无 module cache），故 mihomo 侧无校验这一点可确认，**依赖侧是否报错未确证**。
+13. **UNKNOWN** — `ssr` 的 `obfs`/`protocol` 是否有枚举校验（outbound 层没看到；`[doc]` ssr 页也没给允许值列表）。
+14. **UNKNOWN** — 服务端**不支持 smux** 时 mihomo 的行为（`[doc]` 明确没有描述，源码层只是包装连接，实际协商失败的表现未验证）。
+15. **UNKNOWN** — `interface-name` 指向不存在的网卡、`routing-mark` 无权限、`mptcp`/`tfo` 在内核不支持时的**具体错误形态**（是拨号期报错、还是静默回退）。`[src]` 只看到选项被传递（`base.go:146-172`、`component/dialer/dialer.go:158, 186-187`），未追踪 socket 选项失败路径。
+16. **UNKNOWN** — `openvpn` 的 `tls-auth`/`tls-crypt`/`tls-crypt-v2` 互斥是否被源码强制（`[doc]` 声明互斥，`[src]` 未逐行确认）。
+17. **UNKNOWN** — `hysteria`(v1) 的 `protocol` 未知值行为。`[src] hysteria.go:195-197` 只在空值时兜底 `DefaultProtocol = "udp"`，非空值原样传给 `core.NewClient(...)`；服务端是否拒绝未验证。
+18. **UNKNOWN** — `xhttp-opts.session-*` / `seq-*` / `uplink-*` 组合约束（如 `session-length` 起点不能为 0、`total ID space > 2.1e9`、`seq-placement` 必须在 `session-placement: path` 时也为 `path`、`uplink-chunk-size` 最小 64 字节）**是否被 mihomo 校验**。`[doc]` 只说约束，未说会报错；`[src] transport/xhttp/` 只确证了 `mode` 与 `sc-max-each-post-bytes`/`sc-min-posts-interval-ms` 走 `GetNormalized*` 归一化（`client.go:253-262`），其余未逐一读完。（**`xhttp-opts.mode` 本身不在此列 —— 它已被确证为配置期硬错误，见 §2.4。**）
+19. **UNKNOWN** — `masque.network` 未知值、`sudoku.aead-method` 未知值、`trusttunnel.health-check` 结构的具体校验。
+20. **UNKNOWN** — `provider.health-check` / `override` 之外的 provider 键（`size-limit`、`age-secret-key`、`header`）的校验细节。
 
 ### 8.3 无法用文档/源码证明的（本项目最需要 `[test]` 的部分）
 
-17. **UNKNOWN** — §5 全部条目的**实机表现**：本文的「静默按 TCP / 静默失效」均由源码控制流推断，**尚无 `[test]` 证据**。建议 Phase 2 用真内核逐条验证，尤其是：未知 `network`、`network: httpupgrade`、`flow` 短串、`reality-opts` + `ws`、`tls: false` + `ech-opts.enable: true`、`smux` 无 `enabled`、`snell.version: 5`、`client-fingerprint: iOS`。
-18. **UNKNOWN** — Xray/sing-box 侧对同名节点的行为，本文**完全没有涉及**（不在研究范围），因此「四层不一致」目前只覆盖 mihomo 一侧。
-19. **UNKNOWN** — `mihomo -t` 是否会因为**运行期**错误（如 §5.C3 的 Reality 缺 fp）而失败：`[src] main.go:175-187` 走的是 `executor.Parse()` / `ParseWithBytes`（完整 `ParseRawConfig`），理论上只做解析与初始化，但 C3 的错误发生在 `DialContext`，故推断 `-t` 检测不到 —— **推断，非实测**。
+21. **UNKNOWN** — §5 全部条目的**实机表现**：本文的「静默按 TCP / 静默失效」均由源码控制流推断，**尚无 `[test]` 证据**。建议 Phase 2 用真内核逐条验证，尤其是：未知 `network`、`network: httpupgrade`、`flow` 短串、`reality-opts` + `ws`、`tls: false` + `ech-opts.enable: true`、`smux` 无 `enabled`、`snell.version: 5`、`client-fingerprint: iOS`。
+22. **UNKNOWN** — Xray/sing-box 侧对同名节点的行为，本文**完全没有涉及**（不在研究范围），因此「四层不一致」目前只覆盖 mihomo 一侧。
+23. **UNKNOWN** — `mihomo -t` 是否会因为**运行期**错误（如 §5.C3 的 Reality 缺 fp）而失败：`[src] main.go:175-187` 走的是 `executor.Parse()` / `ParseWithBytes`（完整 `ParseRawConfig`），理论上只做解析与初始化，但 C3 的错误发生在 `DialContext`，故推断 `-t` 检测不到 —— **推断，非实测**。
 
 ---
 

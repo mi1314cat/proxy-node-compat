@@ -208,11 +208,11 @@ export function parseUrlParams(url) {
 - **There is NO separate `clashmeta` / `mihomo` target.** "clash" *is* the mihomo-flavoured target: it emits MRS rule-providers, `proxy-providers`, and `reality-opts` (mihomo-only fields) — see `ClashConfigBuilder.js:22-41` (MRS UA sniff) and `:205-208` (`reality-opts`).
 - **`GET /xray` is NOT a generator.** `createApp.jsx:263-311` only fetches/decodes input URI lines and re-emits them Base64-encoded (`return c.text(encodeBase64(finalString), 200, responseHeaders);`). No node object is ever built, so this "target" is a pure passthrough and has no field-loss surface.
 - **`GET /subconverter`** (`createApp.jsx:220`) emits an **external subconverter INI** (`src/config/subconverterConfig.js:37` → `export function generateSubconverterConfig(...)`): rules/groups only, no proxy conversion.
-- Output encodings differ: Clash `yaml.dump(this.config)` (`ClashConfigBuilder.js:715`), Sing-Box `c.json(builder.config)` (`createApp.jsx:121`, config object returned from `formatConfig()` at `SingboxConfigBuilder.js:711`), Surge `c.text(builder.formatConfig())` (INI text).
+- Output encodings differ: Clash `yaml.dump(this.config)` (`ClashConfigBuilder.js:715`), Sing-Box `c.json(builder.config)` (`createApp.jsx:121`, config object returned from `formatConfig()` at `SingboxConfigBuilder.js:710`), Surge `c.text(builder.formatConfig())` (INI text).
 
 ### How a new target is added
 There is **no registry, no plugin list, no capability table** — it requires coordinated edits in four places:
-1. new base config module in `src/config/` (e.g. `xsConfig.js`) exported from `src/config/index.js:36-42`;
+1. new base config module in `src/config/` (e.g. `xsConfig.js`) exported from `src/config/index.js:41-43`;
 2. a new `*ConfigBuilder` class extending `BaseConfigBuilder` and implementing the abstract methods — `addProxyToConfig` is explicitly abstract (`BaseConfigBuilder.js:355-357`):
 ```js
     addProxyToConfig(proxy) {
@@ -527,7 +527,10 @@ function supportsMrsFormat(userAgent) {
     if (ua.includes('mihomo') || ua.includes('meta') || ua.includes('clash-verge') || ua.includes('stash') || ua.includes('verge')) {
         return true;
     }
-    if (ua.includes('merlin') || ua.includes('clashforwindows') || ua.includes('clashforandroid') || ua.includes('/')) {
+    if (ua.includes('merlin') ||
+        ua.includes('clashforwindows') ||
+        ua.includes('clashforandroid') ||
+        ua.includes('clash/')) {         // 老版本Clash核心 (Clash/v1.x.x)
         return false;
     }
     return true;
