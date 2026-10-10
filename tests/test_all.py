@@ -15,7 +15,7 @@ import unittest
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
-from proxy_node_compat import (Field, NodeProfile, Presence, Provenance,  # noqa: E402
+from proxy_node_compat import (Feature, Field, NodeProfile, Presence, Provenance,  # noqa: E402
                                Registry, Target, check_node, evaluate, generate_uri,
                                parse_uri)
 from proxy_node_compat.registry import Rule, default_registry_path  # noqa: E402
@@ -500,6 +500,241 @@ class TestRealLinksEndToEnd(unittest.TestCase):
                 # 任何未建模的键都必须能在 extensions 或 raw.fields 里找到（I2）
                 for e in p.extensions:
                     self.assertIn(e["key"], p.raw_fields, f"{name}/{kernel}")
+
+
+# ------------------------------------------------ 跨内核 compat: 逐内核 uri_rule
+TROJAN_REALITY_URI = (
+    "trojan://LV7CpzX9Jc8vWuhP0YV0@107.173.154.178:29602?security=reality&type=tcp"
+    "&sni=audio-ssl.itunes.apple.com&fp=chrome&sid=b860a9f0"
+    "&pbk=GiR4k0uVRhKEWlfD9oRjjv-C0STrp5M0uP3kRIT2pgU#TROJAN-03")
+
+
+class TestPerKernelUriRule(unittest.TestCase):
+    """`target_kernel`: 同一条 URI 规则对不同内核给不同结论, 且**绝不外溢**。
+
+    事实来源: mihomo 的 trojan 分享链接解析器不读 pbk/sid（converter.go `case "trojan"`
+    全文不出现 security/pbk/sid/reality, 与 upstream Meta 逐字相同）, 而同一条
+    trojan+REALITY 链接 Xray/sing-box 都能用 ⇒ 这一行必须按内核分叉。
+    """
+
+    def test_row_shape(self):
+        row = REG.uri_rule("trojan", "standard:reality", "mihomo")
+        self.assertIsNotNone(row)
+        self.assertEqual(row["uri_rule_id"], "uri.trojan.reality@mihomo")
+        self.assertEqual(row["target_kernel"], "mihomo")
+        self.assertEqual(row["representation"], "NONE")            # 该内核上表达力 = 无
+        self.assertEqual(len(row["loss"]), 3)                      # 逐字段 loss
+        self.assertTrue(row["workaround"])                         # 必须给可行替代
+        self.assertTrue(row["note"])
+        for eid in row["evidence"]:
+            self.assertIn(eid, REG.evidence)                       # 证据可解析
+
+    def test_same_link_two_kernels_two_verdicts(self):
+        m = U(TROJAN_REALITY_URI, "mihomo", "1.19.32")
+        self.assertEqual(m.status, "SUPPORTED_WITH_LOSS")
+        self.assertEqual(m.levels["uri"], "SUPPORTED_WITH_LOSS")
+        self.assertEqual(len(m.losses), 3)                          # losses 为 3 条
+        self.assertEqual({l["rule"] for l in m.losses}, {"uri.trojan.reality@mihomo"})
+        # 同一条链接, 换成 xray 仍是干净的 SUPPORTED（uri 层不因这颗规则降级）
+        x = U(TROJAN_REALITY_URI, "xray", "26.3.27")
+        self.assertEqual(x.status, "SUPPORTED")
+        self.assertEqual(x.losses, [])
+        self.assertNotEqual(x.levels["uri"], "SUPPORTED_WITH_LOSS")
+
+    def test_no_spillover_to_other_kernels(self):
+        for kernel, version in (("xray", "26.3.27"), ("singbox", "1.14.2")):
+            r = U(TROJAN_REALITY_URI, kernel, version)
+            self.assertNotIn("uri.trojan.reality@mihomo",
+                             [l.get("rule") for l in r.losses], kernel)
+            self.assertNotEqual(r.levels["uri"], "SUPPORTED_WITH_LOSS", kernel)
+            # 别的内核上"没有 URI 规则"只记 UNKNOWN, 不拿 mihomo 的结论顶替
+            self.assertEqual(r.levels["uri"], "UNKNOWN", kernel)
+            self.assertTrue(any("没有覆盖该 scheme × feature" in u["why"]
+                                for u in r.unknowns), kernel)
+
+    def test_kernel_dimension_is_never_guessed(self):
+        # 不给 kernel → 逐内核行既不返回、也不当回退（不猜）
+        self.assertIsNone(REG.uri_rule("trojan", "standard:reality"))
+        # 逐内核行只对它声明的内核返回
+        self.assertIsNotNone(REG.uri_rule("trojan", "standard:reality", "mihomo"))
+        self.assertIsNone(REG.uri_rule("trojan", "standard:reality", "xray"))
+        self.assertIsNone(REG.uri_rule("trojan", "standard:reality", "singbox"))
+        # 全局行（不带 target_kernel）在给了/不给 kernel 时都是回退 —— 旧调用形式行为不变
+        for kernel in (None, "mihomo", "singbox"):
+            row = REG.uri_rule("ss", "standard:reality", kernel)
+            self.assertIsNotNone(row)
+            self.assertEqual(row["uri_rule_id"], "uri.ss.reality")
+
+    def test_target_kernel_vocabulary_is_controlled(self):
+        kernels = {u.get("target_kernel") for u in REG.uri_rules if u.get("target_kernel")}
+        self.assertTrue(kernels)                                   # 至少这一颗
+        self.assertTrue(kernels <= {"xray", "mihomo", "singbox"})
+        # 逐内核行也必须能被自带 scheme 取到（不是只写不用的死数据）
+        for u in REG.uri_rules:
+            if u.get("target_kernel"):
+                self.assertIs(REG.uri_rule(u["scheme"], u["feature"], u["target_kernel"]), u)
+
+
+# ------------------------------------------------ SB 接入实测回灌: encryption 哨兵值
+SENTINEL_VLESS = ("vless://45468dde-d4e8-4aff-9428-87649b6ecd90@h:443"
+                  "?encryption=none&security=tls&sni=a.com&fp=chrome&type=ws&path=/x#w")
+SENTINEL_VLESS_REALITY = ("vless://893e7017-96a7-45bd-95b2-fce4b242c5b8@h:443"
+                          "?encryption=none&flow=xtls-rprx-vision&security=reality"
+                          "&sni=a.com&fp=chrome&pbk=K&sid=76efc989&type=tcp#r")
+
+
+class TestVlessEncryptionSentinel(unittest.TestCase):
+    """`encryption=none` 是分享链接规范的**哨兵值**（= 不做 VLESS Encryption）, 不是特性。
+
+    假 UNSUPPORTED 比 UNKNOWN 更糟: 修前每一条常规 vless 链接都会被
+    `singbox.vless.encryption.never` 判死（CC 上 13 条真实链接 2 条中招, 两条都 204 可用）。
+    """
+
+    def test_sentinel_does_not_create_the_feature(self):
+        p = parse_uri(SENTINEL_VLESS)
+        self.assertIsNone(p.get_feature("standard:vless.encryption"))
+        self.assertEqual(p.raw_fields["encryption"], "none")       # 原值仍逐字保留（I2）
+        self.assertNotIn("encryption", [e["key"] for e in p.extensions])  # 也不当未建模键
+        self.assertEqual(p.check_invariants(), [])
+        self.assertEqual(p.roundtrip().to_dict(), p.to_dict())
+
+    def test_sentinel_is_written_back_verbatim(self):
+        # 哨兵值不建 feature, 但用户显式写过 → 回写时不许静默丢参数
+        p = parse_uri(SENTINEL_VLESS)
+        out = generate_uri(p)
+        self.assertIn("encryption=none", out)
+        p2 = parse_uri(out)
+        self.assertEqual(p2.raw_fields, p.raw_fields)
+        self.assertEqual([f.id for f in p2.features], [f.id for f in p.features])
+
+    def test_sentinel_link_is_not_false_unsupported(self):
+        for uri in (SENTINEL_VLESS, SENTINEL_VLESS_REALITY):
+            for kernel, version in KERNELS.items():
+                tags = ["with_utls"] if kernel == "singbox" else None
+                r = U(uri, kernel, version, build_tags=tags)
+                self.assertNotEqual(r.status, "UNSUPPORTED", f"{uri}/{kernel}")
+                self.assertNotIn("KERNEL_NEVER_SUPPORTED", r.reason_codes,
+                                 f"{uri}/{kernel}")
+        # 修正前这条是 UNSUPPORTED（SB 侧实测 204 可用的节点被判死）
+        r = U(SENTINEL_VLESS_REALITY, "singbox", "1.14.2", build_tags=["with_utls"])
+        self.assertEqual(r.status, "SUPPORTED")
+
+    def test_sentinel_is_case_insensitive_and_only_the_literal_none(self):
+        p = parse_uri("vless://u@h:443?encryption=NONE&security=tls")
+        self.assertIsNone(p.get_feature("standard:vless.encryption"))
+        for real in ("mlkem768x25519plus.native.0rtt.ABC", "aes-128-gcm", "none2"):
+            p2 = parse_uri(f"vless://u@h:443?encryption={real}&security=tls")
+            feat = p2.get_feature("standard:vless.encryption")
+            self.assertIsNotNone(feat, real)                       # 真特性照旧建模
+            self.assertEqual(feat.params["encryption"].v, real)     # 值原样
+            self.assertIn(f"encryption={real}", generate_uri(p2))
+
+    def test_real_vless_encryption_is_still_judged(self):
+        # 这条**必须**保持现状: 真 VLESS Encryption 不受哨兵值修正的影响
+        for real in ("mlkem768x25519plus.native.0rtt.ABC", "aes-128-gcm"):
+            uri = f"vless://u@h:443?encryption={real}&security=tls&type=ws&path=/x"
+            s = U(uri, "singbox", "1.14.2", build_tags=["with_utls"])
+            self.assertEqual(s.status, "UNSUPPORTED", real)         # sing-box 完全没有
+            self.assertIn("KERNEL_NEVER_SUPPORTED", s.reason_codes, real)
+            self.assertEqual(U(uri, "xray", "26.3.27").status, "SUPPORTED", real)
+            self.assertEqual(U(uri, "mihomo", "1.19.32").status,
+                             "SUPPORTED_WITH_WARNING", real)
+            # uri 层判定确实参与了（不是"没规则 → 靠 UNKNOWN 蒙过去"）
+            self.assertNotEqual(s.levels["uri"], "UNKNOWN", real)
+
+
+# ------------------------------------------------ SB 接入实测回灌: build tag 门控
+class TestSingboxBuildTagRequirements(unittest.TestCase):
+    """hysteria2/tuic 要 `with_quic`, naive 要 `with_naive_outbound`（源码门控 + stub 报错）。"""
+
+    HY2 = "hysteria2://pw@h:443?sni=a.com"
+    TUIC = "tuic://u:p@h:443?sni=a.com"
+
+    def test_hysteria2_and_tuic_need_with_quic(self):
+        for uri in (self.HY2, self.TUIC):
+            bad = U(uri, "singbox", "1.14.2", build_tags=["with_utls", "with_naive_outbound"])
+            self.assertEqual(bad.status, "UNSUPPORTED", uri)         # 明确没有 with_quic → 判死
+            self.assertIn("BUILD_NOT_ENABLED", bad.reason_codes, uri)
+            ok = U(uri, "singbox", "1.14.2", build_tags=["with_utls", "with_quic"])
+            self.assertNotIn("BUILD_NOT_ENABLED", ok.reason_codes, uri)
+            self.assertEqual(ok.status, "SUPPORTED", uri)            # 这俩在 sing-box 上是支持的
+
+    def test_missing_tags_stay_unknown_not_build_not_enabled(self):
+        # tags 缺失 = **未知**（不是"确定没有"）→ 不许判 BUILD_NOT_ENABLED
+        for uri in (self.HY2, self.TUIC):
+            r = U(uri, "singbox", "1.14.2")
+            self.assertNotIn("BUILD_NOT_ENABLED", r.reason_codes, uri)
+            self.assertNotEqual(r.status, "UNSUPPORTED", uri)
+            self.assertTrue(any("build" in u["what"] for u in r.unknowns), uri)
+        # 同一条语义的先例（reality 要 with_utls）行为一致
+        pre = U("vless://u@h:443?type=tcp&security=reality&pbk=K", "singbox", "1.14.2")
+        self.assertNotIn("BUILD_NOT_ENABLED", pre.reason_codes)
+        self.assertTrue(any("build" in u["what"] for u in pre.unknowns))
+        # tags=[] 是"确定没有", 与缺失必须区别对待（反向验证机制有效）
+        empty = U("vless://u@h:443?type=tcp&security=reality&pbk=K", "singbox", "1.14.2",
+                  build_tags=[])
+        self.assertIn("BUILD_NOT_ENABLED", empty.reason_codes)
+
+    def test_naive_rule_pins_with_naive_outbound(self):
+        rule = next(r for r in REG.rules if r.rule_id == "singbox.protocol.naive")
+        self.assertEqual(rule.target.get("kernel"), "singbox")
+        self.assertEqual(rule.selector, {"protocol": "standard:naive"})
+        self.assertEqual([s.requires_build_tags for s in rule.segments],
+                         [["with_naive_outbound"]])
+        self.assertTrue(rule.evidence)
+        for eid in rule.evidence:
+            self.assertIn(eid, REG.evidence)
+        # 行为验证: compat 还没有 naive:// 解析, 只能把 protocol 换成 naive 来驱动这条规则
+        p = parse_uri("vless://u@h:443")
+        p.protocol = Feature(id="standard:naive", presence=Presence.EXPLICIT,
+                             provenance=Provenance.URI)
+        r = evaluate(p, T("singbox", "1.14.2", build_tags=[]), REG)
+        self.assertIn("BUILD_NOT_ENABLED", r.reason_codes)           # 缺 tag → 绝不放行
+        r2 = evaluate(p, T("singbox", "1.14.2", build_tags=["with_naive_outbound"]), REG)
+        self.assertNotIn("BUILD_NOT_ENABLED", r2.reason_codes)
+        r3 = evaluate(p, T("singbox", "1.14.2"), REG)                # tags 未知
+        self.assertNotIn("BUILD_NOT_ENABLED", r3.reason_codes)
+        self.assertTrue(any("build" in u["what"] for u in r3.unknowns))
+
+
+class TestCliLoadUnknownScheme(unittest.TestCase):
+    """CLI 不许把认不出的 scheme 当文件路径崩掉。
+
+    实测: RN 上真实的 `naive+https://…`（sb_share-naive01-TLS.txt）不在原来那张硬编码
+    白名单里 → `check` 直接 FileNotFoundError（整批检查崩掉）。库层一直是对的
+    （unknown: 协议 → UNKNOWN），坏的只是 CLI 的入口判断。
+    """
+
+    NAIVE = ("naive+https://e53bd040a419:f695c3946d09@107.173.154.178:31008"
+             "?sni=hxicc.catmicos.dpdns.org#rn naive01-TLS")
+
+    def test_unknown_scheme_uri_is_parsed_not_opened(self):
+        from proxy_node_compat.cli import _load
+        p = _load(self.NAIVE)
+        self.assertTrue(p.protocol.id.startswith("unknown:"))        # 不猜成已知协议
+        r = evaluate(p, T("singbox", "1.14.2"), REG)
+        self.assertIn(r.status, ("UNKNOWN", "UNSUPPORTED"))           # 不假 SUPPORTED
+        self.assertEqual(r.raw_uri, self.NAIVE)                      # 原文不丢
+
+    def test_real_file_and_json_paths_still_load(self):
+        from proxy_node_compat.cli import _load
+        with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False,
+                                         encoding="utf-8") as fh:
+            fh.write("vless://u@h:443?security=tls#from-file\n")
+            name = fh.name
+        try:
+            self.assertEqual(_load(name).protocol.id, "standard:vless")
+        finally:
+            os.unlink(name)
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False,
+                                         encoding="utf-8") as fh:
+            json.dump(parse_uri("vless://u@h:443?security=tls").to_dict(), fh)
+            name2 = fh.name
+        try:
+            self.assertEqual(_load(name2).protocol.id, "standard:vless")
+        finally:
+            os.unlink(name2)
+        self.assertRaises(FileNotFoundError, _load, "no-such-file.txt")
 
 
 if __name__ == "__main__":
