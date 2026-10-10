@@ -170,7 +170,8 @@ def _segment_for(rule: Rule, version: tuple[int, ...] | None,
     return None
 
 
-def _apply_segment(rule: Rule, seg: Segment, acc: _Acc, target: Target) -> None:
+def _apply_segment(rule: Rule, seg: Segment, acc: _Acc, target: Target,
+                   facts: dict[str, Any], why: dict[str, str]) -> None:
     # ---- 构建标签: 已知缺失 → BUILD_NOT_ENABLED；未知 → UNKNOWN（不猜）
     if seg.requires_build_tags:
         if target.build_tags is None:
@@ -186,7 +187,10 @@ def _apply_segment(rule: Rule, seg: Segment, acc: _Acc, target: Target) -> None:
     # ---- 运行期条件
     if seg.runtime_condition:
         need = seg.runtime_condition
-        ok = all(target.runtime_options.get(k) == v for k, v in need.items())
+        # 目标端自报的运行期状态优先; 缺省由节点自身的显式字段补足（见 _profile_runtime_facts）
+        effective = dict(facts)
+        effective.update(target.runtime_options)
+        ok = all(effective.get(k) == v for k, v in need.items())
         if not ok:
             acc.reason("RUNTIME_CONDITION_NOT_MET")
             for lv, st in (seg.verdict or {}).items():
@@ -196,6 +200,17 @@ def _apply_segment(rule: Rule, seg: Segment, acc: _Acc, target: Target) -> None:
                 "what": seg.note or f"需要运行期条件 {need}",
                 "impact": "CONNECTIVITY",
                 "rule": rule.rule_id})
+        else:
+            # 条件是"节点自己带来的" → 必须留痕（不能悄悄当成客户端已满足）
+            for k, v in need.items():
+                if not v or k in target.runtime_options or facts.get(k) != v:
+                    continue
+                detail = (f"运行期条件 {k} 由节点自身显式字段满足: {why.get(k, '')}"
+                          " —— 客户端导入时必须写进配置, 否则仍会运行期失败")
+                if not any(w.get("code") == "RUNTIME_CONDITION_FROM_PROFILE"
+                           and w.get("detail") == detail for w in acc.warnings):
+                    acc.warnings.append({"code": "RUNTIME_CONDITION_FROM_PROFILE",
+                                         "detail": detail, "rule": rule.rule_id})
 
     # ---- 段落结论（没有 verdict 时用规则级 reason/message 兜底）
     for lv, st in (seg.verdict or {}).items():
@@ -265,6 +280,8 @@ def evaluate(profile: NodeProfile, target: Target,
         acc.note_unknown(f"{target.kernel} × {sorted(feat_ids)}",
                          "注册表里没有覆盖该组合的规则")
     version = parse_version(target.version)
+    # 节点自身显式带来的运行期条件（缺省来源; 目标端自报的优先）
+    facts, facts_why = _profile_runtime_facts(profile)
     for rule in matched:
         seg = _segment_for(rule, version, acc, target)
         if seg is None:
@@ -272,7 +289,7 @@ def evaluate(profile: NodeProfile, target: Target,
                 acc.set_level(lv, "UNKNOWN")
             acc.reason("UNKNOWN_CAPABILITY")
             continue
-        _apply_segment(rule, seg, acc, target)
+        _apply_segment(rule, seg, acc, target, facts, facts_why)
 
     # ---------------- 3. URI 表达力（独立第三张表）
     _apply_uri_rules(profile, scheme, acc, registry)

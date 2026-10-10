@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import base64
 import json
 import os
 import sys
@@ -273,6 +274,203 @@ class TestUri(unittest.TestCase):
         self.assertTrue(p2.get_feature("unknown:transport.magic"))
         res = evaluate(p2, T("mihomo", "1.19.32"), REG)
         self.assertNotIn("standard:transport.ws", json.dumps(res.to_dict()))
+
+
+# ---------------------------------------------------------------- 真实链接验收
+# RN 上三个内核实际产出的四条链接（Xray / mihomo / sing-box 的分享系统输出）
+REAL_LINKS = {
+    "vless_pq": (
+        "vless://c521fd45-5cb8-406f-bc83-ba92efa5e8e6@107.173.154.178:22726"
+        "?encryption=mlkem768x25519plus.native.0rtt.ABC&security=tls&sni=cloudflare.com"
+        "&type=xhttp&path=/&ech=AGH+DQBdAAAgACCRE8kdV65r7OZoo9WgdkRM44Te7b/73CcbZQOJfFgq"
+        "AgAkAAEAAQABAAIAAQADAAIAAQACAAIAAgADAAMAAQADAAIAAwADAA5jbG91ZGZsYXJlLmNvbQAA#n1"),
+    "trojan_reality": (
+        "trojan://8nb23TSPeSQSazq4DS4U@107.173.154.178:37944?security=reality"
+        "&sni=addons.mozilla.org&type=tcp&fp=chrome"
+        "&pbk=a8cp3JmCFQK1CovT4d8tAbzJ9mkYjz7N8OWOwTYhvHk&sid=d14d8225#n2"),
+    "ss2022": (
+        "ss://MjAyMi1ibGFrZTMtYWVzLTEyOC1nY206NnZqRVJpWGRab2VkSDVVaW9JV0R6UT09"
+        "@107.173.154.178:31004#n3"),
+    "vmess_ws_tls": (
+        "vmess://eyJhZGQiOiJoeGljYy5jYXRtaWNvcy5kcGRucy5vcmciLCJwb3J0IjoiNDQzIiwidXVpZCI6"
+        "IjQ4YWYyOGVhLTNjZDAtNDc1Ny1hZGM5LTgxNWE3YjFjMWUzNiIsImFpZCI6IjAiLCJuZXQiOiJ3cyIs"
+        "InBhdGgiOiIvY2JhMzExYjUiLCJob3N0IjoiaHhpY2MuY2F0bWljb3MuZHBkbnMub3JnIiwic2VjdXJp"
+        "dHkiOiJhdXRvIiwidGxzIjoidGxzIiwic25pIjoiaHhpY2MuY2F0bWljb3MuZHBkbnMub3JnIiwiYWxw"
+        "biI6Imh0dHAvMS4xIn0=#n4"),
+}
+
+KERNELS = {"xray": "26.3.27", "mihomo": "1.19.32", "singbox": "1.14.2"}
+
+
+def vmess_body_of(uri: str) -> dict:
+    payload = uri.split("://", 1)[1].split("#", 1)[0]
+    blob = base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4))
+    return json.loads(blob.decode())
+
+
+class TestRealLinkVmess(unittest.TestCase):
+    """缺口 1: vmess:// 是 base64(JSON), 必须解析成 endpoint/auth/transport/tls。"""
+
+    def test_body_parsed_into_profile(self):
+        p = parse_uri(REAL_LINKS["vmess_ws_tls"])
+        self.assertEqual(p.protocol.id, "standard:vmess")        # 不再是 unknown:vmess + 空 profile
+        self.assertEqual(p.endpoint["host"].v, "hxicc.catmicos.dpdns.org")
+        self.assertEqual(p.endpoint["host"].raw_key, "add")      # 生态通用键名
+        self.assertEqual(p.endpoint["port"].v, 443)              # JSON 里是字符串 "443"
+        self.assertEqual(p.auth["uuid"].v, "48af28ea-3cd0-4757-adc9-815a7b1c1e36")
+        self.assertEqual(p.auth["uuid"].raw_key, "uuid")         # uuid / id 两种写法都认
+        self.assertEqual(p.auth["alter_id"].v, "0")
+        self.assertEqual(p.auth["method"].v, "auto")             # 旧写法 security= 就是加密方式
+        ws = p.get_feature("standard:transport.ws")
+        self.assertIsNotNone(ws)
+        self.assertEqual(ws.params["path"].v, "/cba311b5")
+        self.assertEqual(ws.params["host"].v, "hxicc.catmicos.dpdns.org")
+        tls = p.get_feature("standard:tls")
+        self.assertIsNotNone(tls)
+        self.assertIs(tls.presence, Presence.EXPLICIT)
+        self.assertEqual(tls.params["sni"].v, "hxicc.catmicos.dpdns.org")
+        self.assertEqual(tls.params["alpn"].v, "http/1.1")
+        self.assertEqual(p.extensions, [])                       # 全部建模, 没有残留
+        self.assertEqual(p.raw_uri, REAL_LINKS["vmess_ws_tls"])  # P6: 原文一字不动
+        self.assertEqual(p.check_invariants(), [])
+
+    def test_vmess_is_not_unknown_scheme_anymore(self):
+        p = parse_uri(REAL_LINKS["vmess_ws_tls"])
+        self.assertNotIn("UNKNOWN_SCHEME", [d["code"] for d in p.diagnostics])
+        for kernel, version in KERNELS.items():
+            r = evaluate(p, T(kernel, version), REG)
+            self.assertNotEqual(r.status, "UNKNOWN")             # 原来三家都是 UNKNOWN
+            self.assertEqual(r.raw_uri, REAL_LINKS["vmess_ws_tls"])
+
+    def test_unknown_keys_kept_and_never_generated(self):
+        cfg = {"add": "h", "port": "443", "id": "u", "net": "ws", "v": "2",
+               "evilField": "1", "scy": "auto"}
+        blob = base64.urlsafe_b64encode(json.dumps(cfg).encode()).decode()
+        p = parse_uri("vmess://" + blob + "#x")
+        keys = [e["key"] for e in p.extensions]
+        self.assertIn("evilField", keys)                         # 未知键必须登记
+        self.assertIn("v", keys)                                 # 读了但未建模 → 也登记
+        self.assertIn("evilField", p.raw_fields)                 # I2: extensions 或 raw.fields
+        out = generate_uri(p)
+        self.assertNotIn("evilField", vmess_body_of(out))        # 默认不写回
+        self.assertNotIn("v", vmess_body_of(out))                # 未建模的 v 也不写回
+        out2 = generate_uri(p, allow_extensions=True)            # 显式要求才写
+        self.assertEqual(vmess_body_of(out2)["evilField"], "1")
+
+    def test_roundtrip_semantics(self):
+        p = parse_uri(REAL_LINKS["vmess_ws_tls"])
+        p2 = parse_uri(generate_uri(p))
+        self.assertEqual(p2.raw_fields, p.raw_fields)            # 语义等价（字段可恢复）
+        self.assertEqual([f.id for f in p2.features], [f.id for f in p.features])
+        self.assertEqual({k: f.to_dict() for k, f in p2.auth.items()},
+                         {k: f.to_dict() for k, f in p.auth.items()})
+        self.assertEqual({k: f.to_dict() for k, f in p2.endpoint.items()},
+                         {k: f.to_dict() for k, f in p.endpoint.items()})
+        self.assertEqual(p2.extensions, [])
+
+    def test_unparsable_body_is_not_fatal(self):
+        uri = "vmess://!!!not-base64-json!!!#x"
+        p = parse_uri(uri)
+        self.assertEqual(p.protocol.id, "standard:vmess")
+        self.assertIn("VMESS_BODY_UNPARSED", [d["code"] for d in p.diagnostics])
+        self.assertEqual(p.raw_uri, uri)                          # 原文保留
+        self.assertEqual(p.raw_fields["_vmess_body"], "!!!not-base64-json!!!")
+        r = evaluate(p, T("mihomo", "1.19.32"), REG)
+        self.assertIn(r.status, ("UNKNOWN", "UNSUPPORTED"))       # 未知不猜, 也不让整批失败
+
+
+class TestRealLinkVlessEncryption(unittest.TestCase):
+    """缺口 2: encryption= 必须建模（原来只在 raw.fields → 能力判定看不见）。"""
+
+    def test_feature_and_uri_rule(self):
+        p = parse_uri(REAL_LINKS["vless_pq"])
+        feat = p.get_feature("standard:vless.encryption")
+        self.assertIsNotNone(feat)
+        self.assertIs(feat.presence, Presence.EXPLICIT)
+        self.assertEqual(feat.params["encryption"].v, "mlkem768x25519plus.native.0rtt.ABC")
+        self.assertEqual(feat.params["encryption"].raw_key, "encryption")
+        self.assertNotIn("encryption", [e["key"] for e in p.extensions])
+        self.assertIn("encryption=mlkem768x25519plus.native.0rtt.ABC", generate_uri(p))
+        rule = REG.uri_rule("vless", "standard:vless.encryption")
+        self.assertIsNotNone(rule)                                # URI 表达力规则存在
+        self.assertEqual(rule["representation"], "FULL")
+        self.assertIsNone(rule.get("spec_added_at"))               # 查不到日期 → UNKNOWN, 不猜
+        r = evaluate(p, T("xray", "26.3.27"), REG)
+        self.assertIn({"id": "standard:vless.encryption", "presence": "EXPLICIT"},
+                      r.detected_features)                        # 判定看得见它了
+        self.assertNotEqual(r.levels["uri"], "UNKNOWN")            # 这条 URI 规则参与了判定
+
+    def test_ech_value_is_byte_faithful(self):
+        # 真实链接的 ech 是 base64, 含 '+' —— 解析期绝不能被改成空格
+        p = parse_uri(REAL_LINKS["vless_pq"])
+        self.assertTrue(p.raw_fields["ech"].startswith("AGH+DQBd"))
+        self.assertEqual(p.get_feature("standard:ech").params["ech"].v,
+                         p.raw_fields["ech"])
+
+
+class TestRealLinkRealityIdentity(unittest.TestCase):
+    """缺口 3: security=reality 的 sni/fp 必须挂到 reality 上（不是 extensions）。"""
+
+    def test_sni_fp_are_reality_params(self):
+        p = parse_uri(REAL_LINKS["trojan_reality"])
+        reality = p.get_feature("standard:reality")
+        self.assertEqual(reality.params["server_name"].v, "addons.mozilla.org")
+        self.assertEqual(reality.params["server_name"].raw_key, "sni")
+        self.assertEqual(reality.params["fingerprint"].v, "chrome")
+        self.assertEqual(reality.params["fingerprint"].raw_key, "fp")
+        self.assertEqual(p.extensions, [])                        # 不再掉进 extensions
+        tls = p.get_feature("standard:tls")
+        self.assertTrue(tls is None or tls.presence is not Presence.EXPLICIT)  # 不伪造显式 TLS
+        out = generate_uri(p)
+        self.assertIn("sni=addons.mozilla.org", out)
+        self.assertIn("fp=chrome", out)
+        self.assertEqual(p.check_invariants(), [])
+
+    def test_mihomo_client_fingerprint_condition_now_decidable(self):
+        r = U(REAL_LINKS["trojan_reality"], "mihomo", "1.19.32")
+        self.assertNotIn("RUNTIME_CONDITION_NOT_MET", r.reason_codes)   # fp 是链接里显式的
+        self.assertTrue(any(w["code"] == "RUNTIME_CONDITION_FROM_PROFILE" for w in r.warnings))
+        # 没有 fp 时不得弱化: 仍按"缺 client-fingerprint 会运行期失败"判（= 原 test_12 行为）
+        r2 = U("vless://u@h:443?security=reality&pbk=K", "mihomo", "1.19.32")
+        self.assertIn("RUNTIME_CONDITION_NOT_MET", r2.reason_codes)
+        self.assertNotIn("RUNTIME_CONDITION_FROM_PROFILE",
+                         [w["code"] for w in r2.warnings])
+
+
+class TestRealLinkShadowsocks(unittest.TestCase):
+    """顺手修的一处: ss://(base64 userinfo, 无 query) 的 features 不许为空。"""
+
+    def test_base64_userinfo_keeps_default_transport(self):
+        p = parse_uri(REAL_LINKS["ss2022"])
+        self.assertEqual(p.protocol.id, "standard:shadowsocks")
+        self.assertEqual(p.auth["method"].v, "2022-blake3-aes-128-gcm")
+        self.assertEqual(p.auth["password"].v, "6vjERiXdZoedH5UioIWDzQ==")
+        self.assertIn("standard:transport.tcp", [f.id for f in p.features])
+        tcp = p.get_feature("standard:transport.tcp")
+        self.assertIs(tcp.presence, Presence.DEFAULTED)           # 默认传输 ≠ 用户显式要求
+        self.assertIs(tcp.provenance, Provenance.INFERRED)
+        self.assertEqual(p.check_invariants(), [])
+        for kernel, version in KERNELS.items():
+            self.assertEqual(evaluate(p, T(kernel, version), REG).status, "SUPPORTED")
+
+
+class TestRealLinksEndToEnd(unittest.TestCase):
+    """四条真实链接 × 三个内核：不炸、原文不丢、不变式成立、往返可重放。"""
+
+    def test_all_links_all_kernels(self):
+        for name, uri in REAL_LINKS.items():
+            p = parse_uri(uri)
+            self.assertEqual(p.raw_uri, uri, name)                # P6
+            self.assertEqual(p.check_invariants(), [], name)
+            self.assertEqual(p.roundtrip().to_dict(), p.to_dict(), name)
+            for kernel, version in KERNELS.items():
+                r = evaluate(p, T(kernel, version), REG)
+                self.assertEqual(r.raw_uri, uri, f"{name}/{kernel}")
+                self.assertIn(r.status, ("SUPPORTED", "SUPPORTED_WITH_WARNING",
+                                         "SUPPORTED_WITH_LOSS", "UNSUPPORTED", "UNKNOWN"))
+                # 任何未建模的键都必须能在 extensions 或 raw.fields 里找到（I2）
+                for e in p.extensions:
+                    self.assertIn(e["key"], p.raw_fields, f"{name}/{kernel}")
 
 
 if __name__ == "__main__":
