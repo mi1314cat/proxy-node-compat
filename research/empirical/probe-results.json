@@ -1,0 +1,591 @@
+{
+  "generated": "2026-10-10",
+  "kernels": {
+    "xray": {
+      "version": "Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/amd64)",
+      "binary": "/usr/local/bin/xray"
+    },
+    "mihomo": {
+      "version": "Mihomo Meta v1.19.32 linux amd64 with go1.26.8 Wed Sep 30 16:55:19 UTC 2026",
+      "binary": "/root/catmi/mihomo/mihomo"
+    },
+    "singbox": {
+      "version": "sing-box version 1.14.2",
+      "binary": "/root/catmi/sing-box/sing-box"
+    }
+  },
+  "controls_ok": {
+    "xray": true,
+    "mihomo": true,
+    "singbox": true
+  },
+  "results": [
+    {
+      "case_id": "transport.tcp",
+      "feature": "transport.tcp",
+      "kernel": "xray",
+      "verdict": "accepted",
+      "detail": "Configuration OK.",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.tcp",
+      "feature": "transport.tcp",
+      "kernel": "mihomo",
+      "verdict": "accepted",
+      "detail": "configuration file /tmp/pnc-probe-x7540hp9/transport_tcp.yaml test is successful",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.tcp",
+      "feature": "transport.tcp",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.ws",
+      "feature": "transport.ws",
+      "kernel": "xray",
+      "verdict": "accepted",
+      "detail": "Configuration OK.",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.ws",
+      "feature": "transport.ws",
+      "kernel": "mihomo",
+      "verdict": "accepted_unverified",
+      "detail": "校验通过, 但该字段不被此内核校验 —— 需回环验证 (Tier B)",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.ws",
+      "feature": "transport.ws",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.grpc",
+      "feature": "transport.grpc",
+      "kernel": "xray",
+      "verdict": "accepted",
+      "detail": "Configuration OK.",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.grpc",
+      "feature": "transport.grpc",
+      "kernel": "mihomo",
+      "verdict": "accepted_unverified",
+      "detail": "校验通过, 但该字段不被此内核校验 —— 需回环验证 (Tier B)",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.grpc",
+      "feature": "transport.grpc",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.http_h2",
+      "feature": "transport.http",
+      "kernel": "xray",
+      "verdict": "rejected",
+      "detail": "Failed to start: main: failed to load config files: [/tmp/pnc-probe-x7540hp9/transport_http_h2.json] > infra/conf: failed to build outbound config with tag  > infra/conf: failed to build stream settings for outbound detour > common/errors: ",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.http_h2",
+      "feature": "transport.http",
+      "kernel": "mihomo",
+      "verdict": "accepted_unverified",
+      "detail": "校验通过, 但该字段不被此内核校验 —— 需回环验证 (Tier B)",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.http_h2",
+      "feature": "transport.http",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.httpupgrade",
+      "feature": "transport.httpupgrade",
+      "kernel": "xray",
+      "verdict": "accepted",
+      "detail": "Configuration OK.",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.httpupgrade",
+      "feature": "transport.httpupgrade",
+      "kernel": "mihomo",
+      "verdict": "accepted_unverified",
+      "detail": "校验通过, 但该字段不被此内核校验 —— 需回环验证 (Tier B)",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.httpupgrade",
+      "feature": "transport.httpupgrade",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.xhttp",
+      "feature": "transport.xhttp",
+      "kernel": "xray",
+      "verdict": "accepted",
+      "detail": "Configuration OK.",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.xhttp",
+      "feature": "transport.xhttp",
+      "kernel": "mihomo",
+      "verdict": "accepted_unverified",
+      "detail": "校验通过, 但该字段不被此内核校验 —— 需回环验证 (Tier B)",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.xhttp",
+      "feature": "transport.xhttp",
+      "kernel": "singbox",
+      "verdict": "not_representable",
+      "detail": "该内核配置模型中无对应字段",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.splithttp_legacy",
+      "feature": "transport.xhttp.legacy_name",
+      "kernel": "xray",
+      "verdict": "accepted",
+      "detail": "Configuration OK.",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.splithttp_legacy",
+      "feature": "transport.xhttp.legacy_name",
+      "kernel": "mihomo",
+      "verdict": "accepted_unverified",
+      "detail": "校验通过, 但该字段不被此内核校验 —— 需回环验证 (Tier B)",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.splithttp_legacy",
+      "feature": "transport.xhttp.legacy_name",
+      "kernel": "singbox",
+      "verdict": "not_representable",
+      "detail": "该内核配置模型中无对应字段",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.mkcp",
+      "feature": "transport.mkcp",
+      "kernel": "xray",
+      "verdict": "accepted",
+      "detail": "Configuration OK.",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.mkcp",
+      "feature": "transport.mkcp",
+      "kernel": "mihomo",
+      "verdict": "accepted_unverified",
+      "detail": "校验通过, 但该字段不被此内核校验 —— 需回环验证 (Tier B)",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.mkcp",
+      "feature": "transport.mkcp",
+      "kernel": "singbox",
+      "verdict": "rejected",
+      "detail": "\u001b[31mFATAL\u001b[0m[0000] decode config at /tmp/pnc-probe-x7540hp9/transport_mkcp.json: outbounds[0].transport: unknown transport type: kcp",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.mkcp_removed_fields",
+      "feature": "transport.mkcp.header_seed",
+      "kernel": "xray",
+      "verdict": "rejected",
+      "detail": "Failed to start: main: failed to load config files: [/tmp/pnc-probe-x7540hp9/transport_mkcp_removed_fields.json] > infra/conf: failed to build outbound config with tag  > infra/conf: failed to build stream settings for outbound detour > inf",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.mkcp_removed_fields",
+      "feature": "transport.mkcp.header_seed",
+      "kernel": "mihomo",
+      "verdict": "not_representable",
+      "detail": "该内核配置模型中无对应字段",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "transport.mkcp_removed_fields",
+      "feature": "transport.mkcp.header_seed",
+      "kernel": "singbox",
+      "verdict": "not_representable",
+      "detail": "该内核配置模型中无对应字段",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "security.reality",
+      "feature": "security.reality",
+      "kernel": "xray",
+      "verdict": "accepted",
+      "detail": "Configuration OK.",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "security.reality",
+      "feature": "security.reality",
+      "kernel": "mihomo",
+      "verdict": "accepted",
+      "detail": "configuration file /tmp/pnc-probe-x7540hp9/security_reality.yaml test is successful",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "security.reality",
+      "feature": "security.reality",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "security.reality_vision",
+      "feature": "flow.xtls_rprx_vision",
+      "kernel": "xray",
+      "verdict": "accepted",
+      "detail": "Configuration OK.",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "security.reality_vision",
+      "feature": "flow.xtls_rprx_vision",
+      "kernel": "mihomo",
+      "verdict": "accepted",
+      "detail": "configuration file /tmp/pnc-probe-x7540hp9/security_reality_vision.yaml test is successful",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "security.reality_vision",
+      "feature": "flow.xtls_rprx_vision",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "security.ech",
+      "feature": "security.ech",
+      "kernel": "xray",
+      "verdict": "accepted",
+      "detail": "Configuration OK.",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "security.ech",
+      "feature": "security.ech",
+      "kernel": "mihomo",
+      "verdict": "accepted",
+      "detail": "configuration file /tmp/pnc-probe-x7540hp9/security_ech.yaml test is successful",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "security.ech",
+      "feature": "security.ech",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.vmess_ws_tls",
+      "feature": "protocol.vmess",
+      "kernel": "xray",
+      "verdict": "accepted",
+      "detail": "Configuration OK.",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.vmess_ws_tls",
+      "feature": "protocol.vmess",
+      "kernel": "mihomo",
+      "verdict": "accepted",
+      "detail": "configuration file /tmp/pnc-probe-x7540hp9/protocol_vmess_ws_tls.yaml test is successful",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.vmess_ws_tls",
+      "feature": "protocol.vmess",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.trojan_grpc_tls",
+      "feature": "protocol.trojan",
+      "kernel": "xray",
+      "verdict": "accepted",
+      "detail": "Configuration OK.",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.trojan_grpc_tls",
+      "feature": "protocol.trojan",
+      "kernel": "mihomo",
+      "verdict": "accepted",
+      "detail": "configuration file /tmp/pnc-probe-x7540hp9/protocol_trojan_grpc_tls.yaml test is successful",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.trojan_grpc_tls",
+      "feature": "protocol.trojan",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.ss2022",
+      "feature": "protocol.shadowsocks.2022",
+      "kernel": "xray",
+      "verdict": "accepted",
+      "detail": "Configuration OK.",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.ss2022",
+      "feature": "protocol.shadowsocks.2022",
+      "kernel": "mihomo",
+      "verdict": "accepted",
+      "detail": "configuration file /tmp/pnc-probe-x7540hp9/protocol_ss2022.yaml test is successful",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.ss2022",
+      "feature": "protocol.shadowsocks.2022",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.hysteria2_obfs",
+      "feature": "protocol.hysteria2.obfs",
+      "kernel": "xray",
+      "verdict": "not_representable",
+      "detail": "该内核配置模型中无对应字段",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.hysteria2_obfs",
+      "feature": "protocol.hysteria2.obfs",
+      "kernel": "mihomo",
+      "verdict": "accepted",
+      "detail": "configuration file /tmp/pnc-probe-x7540hp9/protocol_hysteria2_obfs.yaml test is successful",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.hysteria2_obfs",
+      "feature": "protocol.hysteria2.obfs",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.tuic",
+      "feature": "protocol.tuic",
+      "kernel": "xray",
+      "verdict": "not_representable",
+      "detail": "该内核配置模型中无对应字段",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.tuic",
+      "feature": "protocol.tuic",
+      "kernel": "mihomo",
+      "verdict": "accepted",
+      "detail": "configuration file /tmp/pnc-probe-x7540hp9/protocol_tuic.yaml test is successful",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.tuic",
+      "feature": "protocol.tuic",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.anytls",
+      "feature": "protocol.anytls",
+      "kernel": "xray",
+      "verdict": "not_representable",
+      "detail": "该内核配置模型中无对应字段",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.anytls",
+      "feature": "protocol.anytls",
+      "kernel": "mihomo",
+      "verdict": "accepted",
+      "detail": "configuration file /tmp/pnc-probe-x7540hp9/protocol_anytls.yaml test is successful",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "protocol.anytls",
+      "feature": "protocol.anytls",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "advanced.fingerprint_utls",
+      "feature": "tls.fingerprint",
+      "kernel": "xray",
+      "verdict": "accepted",
+      "detail": "Configuration OK.",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "advanced.fingerprint_utls",
+      "feature": "tls.fingerprint",
+      "kernel": "mihomo",
+      "verdict": "accepted",
+      "detail": "configuration file /tmp/pnc-probe-x7540hp9/advanced_fingerprint_utls.yaml test is successful",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "advanced.fingerprint_utls",
+      "feature": "tls.fingerprint",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "advanced.mux",
+      "feature": "multiplex",
+      "kernel": "xray",
+      "verdict": "accepted",
+      "detail": "Configuration OK.",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "advanced.mux",
+      "feature": "multiplex",
+      "kernel": "mihomo",
+      "verdict": "accepted",
+      "detail": "configuration file /tmp/pnc-probe-x7540hp9/advanced_mux.yaml test is successful",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "advanced.mux",
+      "feature": "multiplex",
+      "kernel": "singbox",
+      "verdict": "accepted",
+      "detail": "",
+      "evidence": "test",
+      "layer": "static"
+    },
+    {
+      "case_id": "loopback.xray_server_tcp__mihomo_client_tcp",
+      "feature": "transport.tcp",
+      "kernel": "mihomo",
+      "verdict": "works",
+      "detail": "取回内容符合预期",
+      "evidence": "test",
+      "layer": "loopback"
+    },
+    {
+      "case_id": "loopback.xray_server_tcp__mihomo_client_nonsense_transport",
+      "feature": "transport.unknown_silent_fallback",
+      "kernel": "mihomo",
+      "verdict": "silent_fallback",
+      "detail": "**连上了** —— 不认识的字段被静默当成默认值用了 (取回 'COMPAT-OK')。这正是本项目要挡掉的情况。",
+      "evidence": "test",
+      "layer": "loopback"
+    },
+    {
+      "case_id": "loopback.xray_server_xhttp__mihomo_client_xhttp",
+      "feature": "transport.xhttp",
+      "kernel": "mihomo",
+      "verdict": "works",
+      "detail": "取回内容符合预期",
+      "evidence": "test",
+      "layer": "loopback"
+    }
+  ]
+}

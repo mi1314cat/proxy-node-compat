@@ -1,0 +1,47 @@
+{
+  "_comment": "内核调用方式。路径是**示例**（本机跑探针时用 --config 指向自己的副本）。判断逻辑一律不写死内核，全部来自这里。",
+  "xray": {
+    "binary": "/usr/local/bin/xray",
+    "version_cmd": ["/usr/local/bin/xray", "version"],
+    "validate_cmd": ["/usr/local/bin/xray", "-test", "-config", "{config}"],
+    "run_cmd": ["/usr/local/bin/xray", "run", "-config", "{config}"],
+    "config_suffix": ".json",
+    "wrapper": {
+      "log": {"loglevel": "warning", "access": "none", "error": "none"},
+      "inbounds": [
+        {"__fragment__": "inbound",
+         "default": {"listen": "127.0.0.1", "port": 10808, "protocol": "socks",
+                     "settings": {"udp": true}}}
+      ],
+      "outbounds": [{"__fragment__": "outbound", "default": {"protocol": "freedom"}}]
+    }
+  },
+  "mihomo": {
+    "binary": "/root/catmi/mihomo/mihomo",
+    "version_cmd": ["/root/catmi/mihomo/mihomo", "-v"],
+    "validate_cmd": ["/root/catmi/mihomo/mihomo", "-t", "-f", "{config}", "-d", "{workdir}"],
+    "run_cmd": ["/root/catmi/mihomo/mihomo", "-f", "{config}", "-d", "{workdir}"],
+    "config_suffix": ".yaml",
+    "wrapper": {
+      "mixed-port": 10809,
+      "log-level": "warning",
+      "proxies": [{"__fragment__": "proxy", "default": null}],
+      "rules": ["MATCH,DIRECT"]
+    }
+  },
+  "singbox": {
+    "binary": "/root/catmi/sing-box/sing-box",
+    "version_cmd": ["/root/catmi/sing-box/sing-box", "version"],
+    "validate_cmd": ["/root/catmi/sing-box/sing-box", "check", "-c", "{config}"],
+    "run_cmd": ["/root/catmi/sing-box/sing-box", "run", "-c", "{config}"],
+    "config_suffix": ".json",
+    "wrapper": {
+      "log": {"level": "warn"},
+      "inbounds": [
+        {"__fragment__": "inbound",
+         "default": {"type": "socks", "listen": "127.0.0.1", "listen_port": 10808}}
+      ],
+      "outbounds": [{"__fragment__": "outbound", "default": {"type": "direct", "tag": "d"}}]
+    }
+  }
+}
