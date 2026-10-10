@@ -249,6 +249,33 @@ class TestVersionBoundaries(unittest.TestCase):
         self.assertTrue(any(w["code"] == "INFERENCE_ONLY_EVIDENCE" for w in r.warnings))
 
 
+# ---------------------------------------------------------------- 更正: Xray hysteria2 出站
+class TestXrayHysteria2Outbound(unittest.TestCase):
+    """Xray 有 hysteria 出站（settings.version=2 即 Hysteria2）—— 实测 204。
+
+    原来的规则 `xray.protocol.hysteria2.never`（KERNEL_NEVER_SUPPORTED）来自探针套件里
+    按 mihomo/sing-box 形状写的 hysteria2 用例，从没试过 Xray 自己的
+    `protocol: hysteria` + `settings.version: 2` 形状。CC 上 26.3.27 的真机回环
+    （xray -test → Configuration OK，经该出站 curl → 204）把它证伪了。
+    证据: e-xray-hysteria2-outbound。**只覆盖出站方向。**
+    """
+
+    def test_26327_outbound_supported(self):
+        r = check_node("hysteria2://pw@h.example:443?sni=h.example#hy", T("xray", "26.3.27"))
+        self.assertEqual(r.status, "SUPPORTED")
+        self.assertIn("xray.protocol.hysteria2", r.rules_applied)
+        self.assertNotIn("KERNEL_NEVER_SUPPORTED", r.reason_codes)
+
+    def test_older_version_is_unknown_not_supported(self):
+        # 证据只到 26.3.27 —— 更早的版本不许外推成"支持"
+        r = check_node("hysteria2://pw@h.example:443?sni=h.example#hy", T("xray", "25.1.1"))
+        self.assertEqual(r.status, "UNKNOWN")
+
+    def test_other_kernels_unaffected(self):
+        r = check_node("hysteria2://pw@h.example:443?sni=h.example#hy", T("singbox", "1.14.2"))
+        self.assertIn(r.status, ("SUPPORTED", "SUPPORTED_WITH_WARNING", "SUPPORTED_WITH_LOSS"))
+
+
 # ---------------------------------------------------------------- Phase 4C
 class TestUri(unittest.TestCase):
     def test_16_inferred_not_written_back(self):

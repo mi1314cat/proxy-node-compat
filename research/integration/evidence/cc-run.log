@@ -1,0 +1,286 @@
+===== 0 · 环境 =====
+prefix=/tmp/xbd-v2  内核=Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/arm64)
+{"target": {"kernel": "xray", "distribution": null, "version": "26.3.27", "build_tags": null, "platform": null, "runtime_options": {"mux_cool": true}, "evaluated_at": null}, "vendored": "0.1.0", "error": null}
+
+===== 1 · xbd node list（新判定） =====
+  #      名称                            协议           传输         健康          Xray       Browser Dialer
+  --------------------------------------------------------------------------------------------
+  1   *  🇺🇸 CCSmHysteria2-01           hysteria2    quic       未观测         支持!        不支持
+  2      🇺🇸 CCSmReality-01             vless        tcp        未观测         支持!        不支持
+  3      🇺🇸 CCSmvless-01               vless        xhttp      未观测         支持!        支持!
+  4      🇺🇸 CCSXvless-xhttp-01         vless        xhttp      未观测         支持!        支持!
+  5      hysteria-01                   hysteria2    quic       未观测         支持!        不支持
+  6      mHysteria2v6DediRock--01      hysteria2    quic       未观测         支持!        不支持
+  7      vless-tcp-mlkem-01            vless        tcp        未观测         支持!        不支持
+  (* = 当前节点)
+  （健康列需要多出站模式：单节点模式没有观测器）
+
+===== 2 · 每个真实节点：旧 vs 新 vs 合并 =====
+# 双跑对比 —— 语料 60 条；目标 kernel=xray version=26.3.27 distribution=upstream
+# runtime_options={'mux_cool': True}
+
+| 节点 | 协议/传输/安全 | 旧判定 | compat | 合并 | 来源 | reason_codes | 多判出的 |
+|---|---|---|---|---|---|---|---|
+| 🇺🇸 | hysteria2/quic/tls | SUPPORTED | UNKNOWN | SUPPORTED_WITH_WARNING | compat（总状态 UNKNOWN，但该结论是确定的） | UNKNOWN_CAPABILITY | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:UNKNOWN_CAPABILITY; ext:upmbps,downmbps,obfs |
+| 🇺🇸 | hysteria2/quic/tls | SUPPORTED | UNKNOWN | SUPPORTED_WITH_WARNING | compat（总状态 UNKNOWN，但该结论是确定的） | UNKNOWN_CAPABILITY | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:UNKNOWN_CAPABILITY; ext:upmbps,downmbps,obfs |
+| 🇺🇸 | hysteria2/quic/tls | SUPPORTED | UNKNOWN | SUPPORTED_WITH_WARNING | compat（总状态 UNKNOWN，但该结论是确定的） | UNKNOWN_CAPABILITY | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:UNKNOWN_CAPABILITY; ext:upmbps,downmbps,obfs |
+| 🇺🇸 | hysteria2/quic/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; ext:obfs,obfs-password |
+| 🇺🇸 | hysteria2/quic/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; ext:pin,upmbps,downmbps,obfs |
+| hy3 | hysteria2/quic/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; ext:mport |
+| hy3 | hysteria2/quic/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; ext:mport |
+| 🇺🇸 | shadowsocks/tcp/none | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| 🇺🇸 | trojan/websocket/reality | NOT_SUPPORTED | UNSUPPORTED | NOT_SUPPORTED | compat | SEMANTIC_MISMATCH | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:SEMANTIC_MISMATCH |
+| 🇺🇸 | trojan/websocket/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| 🇺🇸 | trojan/tcp/reality | NOT_SUPPORTED | SUPPORTED_WITH_LOSS | NOT_SUPPORTED | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| TrojanReality | trojan/grpc/reality | NOT_SUPPORTED | SUPPORTED_WITH_LOSS | NOT_SUPPORTED | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| h.example | trojan/tcp/reality | NOT_SUPPORTED | SUPPORTED_WITH_LOSS | NOT_SUPPORTED | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| h.example | trojan/tcp/reality | NOT_SUPPORTED | SUPPORTED_WITH_LOSS | NOT_SUPPORTED | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| 🇺🇸 | vless/tcp/reality | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | RUNTIME_CONDITION_NOT_MET | 丢:standard:mux,standard:flow,standard:mux.enabled,standard:mux.protocol; 码:RUNTIME_CONDITION_NOT_MET |
+| VLESSmKCPSeedWG | vless/mkcp/none | SUPPORTED | UNSUPPORTED | NOT_SUPPORTED | compat | KERNEL_REMOVED | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:KERNEL_REMOVED |
+| VLESSmKCPSeed | vless/mkcp/none | SUPPORTED | UNSUPPORTED | NOT_SUPPORTED | compat | KERNEL_REMOVED | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:KERNEL_REMOVED |
+| 🇺🇸 | vless/websocket/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| 🇺🇸 | vless/websocket/reality | NOT_SUPPORTED | UNSUPPORTED | NOT_SUPPORTED | compat | SEMANTIC_MISMATCH | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:SEMANTIC_MISMATCH |
+| 🇺🇸 | vless/tcp/reality | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | RUNTIME_CONDITION_NOT_MET | 丢:standard:mux,standard:flow,standard:mux.enabled,standard:mux.protocol; 码:RUNTIME_CONDITION_NOT_MET |
+| 🇺🇸 | vless/tcp/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| vless-tcp-tls | vless/tcp/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| vless-xtls-legacy | vless/tcp/xtls | NOT_SUPPORTED | UNKNOWN | NOT_SUPPORTED | compat（总状态 UNKNOWN，但该结论是确定的） | UNKNOWN_CAPABILITY | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:UNKNOWN_CAPABILITY; ext:sni |
+| vless-h2-removed | vless/h2/tls | NOT_SUPPORTED | UNSUPPORTED | NOT_SUPPORTED | compat | KERNEL_REMOVED | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:KERNEL_REMOVED |
+| vless-http-removed | vless/h2/tls | NOT_SUPPORTED | UNSUPPORTED | NOT_SUPPORTED | compat | KERNEL_REMOVED | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:KERNEL_REMOVED |
+| vless-quic-removed | vless/quic/tls | NOT_SUPPORTED | SUPPORTED_WITH_LOSS | NOT_SUPPORTED | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| vless-mkcp-header-seed | vless/mkcp/none | SUPPORTED | UNSUPPORTED | NOT_SUPPORTED | compat | KERNEL_REMOVED | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:KERNEL_REMOVED |
+| vless-mkcp-plain | vless/mkcp/none | SUPPORTED | UNSUPPORTED | NOT_SUPPORTED | compat | KERNEL_REMOVED | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:KERNEL_REMOVED |
+| vless-ws-reality | vless/websocket/reality | NOT_SUPPORTED | UNSUPPORTED | NOT_SUPPORTED | compat | SEMANTIC_MISMATCH | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:SEMANTIC_MISMATCH |
+| vless-xhttp-reality | vless/xhttp/reality | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | SEMANTIC_MISMATCH | 丢:standard:mux,standard:mux,standard:mux.enabled,standard:mux.protocol; 码:SEMANTIC_MISMATCH |
+| vless-grpc-reality | vless/grpc/reality | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| vless-flow-no-tls | vless/tcp/none | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | RUNTIME_CONDITION_NOT_MET | 丢:standard:mux,standard:flow,standard:mux.enabled,standard:mux.protocol; 码:RUNTIME_CONDITION_NOT_MET |
+| vless-xhttp-mux | vless/xhttp/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | SEMANTIC_MISMATCH | 丢:standard:mux,standard:mux,standard:mux.enabled,standard:mux.protocol; 码:SEMANTIC_MISMATCH |
+| vless-xhttp-streamup | vless/xhttp/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | SEMANTIC_MISMATCH | 丢:standard:mux,standard:mux,standard:mux.enabled,standard:mux.protocol; 码:SEMANTIC_MISMATCH |
+| vless-xhttp-ech | vless/xhttp/tls | SUPPORTED | UNKNOWN | SUPPORTED_WITH_WARNING | compat（总状态 UNKNOWN，但该结论是确定的） | SEMANTIC_MISMATCH | 丢:standard:mux,standard:mux,standard:ech.query_server_name,standard:mux.enabled,standard:mux.protocol; 码:SEMANTIC_MISMATCH; ext:ech_declared |
+| vless-unknown-transport | vless/magic-transport/tls | NOT_SUPPORTED | UNKNOWN | NOT_SUPPORTED | compat（总状态 UNKNOWN，但该结论是确定的） | UNKNOWN_CAPABILITY | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:UNKNOWN_CAPABILITY; ext:type |
+| vless-unknown-params | vless/tcp/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; ext:someNewParam,evilField |
+| vless-fp-flow | vless/tcp/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | RUNTIME_CONDITION_NOT_MET | 丢:standard:mux,standard:flow,standard:mux.enabled,standard:mux.protocol; 码:RUNTIME_CONDITION_NOT_MET |
+| vless-bad-fp | vless/tcp/tls | NOT_SUPPORTED | SUPPORTED_WITH_LOSS | NOT_SUPPORTED | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| vless-allow-insecure | vless/tcp/tls | SUPPORTED_WITH_WARNING | UNKNOWN | SUPPORTED_WITH_WARNING | compat（总状态 UNKNOWN，但该结论是确定的） | UNKNOWN_CAPABILITY | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:UNKNOWN_CAPABILITY |
+| trojan-tls | trojan/tcp/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| trojan-reality | trojan/tcp/reality | NOT_SUPPORTED | SUPPORTED_WITH_LOSS | NOT_SUPPORTED | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| trojan-ws | trojan/websocket/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| ss-plain | shadowsocks/tcp/none | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| ss2022 | shadowsocks/tcp/none | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| ss-plugin | shadowsocks/tcp/none | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; ext:plugin |
+| hy2-plain | hysteria2/quic/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| hy2-obfs | hysteria2/quic/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; ext:obfs,obfs-password |
+| hy2-pin | hysteria2/quic/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+| hy2-mport | hysteria2/quic/tls | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; ext:mport |
+| socks-simple | socks/tcp/none | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux |
+| socks-auth | socks/tcp/none | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux |
+| http-simple | http/tcp/none | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux |
+| 🇺🇸 CCSmHysteria2-01 | hysteria2/quic/none | SUPPORTED_WITH_WARNING | UNKNOWN | SUPPORTED_WITH_WARNING | compat（总状态 UNKNOWN，但该结论是确定的） | UNKNOWN_CAPABILITY | 丢:standard:mux; 码:UNKNOWN_CAPABILITY; ext:transport |
+| 🇺🇸 CCSmReality-01 | vless/tcp/reality | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | RUNTIME_CONDITION_NOT_MET | 丢:standard:mux,standard:flow; 码:RUNTIME_CONDITION_NOT_MET |
+| 🇺🇸 CCSmvless-01 | vless/xhttp/tls | SUPPORTED_WITH_WARNING | UNKNOWN | SUPPORTED_WITH_WARNING | compat（总状态 UNKNOWN，但该结论是确定的） | SEMANTIC_MISMATCH,UNKNOWN_CAPABILITY | 丢:standard:mux,standard:mux; 码:SEMANTIC_MISMATCH,UNKNOWN_CAPABILITY |
+| 🇺🇸 CCSXvless-xhttp-01 | vless/xhttp/tls | SUPPORTED_WITH_WARNING | UNKNOWN | SUPPORTED_WITH_WARNING | compat（总状态 UNKNOWN，但该结论是确定的） | SEMANTIC_MISMATCH,UNKNOWN_CAPABILITY | 丢:standard:mux,standard:mux; 码:SEMANTIC_MISMATCH,UNKNOWN_CAPABILITY |
+| hysteria-01 | hysteria2/quic/tls | SUPPORTED_WITH_WARNING | UNKNOWN | SUPPORTED_WITH_WARNING | compat（总状态 UNKNOWN，但该结论是确定的） | UNKNOWN_CAPABILITY | 丢:standard:mux,standard:mux.enabled,standard:mux.protocol; 码:UNKNOWN_CAPABILITY |
+| mHysteria2v6DediRock--01 | hysteria2/quic/none | SUPPORTED_WITH_WARNING | UNKNOWN | SUPPORTED_WITH_WARNING | compat（总状态 UNKNOWN，但该结论是确定的） | UNKNOWN_CAPABILITY | 丢:standard:mux; 码:UNKNOWN_CAPABILITY; ext:transport |
+| vless-tcp-mlkem-01 | vless/tcp/none | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | - | 丢:standard:mux |
+
+## 客户端不支持导入（不是判定差异）: 14 条
+    - 客户端不支持导入该 scheme: anytls://6f1addc6af5a11c1b535b1ce1b06490a@107.173.154.178:50877?sni=cloudflare.c
+    - 客户端不支持导入该 scheme: anytls://d3cc09aa867186e5887515fcc95d8628@107.173.154.178:22812?sni=www.apple.co
+    - 客户端不支持导入该 scheme: anytls://f537cd201a21c199f874f254f9ac6c8b@107.173.154.178:28725?sni=hxicc.catmic
+    - 客户端不支持导入该 scheme: anytls://g4RoPGzW3QLIHJNPgS8CoVB1@107.173.154.178:31013?sni=apache.org&insecure=
+    - 客户端不支持导入该 scheme: anytls://pass@example.com:443?sni=a.com&zzz=3#a1
+    - 客户端不支持导入该 scheme: anytls://tjO9yFXg2zSmMh2ejDe6AZ0v@107.173.154.178:31002?sni=hxicc.catmicos.dpdns
+    - 客户端不支持导入该 scheme: tuic://0891ed4d-491c-407b-92ff-5ad27c2e5336:9e874ff1faa7a0ff642af541b4fffc53@107
+    - 客户端不支持导入该 scheme: tuic://ab93a62d-99f2-41c2-9a95-df3c82edd3e9:2aac4f1ed898b9fc1f5e9992@[2001:470:c
+    - 客户端不支持导入该 scheme: tuic://f803e8bd-e20a-4487-9db9-bc686ee3511d:db554c9a63d4b7e62dfdc2fc@107.173.154
+    - 客户端不支持导入该 scheme: vmess://eyJhZGQiOiJoeGljYy5jYXRtaWNvcy5kcGRucy5vcmciLCJwb3J0IjoiNDQzIiwidXVpZCI6
+    - 客户端不支持导入该 scheme: tuic://u:p@a.example:443?sni=a.example&congestion_control=bbr#tuic
+    - 客户端不支持导入该 scheme: anytls://pw@a.example:443?sni=a.example&fp=chrome#anytls
+    - 客户端不支持导入该 scheme: wireguard://x@a.example:51820#unknown-scheme
+    - 客户端不支持导入该 scheme: vmess://eyJhZGQiOiJhLmV4YW1wbGUiLCJwb3J0IjoiNDQzIiwidXVpZCI6InUiLCJuZXQiOiJ3cyIs
+
+## 分类
+- **same**: 20
+- **tightened**: 40
+    - 🇺🇸 [hysteria2/quic/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.mux.semantics', 'xray.protocol.hysteria2']  原因码=['UNKNOWN_CAPABILITY']
+    - 🇺🇸 [hysteria2/quic/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.mux.semantics', 'xray.protocol.hysteria2']  原因码=['UNKNOWN_CAPABILITY']
+    - 🇺🇸 [hysteria2/quic/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.mux.semantics', 'xray.protocol.hysteria2']  原因码=['UNKNOWN_CAPABILITY']
+    - 🇺🇸 [hysteria2/quic/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.mux.semantics', 'xray.protocol.hysteria2']
+    - 🇺🇸 [hysteria2/quic/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.mux.semantics', 'xray.protocol.hysteria2']
+    - hy3 [hysteria2/quic/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.mux.semantics', 'xray.protocol.hysteria2']
+    - hy3 [hysteria2/quic/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.mux.semantics', 'xray.protocol.hysteria2']
+    - 🇺🇸 [shadowsocks/tcp/none] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.protocol.shadowsocks', 'xray.mux.semantics']
+    - 🇺🇸 [trojan/websocket/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.support.transport_ws', 'xray.protocol.trojan', 'xray.mux.semantics']
+    - 🇺🇸 [vless/tcp/reality] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.combo.reality_transports', 'xray.support.flow', 'xray.protocol.vless', 'xray.mux.semantics', 'xray.vless.encryption', 'xray.combo.flow_without_tls']  原因码=['RUNTIME_CONDITION_NOT_MET']
+    - VLESSmKCPSeedWG [vless/mkcp/none] SUPPORTED → NOT_SUPPORTED  规则=['xray.mkcp.header_seed', 'xray.protocol.vless', 'xray.mux.semantics']  原因码=['KERNEL_REMOVED']
+    - VLESSmKCPSeed [vless/mkcp/none] SUPPORTED → NOT_SUPPORTED  规则=['xray.mkcp.header_seed', 'xray.protocol.vless', 'xray.mux.semantics']  原因码=['KERNEL_REMOVED']
+    - 🇺🇸 [vless/websocket/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.support.transport_ws', 'xray.protocol.vless', 'xray.mux.semantics', 'xray.vless.encryption']
+    - 🇺🇸 [vless/tcp/reality] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.combo.reality_transports', 'xray.support.flow', 'xray.protocol.vless', 'xray.mux.semantics', 'xray.vless.encryption', 'xray.combo.flow_without_tls']  原因码=['RUNTIME_CONDITION_NOT_MET']
+    - 🇺🇸 [vless/tcp/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.protocol.vless', 'xray.mux.semantics', 'xray.vless.encryption']
+    - vless-tcp-tls [vless/tcp/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.protocol.vless', 'xray.mux.semantics']
+    - vless-mkcp-header-seed [vless/mkcp/none] SUPPORTED → NOT_SUPPORTED  规则=['xray.mkcp.header_seed', 'xray.protocol.vless', 'xray.mux.semantics']  原因码=['KERNEL_REMOVED']
+    - vless-mkcp-plain [vless/mkcp/none] SUPPORTED → NOT_SUPPORTED  规则=['xray.mkcp.header_seed', 'xray.protocol.vless', 'xray.mux.semantics']  原因码=['KERNEL_REMOVED']
+    - vless-xhttp-reality [vless/xhttp/reality] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.combo.reality_transports', 'xray.support.xhttp', 'xray.protocol.vless', 'xray.mux.semantics', 'xray.combo.xhttp_muxcool']  原因码=['SEMANTIC_MISMATCH']
+    - vless-grpc-reality [vless/grpc/reality] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.combo.reality_transports', 'xray.support.transport_grpc', 'xray.protocol.vless', 'xray.mux.semantics']
+    - vless-flow-no-tls [vless/tcp/none] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.flow', 'xray.protocol.vless', 'xray.mux.semantics', 'xray.combo.flow_without_tls']  原因码=['RUNTIME_CONDITION_NOT_MET']
+    - vless-xhttp-mux [vless/xhttp/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.xhttp', 'xray.support.tls', 'xray.protocol.vless', 'xray.mux.semantics', 'xray.combo.xhttp_muxcool']  原因码=['SEMANTIC_MISMATCH']
+    - vless-xhttp-streamup [vless/xhttp/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.xhttp', 'xray.support.tls', 'xray.protocol.vless', 'xray.mux.semantics', 'xray.combo.xhttp_muxcool']  原因码=['SEMANTIC_MISMATCH']
+    - vless-xhttp-ech [vless/xhttp/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.ech.config_lax', 'xray.support.xhttp', 'xray.support.tls', 'xray.protocol.vless', 'xray.mux.semantics', 'xray.combo.xhttp_muxcool']  原因码=['SEMANTIC_MISMATCH']
+    - vless-unknown-params [vless/tcp/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.protocol.vless', 'xray.mux.semantics']
+    - vless-fp-flow [vless/tcp/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.support.flow', 'xray.protocol.vless', 'xray.mux.semantics', 'xray.combo.flow_without_tls']  原因码=['RUNTIME_CONDITION_NOT_MET']
+    - trojan-tls [trojan/tcp/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.protocol.trojan', 'xray.mux.semantics']
+    - trojan-ws [trojan/websocket/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.support.transport_ws', 'xray.protocol.trojan', 'xray.mux.semantics']
+    - ss-plain [shadowsocks/tcp/none] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.protocol.shadowsocks', 'xray.mux.semantics']
+    - ss2022 [shadowsocks/tcp/none] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.protocol.shadowsocks', 'xray.mux.semantics']
+    - ss-plugin [shadowsocks/tcp/none] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.protocol.shadowsocks', 'xray.mux.semantics']
+    - hy2-plain [hysteria2/quic/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.mux.semantics', 'xray.protocol.hysteria2']
+    - hy2-obfs [hysteria2/quic/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.mux.semantics', 'xray.protocol.hysteria2']
+    - hy2-pin [hysteria2/quic/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.mux.semantics', 'xray.protocol.hysteria2']
+    - hy2-mport [hysteria2/quic/tls] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.support.tls', 'xray.mux.semantics', 'xray.protocol.hysteria2']
+    - socks-simple [socks/tcp/none] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.mux.semantics']
+    - socks-auth [socks/tcp/none] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.mux.semantics']
+    - http-simple [http/tcp/none] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.mux.semantics']
+    - 🇺🇸 CCSmReality-01 [vless/tcp/reality] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.combo.reality_transports', 'xray.support.flow', 'xray.protocol.vless', 'xray.mux.semantics', 'xray.combo.flow_without_tls']  原因码=['RUNTIME_CONDITION_NOT_MET']
+    - vless-tcp-mlkem-01 [vless/tcp/none] SUPPORTED → SUPPORTED_WITH_WARNING  规则=['xray.protocol.vless', 'xray.mux.semantics', 'xray.vless.encryption']
+- **fallback**: 0
+- **relaxed**: 0
+- **dialer_bug**: 0
+
+结论: ✓ 无放宽（新判定只收紧或一致）；收紧 40 条；回退旧判定 0 条
+
+===== 3 · 回滚开关（XBD_COMPAT_ENGINE=legacy）必须回到旧判定 =====
+engine= (legacy) xray= SUPPORTED_WITH_WARNING dialer= NOT_SUPPORTED
+engine= proxy-node-compat xray= SUPPORTED_WITH_WARNING dialer= NOT_SUPPORTED verdict_source= compat（总状态 UNKNOWN，但该结论是确定的）
+
+===== 4 · want-bd（浏览器拨号的唯一入口）必须一致 =====
+  node-001-ccsmhysteria2-01.json                 v2=no   legacy=no   SAME
+  node-001-ccsmreality-01.json                   v2=no   legacy=no   SAME
+  node-001-ccsmvless-01.json                     v2=yes  legacy=yes  SAME
+  node-001-ccsxvless-xhttp-01.json               v2=yes  legacy=yes  SAME
+  node-001-hysteria-01.json                      v2=no   legacy=no   SAME
+  node-001-mhysteria2v6dedirock--01.json         v2=no   legacy=no   SAME
+  node-001-vless-tcp-mlkem-01.json               v2=no   legacy=no   SAME
+
+===== 5 · 节点卡片（xbd node check 的文案路径） =====
+节点名称：🇺🇸 CCSmHysteria2-01
+
+Xray：
+  ✓ 支持（有注意项）
+
+Browser Dialer：
+  ✗ 不支持
+
+原因 / 说明：
+  - ⚠ 关于 mux：这个节点的 mux.cool 不是链接里写的 —— lib/genconfig.py 默认给每个出站写 mux:{enabled:true}（只有 --no-mux 关）。下面 compat 对 mux 的结论针对的就是这个默认行为。
+  - 🟠 会丢能力：standard:mux —— 三方 mux 不同构（Xray=mux.cool / mihomo=smux / sing-box=multiplex），跨内核搬运无法保证语义一致；Xray 官方文档明确「使用 XHTTP 时不要启用 mux.cool」（规则 xray.mux.semantics）
+  - 🟡 SEMANTIC_MISMATCH：mux 在三个内核里不是同一个东西；Xray 建议用 XHTTP 自带的多路复用（xhttpSettings.extra.xmux）而不是 mux.cool
+  - ❓ 未知：xray.tls.allow_insecure: < 26.7.11 —— 26.2.6–26.5.9 期间是时间闸门（系统时间 < 2026-06-01 UTC 才生效）；引擎未实现 evaluated_at, 故一律 UNKNOWN
+  - 内核失败模式：silent_ignore（UNKNOWN_CAPABILITY）
+  - 证据：[CONFIG_VALIDATION/HIGH] 63 条真内核探针: 三家对下列协议/传输的配置校验全部通过 ↳ research/empirical/probe-results.json
+  - 证据：[SRC/HIGH] 三方 mux 不是同一个东西: Xray=mux.cool(固定域名 v1.mux.cool:9527) / mihomo=smux / sing-box=multiplex(h2mux,smux,yamux)；sing-box 对 mux.cool 直接 FATAL ↳ research/kernel-xray.md L172-174, research/kernel-singbox.md L275-281
+  - Hysteria2 在 Xray 里的协议名是 hysteria（version 2）；传输字段名随版本不同：v26.3.27 及更早用 streamSettings.network，main 分支/新版用 method。本项目生成配置时会两个都写以兼容。
+  - Xray 26.x 已移除 allowInsecure（迁移到 pinnedPeerCertSha256）；本次生成的配置不会写入该项，因此证书必须有效。
+  - Browser Dialer 是 Xray 的传输层能力，与代理协议无关（vmess/trojan 同样可用），但它要求传输是 WebSocket 或 XHTTP。该节点仍可用普通 Xray 模式。
+
+能力标签：[HYSTERIA2]  [QUIC]  [Xray]  [Browser Dialer 不可用]
+
+===== 7 · 真实链接（RN 产出的三条 + 生产 xhttp 形）过一遍 =====
+| 链接 | 旧判定 | compat | 合并 | 来源 | 原因码/损失 |
+|---|---|---|---|---|---|
+| RN-batch-Reality(25000) | SUPPORTED | SUPPORTED_WITH_LOSS | SUPPORTED_WITH_WARNING | compat | RUNTIME_CONDITION_NOT_MET 丢:standard:mux,standard:flow,standard:mux.enabled,standard:mux.protocol |
+    raw_uri=保留  extensions=[]
+| RN-batch-Trojan+REALITY(25001) | NOT_SUPPORTED | SUPPORTED_WITH_LOSS | NOT_SUPPORTED | compat |  丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+    raw_uri=保留  extensions=[]
+| RN-batch-Hysteria2(25002/udp) | SUPPORTED | UNKNOWN | SUPPORTED_WITH_WARNING | compat（总状态 UNKNOWN，但该结论是确定的） | UNKNOWN_CAPABILITY 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+    raw_uri=保留  extensions=[]
+| RN-生产-xhttp-04(pin) | SUPPORTED | UNKNOWN | SUPPORTED_WITH_WARNING | compat（总状态 UNKNOWN，但该结论是确定的） | SEMANTIC_MISMATCH 丢:standard:mux,standard:mux,standard:ech.query_server_name,standard:mux.enabled,standard:mux.protocol |
+    raw_uri=保留  extensions=['ech_declared']
+| RN-真mKCP(已移除字段) | SUPPORTED | UNSUPPORTED | NOT_SUPPORTED | compat | KERNEL_REMOVED 丢:standard:mux,standard:mux.enabled,standard:mux.protocol |
+    raw_uri=保留  extensions=[]
+
+===== 8 · 清理核对（/tmp 之外没有被动过） =====
+total 60
+drwxr-xr-x 12 root root   360 Oct 10 19:31 .
+drwxrwxrwt 64 root root  5980 Oct 10 19:31 ..
+-rw-r--r--  1 root root  6857 Jan  1  2000 README.md
+-rw-r--r--  1 root root  6302 Jan  1  2000 RUN.md
+production mtime check:
+total 44
+drwxr-xr-x  2 root root 4096 2026-10-10_13:41:27 .
+drwxr-xr-x 15 root root 4096 2026-09-15_00:47:13 ..
+解包版本: 2.8.3
+===== 6b · 面板（带令牌，只读 GET） =====
+GET / → http=200 bytes=119379
+GET /api/state → http=200 bytes=178197
+  面板状态里的节点数: 7
+    🇺🇸 CCSmHysteria2-01          xray=SUPPORTED_WITH_WARNING kernel=UNKNOWN                src=compat（总状态 UNKNOWN，但该结论是确定的）     raw_uri=无 ext=1
+    🇺🇸 CCSmReality-01            xray=SUPPORTED_WITH_WARNING kernel=SUPPORTED_WITH_LOSS    src=compat                           raw_uri=无 ext=0
+    🇺🇸 CCSmvless-01              xray=SUPPORTED_WITH_WARNING kernel=UNKNOWN                src=compat（总状态 UNKNOWN，但该结论是确定的）     raw_uri=无 ext=0
+    🇺🇸 CCSXvless-xhttp-01        xray=SUPPORTED_WITH_WARNING kernel=UNKNOWN                src=compat（总状态 UNKNOWN，但该结论是确定的）     raw_uri=无 ext=0
+    hysteria-01                  xray=SUPPORTED_WITH_WARNING kernel=UNKNOWN                src=compat（总状态 UNKNOWN，但该结论是确定的）     raw_uri=有 ext=0
+    mHysteria2v6DediRock--01     xray=SUPPORTED_WITH_WARNING kernel=UNKNOWN                src=compat（总状态 UNKNOWN，但该结论是确定的）     raw_uri=无 ext=1
+    vless-tcp-mlkem-01           xray=SUPPORTED_WITH_WARNING kernel=SUPPORTED_WITH_LOSS    src=compat                           raw_uri=无 ext=0
+面板 http://127.0.0.1:18099 (仅本机)，需要令牌
+
+===== 11 · 真实链路（客户端 genconfig → 内核 → curl 204） =====
+--- reality-nomux  (node-001-ccsmreality-01.json)  端口 39981
+    配置: network=tcp method=tcp security=reality mux=null pin=False ech=None
+    curl → http_code=204
+    内核日志:
+      Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/arm64)
+      A unified platform for anti-censorship.
+      2026/10/10 19:31:20.373302 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xbd-run-reality-nomux.json Format:json}
+--- reality-mux  (node-001-ccsmreality-01.json)  端口 39982
+    配置: network=tcp method=tcp security=reality mux={"enabled": true, "concurrency": 8} pin=False ech=None
+    curl → http_code=204
+    内核日志:
+      Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/arm64)
+      A unified platform for anti-censorship.
+      2026/10/10 19:31:26.563630 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xbd-run-reality-mux.json Format:json}
+--- xhttp-nomux  (node-001-ccsxvless-xhttp-01.json)  端口 39983
+    配置: network=xhttp method=xhttp security=tls mux=null pin=True ech=None
+    curl → http_code=000
+    内核日志:
+      Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/arm64)
+      A unified platform for anti-censorship.
+      2026/10/10 19:31:33.656951 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xbd-run-xhttp-nomux.json Format:json}
+--- xhttp-mux  (node-001-ccsxvless-xhttp-01.json)  端口 39984
+    配置: network=xhttp method=xhttp security=tls mux={"enabled": true, "concurrency": 8} pin=True ech=None
+    curl → http_code=000
+    内核日志:
+      Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/arm64)
+      A unified platform for anti-censorship.
+      2026/10/10 19:31:39.892991 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xbd-run-xhttp-mux.json Format:json}
+--- hysteria2  (node-001-ccsmhysteria2-01.json)  端口 39985
+    配置: network=hysteria method=hysteria security=tls mux={"enabled": true, "concurrency": 8} pin=True ech=None
+    curl → http_code=204
+    内核日志:
+      Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/arm64)
+      A unified platform for anti-censorship.
+      2026/10/10 19:32:09.747576 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xbd-run-hysteria2.json Format:json}
+
+===== 12 · 生产实例现在跑的是哪个节点（只读） =====
+current → /opt/xray-browser-dialer/nodes/node-001-ccsmhysteria2-01.json
+  生产出站: proxy hysteria mux= {"enabled": true, "concurrency": 8}
+  生产出站: direct freedom mux= null
+===== 13 · XHTTP 回环（服务端在 /tmp，客户端用 genconfig 生成） =====
+自签证书 sha256(pin): 36c85207749d10cf000f1f70…
+临时 XHTTP 服务端已起（127.0.0.1:39990）
+--- mux 关（--no-mux）
+    mux 写进配置: null  network= xhttp
+    curl 204 探测 → http_code=204
+    客户端日志（含 mux 相关）:
+      2026/10/10 19:32:21.860337 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xbd-loop/client-nomux.json Format:json}
+--- mux 开（默认）
+    mux 写进配置: {"enabled": true, "concurrency": 8}  network= xhttp
+    curl 204 探测 → http_code=000
+    客户端日志（含 mux 相关）:
+      2026/10/10 19:32:27.110490 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xbd-loop/client-mux.json Format:json}
+    服务端日志（末 5 行）:
+      Xray 26.3.27 (Xray, Penetrates Everything.) d2758a0 (go1.26.1 linux/arm64)
+      A unified platform for anti-censorship.
+      2026/10/10 19:32:19.140532 [Info] infra/conf/serial: Reading config: &{Name:/tmp/xbd-loop/server.json Format:json}
+      2026/10/10 19:32:19.288346 [Warning] core: Xray 26.3.27 started
+      2026/10/10 19:32:25.095694 from 127.0.0.1:5724 accepted tcp:www.gstatic.com:443
+（临时目录 /tmp/xbd-loop 由调用方清理）
+
+收尾：rm -rf /tmp/xbd-v2 /tmp/xbd-loop /tmp/xbd-logs /tmp/xbd-client.tar.gz
