@@ -74,6 +74,7 @@ Runtime Support       该版本内核运行时是否真的生效（可能静默�
 | `docs/uri-representation.md` | **Phase 3**：URI 表达力独立表（内核支持 ≠ URI 能表达） |
 | `docs/compatibility-evaluation.md` | **Phase 3**：判定引擎（四维输入 / 分层结论 / losses） |
 | `docs/evidence-model.md` | **Phase 3**：证据模型（类型 / 置信度 / 三条硬规则） |
+| `docs/phase4-report.md` | **Phase 4**：实现与验收报告（模块 / 测试 / 案例输出 / 待补证据 / 接入方案） |
 | `docs/examples/` | **14 个真实案例**验收（含"版本边界未知 → UNKNOWN"） |
 | `docs/06-oss-landscape.md` | Phase 1.5：开源生态调研与架构再定位 |
 | `docs/07-version-and-failure-model.md` | Phase 1：版本维度与失败模式模型 |
@@ -82,9 +83,9 @@ Runtime Support       该版本内核运行时是否真的生效（可能静默�
 
 ## 状态
 
-Phase 1（研究）✅ ｜ Phase 2 + Phase 3（设计）✅ ｜ **Phase 4 未开始**。
+Phase 1（研究）✅ ｜ Phase 2/3（设计）✅ ｜ **Phase 4A–4D（实现）✅**（26 个测试通过）。
 
-设计文档已就绪，等架构确认后再进入实现。不接入任何内核项目。
+零第三方依赖，可完全离线判断；尚未接入三个内核项目（方案见 phase4-report §8）。
 
 接入方式（Phase 7 之后才讨论）：三个客户端各自只告诉 compat「我是哪个 Kernel、哪个 Version」，
 把节点交给 compat，拿到结果后自行决定 UI 行为。
