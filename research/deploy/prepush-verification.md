@@ -340,3 +340,39 @@ cf810be refs/remotes/origin/main@{2026-10-10 23:22:27}: update by push
 
 真实影响：只看地址的第三方不再能读到内核版本号（它本来也从不参与决策），
 meta 里仍可读。"给原生产品补自描述"属于**新需求**，本轮不做，记在这里。
+
+---
+
+## 10 · 推送与清理（收尾）
+
+四个仓库推送后**用 `git ls-remote` 现查**（不看本地 tracking ref，见 §8）：
+
+```
+✓ proxy-node-compat  远端 = 本地 = 752fd2f418ce
+✓ xray--core         远端 = 本地 = 957e603c50e7
+✓ mihomo--core       远端 = 本地 = 01890ef1bf01
+✓ sing-box-core      远端 = 本地 = b25f5a0464f0
+```
+
+`mihomo--core` 那条多了一次提交：它的 `pre-push` hook 会按内容哈希重写 `src/VERSION`，
+所以推完要**再补一个提交再推一次**才收敛（推送后 hook 不再改写，工作区干净）。
+
+### 清理（用户决定：RN 上不留备份）
+
+`research/deploy/tools/cleanup.sh`（可 `DRY=1` 预演）执行结果：
+
+| 位置 | 清掉的东西 |
+|---|---|
+| RN | `/root/backup-20261010-085825`（70 MB，上一轮整棵内核目录）、`/root/backup-prepush-*`（本轮脚本层备份 3 个）、`/tmp/dist-prepush`、`/tmp/{x,m,sb}-col*`、`/tmp/.prepush-backup-dir` |
+| CC | `/root/backup-cc-*`、`/root/backup-prepush-cc-*`（5 个，其中 SB 客户端那份 326 MB）、`/tmp/{x,m,sb}-col*` |
+
+**服务与生产进程在删除前后逐行比对，完全未变**：
+
+```
+RN: xrayls 165517 / mihomo 119320 / sing-box 60510 / proxy-share-service 69727 / nginx 958
+CC: xray 968528（10809/10808/1080 在听）/ sing-box 1444214（2080）/ mihomo 1364829（7890）
+```
+
+> 没有回滚点了 —— 这是用户明确选的（"两个都删，RN 上不留备份"）。
+> 要说清的是：**删掉的都是可复现或未改动的东西** —— 三个内核的脚本层可由上表那四个
+> commit 随时重放；节点配置本轮一个字节都没改。唯一不可再生的只有"当时的现场"。
