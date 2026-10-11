@@ -379,8 +379,12 @@ ip -6 route replace default via <he-ipv6 网关> dev he-ipv6 table 100
 |---|---|
 | 备用端口临时 sing-box 实例（35926/35927/35930） | ✅ 已按 PID 清理，`/tmp/hy2*` 已删 |
 | 试验性 `ip -6 rule`（32761）与路由表 100 | ✅ 已撤，规则表回到基线 8 条、表 100 已 flush |
-| **生产 hy2 节点配置改动**（§4-B，含备份 `backup/hysteria2-01.json.pre-hy2v6fix-20261011-105002`） | ⚠ **保留**（这是当前让节点可用的状态）；面板一重建即回退，见 §5.2 |
+| **生产 hy2 节点配置改动**（§4-B，备份 `/root/catmi/sing-box/backup/hysteria2-01.json.pre-hy2v6fix-20261011-105002`，回滚即 `cp` 回去 + 重启 sing-box） | ⚠ **保留**（这是当前让节点可用的状态）；面板一重建即回退，见 §5.2 |
 | 生产进程 | `sing-box` / `mihomo` / `xrayls` / `nginx` 全程未受影响；改配置时仅 `sing-box` 重启一次（属预期） |
+| **收尾复核（真客户端，CC → RN 生产节点）** | ✅ **hy2 走 IPv6 → HTTP 204**、**走 IPv4 → HTTP 204**，出口均为 `104.28.201.80`（RN 的真实 CF 出口）；`share.sh check all` → `[OK] 分享内容与真实配置一致`，分享链接未变 |
+
+**终态**：v6 规则表 8 条 / v4 规则表 8 条（均回到基线），试验规则与路由表 100 零残留，
+`/tmp/hy2*` 零残留；服务 `sing-box` / `mihomo` / `xrayls` / `nginx` 全部 active。
 
 ---
 
