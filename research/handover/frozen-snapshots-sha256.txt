@@ -1,0 +1,6 @@
+8bc49507054de84ef84c3909061945c81575a67aabe3637060fe1cf4a2bf6b0b  pre-interop/mihomo--core-pre-32c03d7.tar.gz
+e21ef73b81a6f822df5141043a2778b808a27025a0a3c6b19b1114a6a6cdcd92  pre-interop/sing-box-core-pre-c0a5c19.tar.gz
+2f4455fed6ba63cb9c1a82329b669af6050e2680698afaba1d1dc4729ecc6e16  pre-interop/xray--core-pre-7dfe2a5.tar.gz
+1f76d3ca637f845a9e8a2e1d7439aa5ddfbc634fdce84d97809a250f6fca6fa1  current/mihomo--core-cur-01890ef.tar.gz
+5658c05e877b35b60c11ea6b3416e5c5e1590364279a3b30b17eb591e774f437  current/sing-box-core-cur-b25f5a0.tar.gz
+cb6a2a119d685388dd6465baae59e50d750127ad4f0d6a253a4a28df69eccf36  current/xray--core-cur-957e603.tar.gz

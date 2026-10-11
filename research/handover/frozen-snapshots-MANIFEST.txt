@@ -1,0 +1,24 @@
+# 两个版本并存 · 冻结快照（RN 本地 + GitHub 双份）
+#
+# 来源：三个内核仓库的 git archive（可复现）。
+# 用途：pre-interop/ = 三家互通之前的"原本那版"；current/ = 现在这版。
+# 注意：这里只是**冻结的源码快照**，不是运行中的服务；不要直接启动（会撞端口/撞 token）。
+
+## 回退点（= 引入兼容层那次提交的直接父提交，树里 0 个互通文件）
+
+| 内核 | 原本那版 | 现在这版 |
+|---|---|---|
+| SB  | c0a5c19 (.tar.gz: sing-box-core-pre-c0a5c19.tar.gz) | b25f5a0 (sing-box-core-cur-b25f5a0.tar.gz) |
+| M   | 32c03d7 (mihomo--core-pre-32c03d7.tar.gz)          | 01890ef (mihomo--core-cur-01890ef.tar.gz) |
+| X   | 7dfe2a5 (xray--core-pre-7dfe2a5.tar.gz)            | 957e603 (xray--core-cur-957e603.tar.gz) |
+
+## 三者都在 GitHub 上（origin/main 的祖先，任何 clone 都能 checkout）
+## 本地也打了 annotated tag：pre-three-way-interop
+
+## 取出「原本那版」看/用（不动现在这套）
+    cd /root/catmi/_versions/pre-interop && tar xzf sing-box-core-pre-c0a5c19.tar.gz -C /tmp/看看
+
+## 真要把服务换回「原本那版」
+    # 1) 备份现在这版（照旧）  2) 用 pre 快照里的 src/conf 铺回部署路径
+    # 3) 重启服务（会改 PID）  4) 复核 check + 真连
+    # 详见 research/handover/pre-interop-rollback-points.md
