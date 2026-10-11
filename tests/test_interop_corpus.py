@@ -112,9 +112,11 @@ class TestInteropCorpus(unittest.TestCase):
 
     def test_declaration_equivalence_block(self):
         eq = self.doc["declaration_equivalence"]
+        # 2026-10-11: `version` 不再由服务端产出（从不参与决策，原生产品自带自描述），
+        # 解析侧仍须接受它。同源时 url-<fmt> 允许是 / 开头的相对引用。
         self.assertEqual(sorted(eq["must_param_names"]),
                          ["distribution", "formats", "interop", "kernel",
-                          "url-dist-self", "version"])
+                          "url-dist-self"])
         self.assertEqual(eq["formats"][0], "uri", "uri 必须排在格式清单首位")
         self.assertTrue(eq["urls"]["dist-self"].startswith("https://"))
 

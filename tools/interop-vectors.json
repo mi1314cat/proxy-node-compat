@@ -169,10 +169,29 @@
       "name": "声明里带 '?' 的原生地址",
       "query": "interop=1&kernel={{K}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}=http%3A%2F%2Fh%3A9443%2Fshare%2Fn%3Fx%3D1%26y%3D2",
       "want": "native"
+    },
+    {
+      "name": "原生产品用相对路径(同源)",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}=/share/nativetok",
+      "want": "native",
+      "forms": [
+        "full-url"
+      ],
+      "_note": "相对引用需要 base，而 base 只存在于「完整订阅地址」这一种入参形态里 —— 裸查询串形态下无法解析，那时原样保留并判 bad-native-url 是**正确**行为，不是缺陷。所以这条只跑 full-url。"
+    },
+    {
+      "name": "旧格式(绝对地址 + 带 version)仍须可用",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&version=9.9.9&formats=uri,{{D}}&url-{{D}}={{U}}",
+      "want": "native"
+    },
+    {
+      "name": "畸形相对路径 //other.host/x",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}=//other.host/x",
+      "want": "uri:badurl"
     }
   ],
   "declaration_equivalence": {
-    "_comment": "build_declaration+declaration_query 之后，各实现归一化出的参数名集合必须相同，且交叉可读（同内核 A 的声明 B 能读成 native）。",
+    "_comment": "build_declaration+declaration_query 之后，各实现归一化出的参数名集合必须相同，且交叉可读（同内核 A 的声明 B 能读成 native）。 2026-10-11: `version` 不再由服务端产出（它从不参与决策，且原生产品自带自描述），所以这里不再要求它出现；解析侧仍必须接受它（第三方可能写）。同源时 url-<fmt> 允许写成以 / 开头的相对引用，由 parse_declaration 按主地址的 scheme://netloc 解析成绝对地址 —— 见 docs/interop-conformance.md。",
     "kernel": "{{K}}",
     "distribution": "dist-self",
     "version": "9.9.9",
@@ -187,7 +206,6 @@
       "interop",
       "kernel",
       "distribution",
-      "version",
       "formats",
       "url-dist-self"
     ]
