@@ -363,7 +363,7 @@ meta 里仍可读。"给原生产品补自描述"属于**新需求**，本轮不
 
 | 位置 | 清掉的东西 |
 |---|---|
-| RN | `/root/backup-20261010-085825`（70 MB，上一轮整棵内核目录）、`/root/backup-prepush-*`（本轮脚本层备份 3 个）、`/tmp/dist-prepush`、`/tmp/{x,m,sb}-col*`、`/tmp/.prepush-backup-dir` |
+| RN | `/root/backup-20261010-085825`（70 MB，上一轮整棵内核目录）、**全部** `/root/backup-prepush-*`（本轮三轮分发的脚本层备份 6 个 + `share.sh.bak` 共 4.2 MB）、`/tmp/dist-prepush`、`/tmp/{x,m,sb}-col*`、`/tmp/.prepush-backup-dir` —— **复核后 `/root/backup-*` 与 `/root/backup-prepush*` 一个不剩** |
 | CC | `/root/backup-cc-*`、`/root/backup-prepush-cc-*`（5 个，其中 SB 客户端那份 326 MB）、`/tmp/{x,m,sb}-col*` |
 
 **服务与生产进程在删除前后逐行比对，完全未变**：
