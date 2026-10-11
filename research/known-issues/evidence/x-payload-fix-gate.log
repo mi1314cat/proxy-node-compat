@@ -1,0 +1,909 @@
+
+[36m语法门禁[0m
+  [32m✓[0m python 语法: deploy.py
+  [32m✓[0m python 语法: dns_edit.py
+  [32m✓[0m python 语法: naming.py
+  [32m✓[0m python 语法: nginx_apply.py
+  [32m✓[0m python 语法: node_build.py
+  [32m✓[0m python 语法: nodes.py
+  [32m✓[0m python 语法: share_meta.py
+  [32m✓[0m python 语法: share_payload.py
+  [32m✓[0m python 语法: token_store.py
+  [32m✓[0m bash 语法: GDargo.sh
+  [32m✓[0m bash 语法: Reality.sh
+  [32m✓[0m bash 语法: Shadowsocks.sh
+  [32m✓[0m bash 语法: Trojan.sh
+  [32m✓[0m bash 语法: XRevise.sh
+  [32m✓[0m bash 语法: batch.sh
+  [32m✓[0m bash 语法: cert.sh
+  [32m✓[0m bash 语法: dns.sh
+  [32m✓[0m bash 语法: http.sh
+  [32m✓[0m bash 语法: hysteria2.sh
+  [32m✓[0m bash 语法: logs.sh
+  [32m✓[0m bash 语法: lsargo.sh
+  [32m✓[0m bash 语法: mknode.sh
+  [32m✓[0m bash 语法: nginx_site.sh
+  [32m✓[0m bash 语法: node.sh
+  [32m✓[0m bash 语法: outbound.sh
+  [32m✓[0m bash 语法: share.sh
+  [32m✓[0m bash 语法: share_service.sh
+  [32m✓[0m bash 语法: sock5.sh
+  [32m✓[0m bash 语法: split.sh
+  [32m✓[0m bash 语法: tunnel.sh
+  [32m✓[0m bash 语法: verify.sh
+  [32m✓[0m bash 语法: vlessecn.sh
+  [32m✓[0m bash 语法: vlessxhttpecn.sh
+  [32m✓[0m bash 语法: install.sh
+  [32m✓[0m bash 语法: uninstall_xray.sh
+  [32m✓[0m bash 语法: xargo.sh
+  [32m✓[0m bash 语法: xray-panel.sh
+
+[36m协议 E2E (e2e_configs.py / e2e_protocols.sh)[0m
+  [32m✓[0m harness bash 语法
+  [32m✓[0m 配置生成模块 python 语法
+  [32m✓[0m vless 服务端带 decryption
+  [32m✓[0m 服务端必须带 freedom 出站
+  [32m✓[0m certificate 是数组而非标量
+  [32m✓[0m certificate 放 PEM 原文而非 base64
+  [32m✓[0m 客户端不再用已被移除的 allowInsecure
+  [32m✓[0m pinnedPeerCertSha256 是字符串而非数组
+  [32m✓[0m Trojan 出站用 servers 而非 vnext
+  [32m✓[0m Shadowsocks 出站结构正确
+  [32m✓[0m REALITY 客户端带 fingerprint
+  [32m✓[0m REALITY 客户端带 spiderX
+  [32m✓[0m REALITY 服务端带 privateKey 与 dest
+  [32m✓[0m 生成物可序列化
+  - 完整链路验证需要 Xray 内核 (本机没有, 已在实机跑过)
+
+[36m节点注册表 (nodes.py)[0m
+  [32m✓[0m 坏片段被跳过, 好节点照常读出
+  [32m✓[0m 坏片段被记入 unreadable (不静默)
+  [32m✓[0m Shadowsocks 单用户形态也能抽出 method
+
+[36m载荷构建 (share_payload.build_payload)[0m
+  [32m✓[0m 好节点存在时仍构建出载荷
+  [32m✓[0m 坏片段不影响好节点 (good1)
+  [32m✓[0m 坏片段不影响好节点 (good2)
+  [32m✓[0m 坏片段被跳过而非混入
+  [32m✓[0m 缺对外地址的节点不混入
+  [32m✓[0m 载荷仍是纯 base64
+  [32m✓[0m 坏片段数量被单独报出
+  [32m✓[0m 已删节点单独报出 (与缺元数据区分)
+  [32m✓[0m 缺元数据单独报出 (与已删区分)
+
+[36m载荷 ↔ per-node 产物一致性 + ECH 同源[0m
+  [32m✓[0m echServerKeys → ECHConfigList（与 xray tls ech -i 逐字节相同）
+  [32m✓[0m 坏/空 echServerKeys 不猜值（返回空而不是半截配置）
+  [32m✓[0m TLS 节点链接带上 sni（片段 _serverName 参与取值）
+  [32m✓[0m 直连 ECH 节点链接带上 ech（与产物同值）
+  [32m✓[0m 与产物一致的节点不被误拒
+  [32m✓[0m 一致性校验的结果有报出（不是静默通过）
+  [32m✓[0m 发布 CDN 边缘时写 CDN-ECH（与产物同值）
+  [32m✓[0m 发布源站时不写 CDN 的 ECH（ECH 与端点绑定）
+  [32m✓[0m CDN 边缘 ↔ 直连源站的端点差异被留痕
+  [32m✓[0m 丢 sni/ech 的载荷被拒发（正是事故形态）
+  [32m✓[0m 正确的那条照常发布（拒发只针对坏的那条）
+  [32m✓[0m 拒发原因点出字段名（不是只给一句'不一致'）
+  [32m✓[0m sni 被写成 IP 时也被拒（不是只判空值）
+  [32m✓[0m 连字符命名的产物 (ss2022-share-02.txt 那种) 也参与校验
+  [32m✓[0m 下划线命名的产物参与校验
+  [32m✓[0m 没有产物时照常发布（不因为没法校验就拒发）
+  [32m✓[0m 没有产物可比对这件事被报出来（不是静默通过）
+  [32m✓[0m 旧版生成器建的分享被标成陈旧
+  [32m✓[0m 当前版本的分享不被误标（陈旧判定不是恒真）
+
+[36m面板降级 (公共服务不可达时)[0m
+  [32m✓[0m 服务不可达时 list 返回非 0
+  [32m✓[0m 服务不可达被明确说出来
+  [32m✓[0m 没有把'服务挂了'说成'没有分享'
+
+[36m证书管理 (conf/cert.sh 菜单)[0m
+  [32m✓[0m cert.sh 语法
+  [32m✓[0m source cert.sh 不弹菜单
+  [32m✓[0m 系统 CA 包已过滤 (剩 5 个)
+  [32m✓[0m 未定义 CONF_DIR 时兜住默认值
+  [32m✓[0m 校验: 域名相符 → 可用
+  [32m✓[0m 校验: 域名不符 → 报出不一致
+  [32m✓[0m 校验: crt/key 不配对 → 报出
+  [32m✓[0m 缺私钥 → 报证书本身可用 (而非报 私钥不存在: 0)
+  [32m✓[0m fullchain+privkey 命名能推到私钥
+  [32m✓[0m GC: 取消时不删
+  [32m✓[0m GC: 非 DELETE 一律不删
+  [32m✓[0m GC: 输入 DELETE 才删 (5 → 1)
+  [32m✓[0m 列出全部证书带使用状态
+  [32m✓[0m 搜索范围可查看
+
+[36m对外地址探测 (addr.sh)[0m
+  [32m✓[0m 私网判定 10.0.0.1
+  [32m✓[0m 私网判定 192.168.1.1
+  [32m✓[0m 私网判定 172.16.0.1
+  [32m✓[0m 私网判定 172.32.0.1
+  [32m✓[0m 私网判定 198.18.0.1
+  [32m✓[0m 私网判定 100.64.0.1
+  [32m✓[0m 私网判定 203.0.113.5
+  [32m✓[0m 私网判定 169.254.1.1
+  [32m✓[0m 私网判定 8.8.8.8
+  [32m✓[0m 私网判定 1.1.1.1
+  [32m✓[0m 排除 mihomo fake-ip 段 (198.18/15)
+  [32m✓[0m 隧道网卡判定 warp
+  [32m✓[0m 隧道网卡判定 wg0
+  [32m✓[0m 隧道网卡判定 awg0
+  [32m✓[0m 隧道网卡判定 docker0
+  [32m✓[0m 隧道网卡判定 tun0
+  [32m✓[0m 隧道网卡判定 br-bfb1497b
+  [32m✓[0m 隧道网卡判定 he-ipv6-tun
+  [32m✓[0m 隧道网卡判定 he-ipv6
+  [32m✓[0m 隧道网卡判定 eth0
+  [32m✓[0m 隧道网卡判定 ens3
+  [32m✓[0m he-ipv6 是真实地址不排除 (只排除 he-ipv6-tun)
+  [32m✓[0m 自检认出本机回环地址
+  [32m✓[0m 自检否掉不在本机的地址
+  [32m✓[0m 空地址判为不在本机
+  [32m✓[0m IPv6 加方括号
+  [32m✓[0m IPv4 不加方括号
+  [32m✓[0m 已加括号的不重复加
+  [32m✓[0m 已保存的地址不过自检时不沿用
+  [32m✓[0m 显式传参优先
+  [32m✓[0m 地址族 IPv4
+  [32m✓[0m 地址族 IPv6
+
+[36m取文件镜像链 (fetch.sh)[0m
+  [32m✓[0m 镜像链至少 4 个源 (5)
+  [32m✓[0m jsdelivr 排在最后 (带缓存的源垫底)
+  [32m✓[0m 探测目标存在 (README.md)
+  [32m✓[0m 主站识别
+  [32m✓[0m 镜像名识别
+  [32m✓[0m 未探测时不报错
+
+[36m提示函数统一 (print.sh)[0m
+  [32m✓[0m conf/lib/print.sh 存在
+  [32m✓[0m 导出 ok()
+  [32m✓[0m 导出 info()
+  [32m✓[0m 导出 warn()
+  [32m✓[0m 导出 err()
+  [32m✓[0m 导出 die()
+  [32m✓[0m 四条提示都不写 stdout (stdout 留给数据通道)
+  [32m✓[0m 非终端下不上色
+  [32m✓[0m die 退出码为 1
+  [32m✓[0m 重复 source 不覆盖调用方已有的颜色变量
+  [32m✓[0m conf/node.sh 已无本地定义
+  [32m✓[0m conf/share.sh 已无本地定义
+  [32m✓[0m conf/share_service.sh 已无本地定义
+  [32m✓[0m conf/node.sh 能加载 print.sh
+  [32m✓[0m conf/share.sh 能加载 print.sh
+  [32m✓[0m conf/share_service.sh 能加载 print.sh
+  [32m✓[0m share.sh: print.sh 在 addr.sh 之前加载 (warn 已可用)
+  [32m✓[0m uninstall-xray-client.sh 保持自包含 (不依赖 lib/core.sh)
+  [32m✓[0m Client/l.sh 写明了为何不统一
+  [32m✓[0m Client/RUN.sh 写明了为何不统一
+  [32m✓[0m conf/share.sh: python() 包装还在
+  [32m✓[0m conf/share_service.sh: python() 包装还在
+
+[36m随机值 (random.sh)[0m
+  [32m✓[0m random_path 形状 (/ + 8 位字母数字)
+  [32m✓[0m random_pass 长度 20
+  [32m✓[0m random_pass 只用字母数字 (要进 URL/YAML)
+  [32m✓[0m random_user 长度 16
+  [32m✓[0m random_user 只用字母数字 (要进 URL/YAML)
+  [32m✓[0m random_token 长度 32
+  [32m✓[0m random_token 只用字母数字 (要进 URL/YAML)
+  [32m✓[0m random_pass 不为空 (空密码=任何人都能连)
+
+[36m交互输入 (read.sh)[0m
+  [32m✓[0m clean_input 去首尾空白
+  [32m✓[0m clean_input 去 CR (CRLF 输入)
+  [32m✓[0m xr_read 在 EOF 时退出 (不返回空值)
+  [32m✓[0m safe_read 在 EOF 时退出
+q:   [32m✓[0m safe_read 正常读入
+q (默认: 默认值):   [32m✓[0m safe_read 回车取默认值
+
+[36mnginx 片段生命周期 (node.sh)[0m
+  [32m✓[0m 查出孤儿片段 (会报出域名)
+  [32m✓[0m 告警里说明了后果 (CDN 回源 502)
+  [32m✓[0m 没有误报
+  [32m✓[0m 备份/非 .conf 文件里的标记不算孤儿
+  [32m✓[0m 无片段时如实报告 (不凭空造孤儿)
+  [32m✓[0m 容器里的站点也扫得到 (不再只 grep 宿主目录)
+
+[36m地址族判定 (addr.sh)[0m
+  [32m✓[0m _x_addr_pick 排除隧道接口 (地址族判定与取地址共用同一判据)
+  [32m✓[0m _x_addr_pick 逐接口判定 (不是整表 grep 一下就算)
+  [32m✓[0m x_has_v4 走统一判定 (_x_addr_pick)
+  [32m✓[0m x_has_v6 走统一判定 (_x_addr_pick)
+  [32m✓[0m x_has_v4 返回 0/1 而不是崩掉
+
+[36m对外地址取值 (addr.sh)[0m
+  [32m✓[0m 默认路由网卡优先 (不是枚举里第一个 eth0)
+  [32m✓[0m 真实 IPv4 = 默认路由网卡上的地址 (不是私网 eth0)
+  [32m✓[0m 真实 IPv6 排除 warp 上的公网 v6
+  [32m✓[0m 对外地址 v4 优先
+  [32m✓[0m 有 IPv4
+  [32m✓[0m 有 IPv6
+  [32m✓[0m warp 地址确实在本机接口上 (x_addr_is_local)
+  [32m✓[0m 同一地址判定为客户端连不上 (x_addr_is_reachable)
+  [32m✓[0m 存量的 WARP v4 地址不被沿用, 换回网卡地址
+  [32m✓[0m 存量的 WARP v6 地址不被沿用 (只判'在本机'会漏掉这个)
+  [32m✓[0m 分享链接入口 x_link_addr 同样不沿用 WARP 地址
+  [32m✓[0m 显式传参仍然最优先
+  [32m✓[0m XRAY_PUBLIC_IP 覆盖一切
+
+[36m对外地址写入 (XRevise.sh → install_info.env)[0m
+  [32m✓[0m env 里写的是网卡地址 (外部的 WARP 地址没被采信): link_ip="8.8.8.8" PUBLIC_IP="8.8.8.8" 
+  [32m✓[0m env 里没有 WARP 出口地址
+  [32m✓[0m 只有私网地址时退回外部探测并明确告警
+
+[36m内核回退 (bin/xray_install.sh)[0m
+  [32m✓[0m 抽出备份/回退块 (89 行)
+  [32m✓[0m 包含 backup_current_core
+  [32m✓[0m 包含 list_core_backups
+  [32m✓[0m 包含 rollback_core
+  [32m✓[0m rollback_core 在替换前备份当前版本 (回退本身可逆)
+  [32m✓[0m rollback_core 只做校验不自动重启 (文案里的提示命令不算调用)
+  [32m✓[0m rollback 分支当场 exit $? (状态码不被后续判断覆盖)
+  [32m✓[0m list-backups 分支当场退出
+  [32m✓[0m 备份/回退块不含安装步骤输出
+  [32m✓[0m 空目录时如实报告 (不假装有备份)
+  [32m✓[0m 回退不存在的版本返回非 0
+
+[36m预置推荐档 (preset.sh)[0m
+  [32m✓[0m vless 的 CDN 推荐档是 XHTTP (不是已弃用的 WS)
+  [32m✓[0m trojan 的 CDN 推荐档是 XHTTP (不是已弃用的 WS)
+  [32m✓[0m vmess 的 CDN 推荐档是 XHTTP (不是已弃用的 WS)
+  [32m✓[0m vless + ws 仍在表里且标注了官方弃用
+  [32m✓[0m vless + grpc 仍在表里且标注了官方弃用
+  [32m✓[0m vless + httpupgrade 仍在表里且标注了官方弃用
+  [32m✓[0m trojan + ws 仍在表里且标注了官方弃用
+  [32m✓[0m vmess + ws 仍在表里且标注了官方弃用
+  [32m✓[0m vless 编号从 ① 开始
+  [32m✓[0m vless 编号连续无重复 (共 6 档, 末位 ⑥)
+  [32m✓[0m trojan 编号从 ① 开始
+  [32m✓[0m trojan 编号连续无重复 (共 5 档, 末位 ⑤)
+  [32m✓[0m vmess 编号从 ① 开始
+  [32m✓[0m vmess 编号连续无重复 (共 4 档, 末位 ④)
+  [32m✓[0m shadowsocks 编号从 ① 开始
+  [32m✓[0m shadowsocks 编号连续无重复 (共 3 档, 末位 ③)
+
+[36m地址族批量切换 (share.sh)[0m
+  [32m✓[0m 抽到 x_switch_addr_family (54 行)
+  [32m✓[0m IPv6 走 x_addr6_real (排除隧道)
+  [32m✓[0m IPv4 走 x_iface_public_addr
+  [32m✓[0m 切完刷新已发链接 (内容里嵌着地址)
+  [32m✓[0m v4 切换把全部节点改到目标地址
+  [32m✓[0m 报告了改动的节点数 (3 个)
+  [32m✓[0m 切换后 host 唯一 (没有漏改的节点)
+  [32m✓[0m 非法地址族返回非 0
+
+[36m节点命名 (naming.sh)[0m
+  [32m✓[0m 协议名规范化 vless
+  [32m✓[0m 协议名规范化 VLESS
+  [32m✓[0m 协议名规范化 SS
+  [32m✓[0m 协议名规范化 shadowsocks
+  [32m✓[0m 协议名规范化 SS2022
+  [32m✓[0m 协议名规范化 hy2
+  [32m✓[0m 协议名规范化 hysteria
+  [32m✓[0m 协议名规范化 Hysteria2
+  [32m✓[0m 安全等级规范化 'tls'
+  [32m✓[0m 安全等级规范化 'TLS'
+  [32m✓[0m 安全等级规范化 'reality'
+  [32m✓[0m 安全等级规范化 'none'
+  [32m✓[0m 安全等级规范化 空串
+  [32m✓[0m tag 基本形态 (含 x 前缀 + 补零)
+  [32m✓[0m REALITY 节点 tag
+  [32m✓[0m CDN 节点带 -CDN 后缀
+  [32m✓[0m 两位数编号不补零
+  [32m✓[0m 三位数编号原样
+  [32m✓[0m tag 带 x- 前缀 (跨内核可辨认)
+  [32m✓[0m 显示名默认值非空 (x-vless01-TLS)
+  [32m✓[0m 下一个 vless 编号 = 已有最大 + 1
+  [32m✓[0m 下一个 trojan 编号
+  [32m✓[0m 没有同协议节点时从 1 开始
+  [32m✓[0m 坏片段不影响编号计算
+
+[36mNginx 站点管理 (conf/nginx_site.sh 菜单)[0m
+  [32m✓[0m nginx_site.sh 语法
+  [32m✓[0m source nginx_site.sh 不弹菜单
+  [32m✓[0m NGINX_CONF_ROOTS 覆盖配置根
+  [32m✓[0m 列出站点: 显示 server_name 与文件名
+  [32m✓[0m 插入反代: 生成一个标记块
+  [32m✓[0m 重复插入仍只有一个标记块 (幂等)
+  [32m✓[0m 查看站点: 显示插入的正文
+  [32m✓[0m 摘除: 确认词不对则不动手
+  [32m✓[0m 摘除: 取消后标记块还在
+  [32m✓[0m 摘除: 确认后标记块消失
+  [32m✓[0m 摘除: 用户自己写的 location 未被动过
+  [32m✓[0m 预览插入: 标明是 dry-run
+  [32m✓[0m 预览插入: 能看到将插入的内容
+
+[36m面板入口 (目标清单逐项核对)[0m
+  [32m✓[0m Share 有菜单入口
+  [32m✓[0m Pull (分享服务) 有菜单入口
+  [32m✓[0m Node 管理 有菜单入口
+  [32m✓[0m Nginx 有菜单入口
+  [32m✓[0m Cert 有菜单入口
+  [32m✓[0m DNS 有菜单入口
+  [32m✓[0m Logs 有菜单入口
+  [32m✓[0m Port (校验/自动改端口) 有菜单入口
+  [32m✓[0m Service 有菜单入口
+  [32m✓[0m Validation 有菜单入口
+  [32m✓[0m Install/Update 有菜单入口
+  [32m✓[0m Uninstall 有菜单入口
+  [32m✓[0m Docker 能力: cert.sh 有容器感知
+  [32m✓[0m Docker 能力: nginx_apply.py 有容器感知
+  [32m✓[0m 面板菜单号连续无缺
+  [32m✓[0m 面板引用的脚本都存在
+
+[36m面板取文件 (XRAY_RAW / 铺 lib / 404)[0m
+  [32m✓[0m _XRAY_LIB_FILES 覆盖 conf/lib/ 全部文件
+  [32m✓[0m _XRAY_LIB_FILES 里没有不存在的文件
+  [32m✓[0m xray_run 会铺 lib
+  [32m✓[0m xray_run 把可用源通过 XRAY_RAW 交给子脚本
+  [32m✓[0m xray_pick_source 的警告走 stderr
+  [32m✓[0m xray_fetch_to 对 404 短路
+  [32m✓[0m conf/ 下的兜底全部可被 XRAY_RAW 覆盖
+  [32m✓[0m 所有 ${XRAY_RAW:-...} 都闭合
+  [32m✓[0m 未设 XRAY_RAW 时展开结果与原 URL 一致
+  [32m✓[0m 兜底 URL 指向的文件都存在
+
+[36m拨号菜单健壮性 (compat.py 退出码)[0m
+  [32m✓[0m 前提成立: 有一类节点让 compat.py 退出 1
+  [32m✓[0m 节点两模式都不可用时 _xbd_browser_table 仍然返回 0 (set -e 不杀)
+  [32m✓[0m 表格把两个节点都列出来了 (一个都不少)
+  [32m✓[0m 三个拨号菜单函数都容忍 compat.py 的退出码 1
+
+[36mapply 健康路径 (set -e 与 pipefail)[0m
+  [32m✓[0m 找到 genconfig 警告输出那一行
+  [32m✓[0m genconfig 成功且无警告时, 脚本能走到最后 (不再被 grep 的退出码杀掉)
+  [32m✓[0m 找到 tail 输出那一段
+  [32m✓[0m tail 循环遇到空行时不再中断
+  [32m✓[0m 没有「grep 无匹配即杀脚本」的裸管道
+
+[36mECH 下发 (echConfigList)[0m
+  [32m✓[0m 普通模式把 ECHConfigList 原样下发（走 CDN 用的就是这条）
+  [32m✓[0m 拨号模式不写（那条路 TLS 由 Chromium 完成，写了也不会被读）
+
+[36m指纹白名单 (内核未知值会整份配置失败)[0m
+  [32m✓[0m 指纹 chrome
+  [32m✓[0m 指纹 Chrome
+  [32m✓[0m 指纹 random
+  [32m✓[0m 指纹 hellochrome_131
+  [32m✓[0m 指纹 not-a-real-fp
+
+[36m出站地址族 (--family)[0m
+  [32m✓[0m auto = 历史行为（不改存量用户的解析方式）
+  [32m✓[0m v4 强制只走 IPv4
+  [32m✓[0m v6 强制只走 IPv6
+  [32m✓[0m --family 默认 auto
+  [32m✓[0m 回读函数能从**格式化 JSON** 里读出 direct 的 domainStrategy
+  [32m✓[0m （反证）单纯的 grep 跨行读不到 —— 所以必须用解析
+
+[36m分组整理 (重命名 / 移动 / 排序)[0m
+  [32m✓[0m 分组可重命名
+  [32m✓[0m 改名后注册表里是新名字
+  [32m✓[0m 对不存在的分组改名返回 False（不是假装成功）
+  [32m✓[0m 移动 1 个节点
+  [32m✓[0m 节点进了目标分组
+  [32m✓[0m 节点从原分组摘掉了（否则会同时出现在两个组）
+  [32m✓[0m 节点文件里的 group 字段也更新了（与注册表一致）
+  [32m✓[0m 分组可上移
+  [32m✓[0m 上移后确实排在前面
+  [32m✓[0m 已经在最前时上移返回 False
+
+[36m更新后生效 (_xbd_up_unit)[0m
+  [32m✓[0m 取到 _xbd_up_unit
+  [32m✓[0m 已运行的单元 → restart（不是 enable --now 空操作）
+  [32m✓[0m 未运行的单元 → enable --now
+  [32m✓[0m Xray 走 _xbd_up_unit
+  [32m✓[0m 面板走 _xbd_up_unit
+
+[36m并发写 (share_meta / token_store / node_build)[0m
+  [32m✓[0m share_meta 30 线程并发写
+  [32m✓[0m share_meta 无改动丢失
+  [32m✓[0m token_store 30 线程并发写
+  [32m✓[0m node_build 30 线程并发写
+  [32m✓[0m 无临时文件残留
+
+[36m分享链接生成 (nodes.build_share_link)[0m
+  [32m✓[0m REALITY 缺 pbk 时不生成链接
+  [32m✓[0m REALITY 有 pbk 时正常生成
+  [32m✓[0m 无名称时 fragment 仍非空 (%F0%9F%87%BA%F0%9F%87%B8%20X-vless-1)
+  [32m✓[0m 公钥特殊字符已转义
+  [32m✓[0m Shadowsocks 生成 SIP002 链接
+
+[36m分享链接 SNI / 证书 pin / hy2 参数 (实机三证)[0m
+  [32m✓[0m TLS 节点的 sni 取自证书 (不是空)
+  [32m✓[0m hysteria2 的 sni 取自证书 (不是连接地址)
+  [32m✓[0m tls1 的链接没有把 IP 写成 sni
+  [32m✓[0m tls2 的链接没有把 IP 写成 sni
+  [32m✓[0m hy2 的链接没有把 IP 写成 sni
+  [32m✓[0m re1 的链接没有把 IP 写成 sni
+  [32m✓[0m 拿不到域名时不写 sni (宁可省略也不写 IP)
+  [32m✓[0m REALITY 的 sni 仍取 serverNames
+  [32m✓[0m hy2 链接带 alpn=h3
+  [32m✓[0m hy2 链接带 up= (mihomo 认的名字)
+  [32m✓[0m hy2 链接带 upmbps= (sing-box 面板认的名字)
+
+[36mhy2 客户端链路: 链接参数不静默消失 (解析 → 生成)[0m
+  [32m✓[0m 解析: 链接的 up=50 落到节点 JSON 顶层 (不是只进 raw_params)
+  [32m✓[0m 解析: 链接的 down=200 落到节点 JSON 顶层
+  [32m✓[0m 解析: 链接的 mport 落到节点 JSON 顶层
+  [32m✓[0m 解析: 链接的 alpn 落到节点 JSON 顶层
+  [32m✓[0m 解析: 链接的 pin= 落到 pinned_cert_sha256 (自签节点唯一的信任来源)
+  [32m✓[0m 生成: 带宽写进 finalmask.quicParams.brutalUp (内核真正读的键)
+  [32m✓[0m 生成: 带宽写进 finalmask.quicParams.brutalDown
+  [32m✓[0m 生成: mport 写进 finalmask.quicParams.udpHop.ports
+  [32m✓[0m 生成: 一个字段都不写已废弃的 hysteriaSettings.up/down (能过 -test 但内核丢掉)
+  [32m✓[0m 生成: 带宽值一律带单位 (裸数字会被内核当成字节/秒 → 整份配置起不来)
+  [32m✓[0m 生成: 裸数字 50 (旧节点文件) 被补成 50 mbps, 不是原样透传
+  [32m✓[0m 生成: "150 Mbps" 归一成内核语法
+  [32m✓[0m 生成: 非法端口范围不写进内核 (写进去 build 直接失败)
+  [32m✓[0m 生成: 端口范围非法不影响带宽照常下发
+  [32m✓[0m 生成: 认不出的带宽写法跳过 (不猜、不硬塞)
+  [32m✓[0m 链接没写带宽时不编默认值 (不写 finalmask)
+  [32m✓[0m 反向: 节点 → 链接 → 节点 的 up 不丢
+  [32m✓[0m 反向: 节点 → 链接 → 节点 的 down 不丢
+  [32m✓[0m hysteria2.sh 的客户端 JSON 改用 finalmask.quicParams (内核真正读的键)
+  [32m✓[0m hysteria2.sh 不再写已废弃的 hysteriaSettings.up/down
+  [32m✓[0m hysteria2.sh 的分享链接两种带宽名字都写 (mihomo 只认 up/down)
+
+[36mXray JSON 导入: 自己生成的 hy2 客户端产物能被自己读回[0m
+node: hy2-04 的 up 只存在于已废弃的 hysteriaSettings.up（内核 26.3.27 会静默丢弃）—— 已按回退值收下，生成时会写进 finalmask.quicParams
+node: hy2-04 的 down 只存在于已废弃的 hysteriaSettings.down（内核 26.3.27 会静默丢弃）—— 已按回退值收下，生成时会写进 finalmask.quicParams
+node: hy2-04 的 down 只存在于已废弃的 hysteriaSettings.down（内核 26.3.27 会静默丢弃）—— 已按回退值收下，生成时会写进 finalmask.quicParams
+node: 带宽值 '40000' 低于内核下限 65536 B/s —— 已丢弃（写进 brutalUp 会让内核拒收整份配置）
+node: 带宽值 '40000' 低于内核下限 65536 B/s —— 已丢弃（写进 brutalUp 会让内核拒收整份配置）
+  [32m✓[0m hy2 断言生成器跑完并产出合法 JSON（没有静默跳过）
+  [32m✓[0m 真机产物① protocol:"hysteria" 被认出来(内核与脚本都写这个名字)
+  [32m✓[0m 扁平 settings.address 被读到(走 servers[] 分支会是空串)
+  [32m✓[0m 扁平 settings.port 被读到(走 servers[] 分支会是 443)
+  [32m✓[0m 认证从 hysteriaSettings.auth 读到
+  [32m✓[0m sni 不丢
+  [32m✓[0m alpn 不丢
+  [32m✓[0m hysteria 传输归一成 quic(与 parse_hysteria2 同一个模型)
+  [32m✓[0m 原始 network 写法留在 transport_raw 备查
+  [32m✓[0m 旧位置(hysteriaSettings.up)的带宽按回退值收下, 不丢
+  [32m✓[0m 旧位置的 down 同样收下
+  [32m✓[0m 并标明来源是已废弃位置(不是权威来源)
+  [32m✓[0m 旧世代产物 → 生成的配置把带宽搬进 finalmask.brutalUp
+  [32m✓[0m 旧世代产物 → brutalDown 同样搬过去
+  [32m✓[0m 生成的配置不再写已废弃的 hysteriaSettings.up/down
+  [32m✓[0m 新世代产物 finalmask.brutalUp 被读到
+  [32m✓[0m 来源标成 finalmask(权威位置)
+  [32m✓[0m finalmask.quicParams.udpHop.ports 被读到
+  [32m✓[0m tlsSettings.pinnedPeerCertSha256 被读到(自签节点唯一的信任来源)
+  [32m✓[0m 新世代产物 → 生成回来带宽不丢
+  [32m✓[0m 新世代产物 → 端口跳跃不丢
+  [32m✓[0m 新世代产物 → 生成的配置带上 pin
+  [32m✓[0m finalmask 与旧位置冲突时以 finalmask 为准(权威性)
+  [32m✓[0m 另一字段仍可回退到旧位置
+  [32m✓[0m 混合来源被如实标成 mixed
+  [32m✓[0m 内核的 bit/s 无数量级写法被原样保留(800000/8=100000 B/s)
+  [32m✓[0m 这种写法也能下发回内核, 不被当成噪音丢掉
+  [32m✓[0m 低于内核下限 65536 B/s 的源值被丢弃(搬进去内核拒收整份配置)
+  [32m✓[0m 丢弃低于下限的带宽不影响同节点的其它字段(udpHop 照常下发)
+  [32m✓[0m 认不出的单位不猜(内核 Bps() 会直接报 unsupported unit)
+  [32m✓[0m 没写带宽时不编默认值
+  [32m✓[0m 没读到带宽时来源为空, 不冒充
+  [32m✓[0m 没把白名单放宽成"什么都收": 不认识的协议仍然报错
+  [32m✓[0m 同一处共享改动: 非 hysteria 产物的 pin 也读到了(小写归一)
+
+[36m跨内核 compat: mihomo 的 trojan 链接解析器丢 reality (逐内核规则不外溢)[0m
+  [32m✓[0m 注册表里有 uri.trojan.reality@mihomo 这一行
+  [32m✓[0m 该行带 target_kernel=mihomo(逐内核, 不是全局)
+  [32m✓[0m representation=NONE(reality 参数一个都到不了 mihomo)
+  [32m✓[0m loss 逐字段写清(pbk / sid / server_names 各一条)
+  [32m✓[0m 给了 workaround(YAML 形态的 reality-opts)
+  [32m✓[0m 证据 id 在 evidence 表里能解析(不是悬空引用)
+  [32m✓[0m mihomo + trojan/REALITY 链接: uri 层判 SUPPORTED_WITH_LOSS(不再当作能连)
+  [32m✓[0m 损失条目指向该规则(可审计)
+  [32m✓[0m 总判定至少带损失(status=SUPPORTED_WITH_LOSS)
+  [32m✓[0m 同一条链接在 xray 上**不被**这行波及(逐内核规则不许外溢)
+  [32m✓[0m xray 的损失表里没有 mihomo 那条规则
+  [32m✓[0m xray 上仍是 SUPPORTED(与修复前逐字相同)
+  [32m✓[0m 不给内核时取不到这颗逐内核行(不猜、不拿别家结论顶替)
+  [32m✓[0m 给了 mihomo 才取到它
+  [32m✓[0m 全局行仍然是回退(ss 那条不受影响)
+  [32m✓[0m 所有 target_kernel 取值都是已知内核: ['mihomo']
+  [32m✓[0m 旧调用形式对所有全局行仍然取得到(向后兼容)
+  [32m✓[0m compat 断言生成器有输出（没有静默跳过）
+  [32m✓[0m （跳过内核校验用例：本机没有 xray 二进制）
+  [32m✓[0m （跳过内核校验用例：本机没有 xray 二进制）
+  [32m✓[0m 自签证书 + TLS 终止于本节点 → 写 pin
+  [32m✓[0m 公网 CA 证书不写 pin
+  [32m✓[0m TLS 不在本节点终结 (CDN/nginx) 不写 pin
+  [32m✓[0m 显式要求 (force=1) 时公网 CA 也写 pin
+  [32m✓[0m CDN-ECH + 公网 CA 证书 → 客户端 JSON 里没有 pin
+  [32m✓[0m direct-ECH + 自签证书 → 客户端 JSON 里仍写 pin
+
+[36m令牌存储 (token_store.py)[0m
+  [32m✓[0m 20 线程抢 2 次: 放行数精确
+  [32m✓[0m 20 线程抢 2 次: 计数精确, 无超发
+  [32m✓[0m 三态判定与 410 文案一致
+  [32m✓[0m 列表状态与服务端共用 status_of
+
+[36m节点生成 (node_build.py)[0m
+  [32m✓[0m 非法组合 REALITY+WS 被拒绝
+  [32m✓[0m 缺必填字段给出 NodeError 而非 KeyError
+  [32m✓[0m 缺端口被拒绝 (无 443 默认值)
+  [32m✓[0m Trojan+WS 缺口已填补
+  [32m✓[0m WS path 正确写入
+
+[36m部署规划 (deploy.py)[0m
+  [32m✓[0m nginx 档位: Xray 只听本机
+  [32m✓[0m nginx 档位: 对外端口是 443 而非 Xray 端口
+  [32m✓[0m nginx 档位: 反代指向 Xray 实际端口
+  [32m✓[0m CDN 档位: Xray 听 0.0.0.0 (否则回源被拒)
+  [32m✓[0m CDN 档位: 对外端口 = Xray 端口
+  [32m✓[0m CDN 档位: 不需要 nginx
+  [32m✓[0m 裸TCP+无加密+CDN 在规划阶段被拒
+  [32m✓[0m 既无 --port 也无 --block 时被拒
+  [32m✓[0m --path 写出自定义 location 前缀
+  [32m✓[0m --path 不影响用户原有的 location /
+  [32m✓[0m --block 的自定义内容被写入
+  [32m✓[0m --block 覆盖了自动生成的 proxy_pass
+  [32m✓[0m --block 保留了片段内部的相对缩进
+  [32m✓[0m --block 摘除后逐字节还原
+  [32m✓[0m nginx 二进制缺失时干净报错并说明
+
+[36mnginx 幂等 (nginx_apply.py)[0m
+  [32m✓[0m 连插 3 次仍只有 1 段 (幂等)
+  [32m✓[0m 用户自己的 location 未被动
+  [32m✓[0m 移除后与原文件逐字节一致
+  [32m✓[0m 换端口后旧端口号无残留
+  [32m✓[0m 新端口号已写入
+  [32m✓[0m nginx -t 失败已回滚
+  [32m✓[0m 现有配置不通过 nginx -t 时拒绝操作 (rc=3)
+  [32m✓[0m 拒绝时文件未被改动
+  [32m✓[0m 拒绝时没有多余产物 (没写备份)
+  [32m✓[0m --skip-precheck 走写入路径, 失败后照样回滚
+
+[36mnginx 生命周期: 选块 / 精确删除 / 回收 (nginx_apply.py)[0m
+  [32m✓[0m 插进 443 的 server 块 (不是 80 跳转块)
+  [32m✓[0m 多站点文件里插进目标域名的块 (没插进别人的站)
+  [32m✓[0m 域名不在文件里时拒绝写入 (rc=3)
+  [32m✓[0m 拒绝时文件逐字节未动
+  [32m✓[0m 同名 location 提前拒绝 (rc=4)
+  [32m✓[0m 同名冲突时文件未动
+  [32m✓[0m --dry-run 仍可预览 (不因冲突拒绝)
+  [32m✓[0m 同域名两条路径各占一段 (不互相替换)
+  [32m✓[0m --path 只摘自己那一段 (另一条不动)
+  [32m✓[0m 另一条路径的片段完好
+  [32m✓[0m 默认 --remove 整域名收工并逐字节还原
+  [32m✓[0m 无可摘内容时文件不变
+  [32m✓[0m 无可摘内容时备份槽不被覆盖
+  [32m✓[0m 历史备份有上限 (回收后 2 份 ≤ keep=2)
+  [32m✓[0m 规范备份 (回滚依据) 永远保留
+  [32m✓[0m 别人的备份一份都没动
+  [32m✓[0m 站点文件已不在时不回收备份 (可能是唯一副本)
+  [32m✓[0m 孤儿片段被清掉
+  [32m✓[0m 活着的片段保留
+  [32m✓[0m 用户手写的 location 一个字符都没动
+  [32m✓[0m 旧标记升级后不留重复 location
+  [32m✓[0m 旧标记升级后端口是新值
+  [32m✓[0m node.sh 摘除带 --path (不连坐同域名别的段)
+  [32m✓[0m node.sh 孤儿检查给出安全清理命令
+  [32m✓[0m 容器名不含 nginx 但镜像含 nginx 时也认得出来
+  [32m✓[0m 镜像名带 nginx 的容器挑得出来 (不选 redis)
+
+[36m证书 (cert.sh)[0m
+  [32m✓[0m 检测出被 Xray 片段引用的证书
+  [32m✓[0m 检测出被 nginx 引用的证书
+  [32m✓[0m 无人引用的证书判为空闲
+  [32m✓[0m GC 未删被引用的证书
+  [32m✓[0m GC 未删被 nginx 引用的证书
+  [32m✓[0m GC 删除了无人引用的证书
+
+[36mDNS (dns_edit.py)[0m
+  [32m✓[0m 追加 DNS 服务器
+  [32m✓[0m 删除最后一条后 servers 键消失 (不留空数组)
+  [32m✓[0m 编辑 dns 不动其余键
+  [32m✓[0m 5 类非法 schema 全部被拦下
+  [32m✓[0m xray -test 失败已回滚
+  [32m✓[0m 回滚后无备份残留
+
+[36m日志 (logs.sh / service.sh)[0m
+  [32m✓[0m 报错解释有输出
+  [32m✓[0m 识别出端口冲突
+  [32m✓[0m 识别出未知字段
+  [32m✓[0m 识别出配置文件问题
+  [32m✓[0m 无 systemd 时三个入口均正常返回 (338ms)
+  [32m✓[0m 日志入口存在: log_lines
+  [32m✓[0m 日志入口存在: log_explain
+  [32m✓[0m 日志入口存在: log_follow
+  [32m✓[0m 日志入口存在: log_status
+  [32m✓[0m 日志入口存在: log_menu
+  [32m✓[0m 容器模式的 site_files 找到容器里的站点
+  [32m✓[0m 容器模式能读出 server_name
+  [32m✓[0m 容器模式插入写到了容器里的文件
+  [32m✓[0m 容器模式摘除干净
+  [32m✓[0m 容器模式摘除不动用户自己写的 location
+  [32m✓[0m site_files 去重 (递归根不重复列)
+
+[36m容器感知 (cert.sh / nginx_apply.py)[0m
+  [32m✓[0m 发现容器内证书
+  [32m✓[0m 容器内私钥被排除 (.key 与 _key.pem 两种后缀)
+  [32m✓[0m 容器挂载路径进入扫描目录
+  [32m✓[0m 无 docker 时返回非 0 而非挂死
+
+[36m协议预置 (preset.sh)[0m
+  [32m✓[0m 整表校验通过 (字段数/传输白名单/加密白名单/组合合法性)
+  [32m✓[0m 预置覆盖协议: vless
+  [32m✓[0m 预置覆盖协议: trojan
+  [32m✓[0m 预置覆盖协议: vmess
+  [32m✓[0m 预置覆盖协议: shadowsocks
+  [32m✓[0m 预置覆盖协议: hysteria2
+  [32m✓[0m 预置覆盖协议: socks
+  [32m✓[0m 预置覆盖协议: http
+  [32m✓[0m 逐列提取不错位
+  [32m✓[0m 第一个预置提取正确
+  [32m✓[0m cut 对末尾空字段返回空串 (read 会少给一个字段)
+  [32m✓[0m REALITY 传输白名单 raw
+  [32m✓[0m REALITY 传输白名单 tcp
+  [32m✓[0m REALITY 传输白名单 xhttp
+  [32m✓[0m REALITY 传输白名单 grpc
+  [32m✓[0m REALITY 传输白名单 ws
+  [32m✓[0m REALITY 传输白名单 httpupgrade
+  [32m✓[0m REALITY 传输白名单 mkcp
+  [32m✓[0m tls 不被 REALITY 白名单误拦 (raw)
+  [32m✓[0m tls 不被 REALITY 白名单误拦 (xhttp)
+  [32m✓[0m tls 不被 REALITY 白名单误拦 (ws)
+  [32m✓[0m tls 不被 REALITY 白名单误拦 (httpupgrade)
+  [32m✓[0m tls 不被 REALITY 白名单误拦 (grpc)
+  [32m✓[0m 预置表与 node_build 的 REALITY 限制一致
+  [32m✓[0m 无预置协议明确报错
+
+[36m预置建节点 (mknode → deploy)[0m
+  [32m✓[0m JSON 路径落盘片段
+  [32m✓[0m JSON 路径落盘分享元数据
+  [32m✓[0m 命令行路径仍可用
+  [32m✓[0m 缺参数明确报错
+  [32m✓[0m 预演呈现与落盘一致
+  [32m✓[0m 预置建出的节点 Client 全部接受
+  [32m✓[0m mknode.sh 语法
+
+[36m分享链接覆盖 (REALITY 也要能分享)[0m
+  [32m✓[0m REALITY 节点也能生成分享链接
+  [32m✓[0m REALITY 的 meta 里带上了 host
+  [32m✓[0m hysteria2 与 shadowsocks 都能生成分享链接
+  [32m✓[0m socks 无认证: 不带 userinfo
+
+[36m实机反馈 (SS2022 / hysteria2 / REALITY)[0m
+  [32m✓[0m SS2022 aes-128: 24 字符通过
+  [32m✓[0m SS2022 aes-256: 44 字符通过
+  [32m✓[0m SS2022 aes-128 收到 44 字符: 拒绝
+  [32m✓[0m SS2022 aes-256 收到 24 字符: 拒绝
+  [32m✓[0m SS2022 非 base64 密码: 拒绝
+  [32m✓[0m 传统 SS 加密不限长度
+  [32m✓[0m 未知加密方式: 拒绝
+  [32m✓[0m hysteria2: protocol 名/version/auth 字段/alpn 全对
+  [32m✓[0m alpn=h3 只对 hysteria 生效
+  [32m✓[0m REALITY 收到非密钥内容: 拒绝
+  [32m✓[0m 非交互下 REALITY 明确拒绝 (不读脏数据)
+  [32m✓[0m 给了环境变量就不再要求终端
+
+[36m域名按需 (deploy.plan)[0m
+  [32m✓[0m 无加密+CDN: 报裸 TCP 限制 (不是报缺域名)
+  [32m✓[0m 无加密+nginx: 仍要求域名 (要挂站点)
+  [32m✓[0m TLS+CDN: 正常生成
+  [32m✓[0m TLS+nginx: 监听本机
+  [32m✓[0m 无加密+WS+CDN: 无需域名即可生成
+
+[36m从零安装 (bin/xray_install.sh)[0m
+  [32m✓[0m 安装脚本语法
+  [32m✓[0m 支持自定义安装目录 (可在临时目录里测)
+  [32m✓[0m 临时目录下会跳过 systemd 安装
+  - 从零安装需要 Xray 内核 (本机没有, 已在实机跑过)
+
+[36m预置批量 (preset_batch.sh)[0m
+  [32m✓[0m 批量落盘 2 个片段
+  [32m✓[0m 批量落盘 2 份元数据
+  [32m✓[0m 默认 CDN 档位: Xray 听 0.0.0.0
+  [32m✓[0m 基础域名按序号递增
+  [32m✓[0m nginx 档: 听本机, 对外 443
+  [32m✓[0m TLS 缺域名明确报错 (不静默跳过)
+  [32m✓[0m 非法预置序号明确报错
+  [32m✓[0m preset_batch.sh 语法
+
+[36m端口归属 (ports.sh)[0m
+  [32m✓[0m 从 /proc/net 提取出 socket inode
+  [32m✓[0m 非法端口 '0' 不给建议
+  [32m✓[0m 非法端口 '70000' 不给建议
+  [32m✓[0m 非法端口 '-1' 不给建议
+  [32m✓[0m 非法端口 'abc' 不给建议
+  [32m✓[0m 合法端口给出 3 个替代
+  [32m✓[0m 非法端口的提示说明范围
+  [32m✓[0m 五种绑定形式的端口都能提取 (v4/v6/无括号/Go 通配)
+
+[36m服务管理 (service.sh)[0m
+  [32m✓[0m 服务名探测返回明确状态 (1=找到 2=没有)
+  [32m✓[0m 完整探测耗时 208ms (<3s, 无 systemd 时不卡死)
+
+[36m幽灵函数 (check_wiring.py)[0m
+  [32m✓[0m 库函数 92 个, 从用户入口可达 92 个, 不可达 0 个
+  [32m✓[0m 检查器能抓到幽灵函数 (不是永远返回 0)
+  [32m✓[0m 幽灵函数被点名
+  [32m✓[0m 可达函数未被误报
+
+[36mClient 兼容性[0m
+  [32m✓[0m Client 真实解析器能吃下本项目输出
+
+[36m分享与预设 (面板 · 与用户点得到的入口)[0m
+  [32m✓[0m 分享页在侧栏
+  [32m✓[0m 分享页有服务状态
+  [32m✓[0m 分享页有链接表
+  [32m✓[0m 新建分享接线
+  [32m✓[0m 停用/启用接线
+  [32m✓[0m 删除接线
+  [32m✓[0m 预览接线
+  [32m✓[0m 面板动作 share_status
+  [32m✓[0m 面板动作 share_new
+  [32m✓[0m 面板动作 share_toggle
+  [32m✓[0m 面板动作 share_remove
+  [32m✓[0m 面板动作 share_preview
+  [32m✓[0m 节点页常驻快速添加
+  [32m✓[0m 弹窗预置容器
+  [32m✓[0m 预设数据来自后端
+  [32m✓[0m 面板动作 add_meta
+  [32m✓[0m 面板与 core.sh 用的是同一个分享单元名
+  [32m✓[0m 面板预设全部是内核认的合法组合
+  [32m✓[0m build_link 往返不丢字段（fp/encryption/ech/alpn）
+
+[36m镜像顺序 (实时源优先于 CDN)[0m
+  [32m✓[0m 第一个镜像走实时回源的代理
+  [32m✓[0m 原始 CDN 仍在链里（只是不再排第一）
+  [32m✓[0m 支持 XBD_ARCHIVE 指定实时源
+  [32m✓[0m 安装时打印包内版本（更新成功但没变版本看得出来）
+  [32m✓[0m --ref 分支用同一套镜像顺序
+
+[36m入口与文档一致性[0m
+  [32m✓[0m 安装/下发路径里没有指向老仓库 (mi1314cat/xary-core) 的链接
+  [32m✓[0m Client/README.md 的安装链接指向本仓库 (7 处)
+  [32m✓[0m README 里有一键入口
+  [32m✓[0m README 里写了服务端
+  [32m✓[0m README 里写了客户端
+  [32m✓[0m README 里有 server 参数
+  [32m✓[0m README 里有 client 参数
+  [32m✓[0m install.sh 有服务端分支
+  [32m✓[0m install.sh 有客户端分支
+  [32m✓[0m install.sh 有菜单（不传参数时选角色）
+  [32m✓[0m install.sh 客户端分支会取 Client/l.sh
+  [32m✓[0m install.sh 服务端分支会取 xray-panel.sh
+  [32m✓[0m install.sh 支持 --status（只看不改）
+
+[36m节点显示名 (旗帜 + 服务器前缀)[0m
+  [32m✓[0m naming.py 自检通过
+  [32m✓[0m ISO → 旗帜（非法值给空串，不瞎猜）
+  [32m✓[0m 显示名 = 旗帜 + 前缀 + 节点名（含自带旗帜与空名两种边界）
+  [32m✓[0m naming.sh 包装与实际实现一致
+  [32m✓[0m 分享链接 fragment 带上了旗帜与默认前缀 (X)
+  [32m✓[0m 前缀可自定义（XRAY_SERVER_NAME）并体现在 fragment 里
+  [32m✓[0m 关掉旗帜时仍带前缀（不是空名字）
+
+[36m客户端排版 (ui_* 统一出口)[0m
+  [32m✓[0m 排版函数齐
+  [32m✓[0m 菜单行统一
+  [32m✓[0m 分组标题统一
+  [32m✓[0m 键值对齐（中文按显示宽度）
+  [32m✓[0m 说明行统一
+  [32m✓[0m 无效输入回显
+  [32m✓[0m 暂停行统一
+  [32m✓[0m 颜色受 TTY 判断保护
+  [32m✓[0m 菜单里没有手写的颜色转义（全走 ui_*）
+  [32m✓[0m 主菜单显示服务状态
+  [32m✓[0m 主菜单显示内核版本
+  [32m✓[0m 主菜单显示节点数量
+  [32m✓[0m 主菜单显示当前节点
+  [32m✓[0m 主菜单显示网页面板
+  [32m✓[0m 菜单项带说明
+  [32m✓[0m xbd 无参数在终端里进面板
+
+[36m简易出站 / 浏览器运行时[0m
+  [32m✓[0m 简易出站拦住非法输入（类型/监听地址/端口）
+  [32m✓[0m 简易出站默认名与字段（对齐 M/SB 的 SOCKS5-地址-端口）
+  [32m✓[0m 简易出站生成的是 socks/http 出站（无 streamSettings）
+  [32m✓[0m 能力判定：简易出站可用、拨号原因专门说明
+  [32m✓[0m CLI 有 node simple
+  [32m✓[0m 分发接线 node simple
+  [32m✓[0m 自环检查认本机 LAN IP
+  [32m✓[0m 监听地址被拦
+  [32m✓[0m 浏览器状态命令
+  [32m✓[0m 浏览器安装命令
+  [32m✓[0m 面板子命令（重启/停）
+  [32m✓[0m 落盘路径与导入共用
+  [32m✓[0m 面板弹窗有简易出站表单
+  [32m✓[0m 面板有 node_simple 动作
+  [32m✓[0m 面板有安装浏览器动作
+  [32m✓[0m 面板能重启自己
+  [32m✓[0m 配置页有网页面板卡片
+
+[36m管道早退 (pipefail 下不许让产出方吃 SIGPIPE)[0m
+  [32m✓[0m pipefail 脚本里没有早退管道（不会猝死、不会判断反）
+
+[36mTLS 握手判据 (不能只认 1.1.1 的输出文案)[0m
+  [32m✓[0m TLS 判据没有只认 CONNECTION ESTABLISHED（3.x 上也能判对）
+
+[36m面板覆盖面 (命令行 vs 网页 UI)[0m
+  [32m✓[0m 命令行能做的事，面板上都有入口
+  [32m✓[0m 应用配置按钮
+  [32m✓[0m 批量补指纹按钮
+  [32m✓[0m 导出按钮
+  [32m✓[0m 自检按钮
+  [32m✓[0m 更新脚本按钮
+  [32m✓[0m 简易出站进 TUI 菜单
+  [32m✓[0m TUI 节点菜单有分组
+
+[36m测试导航不硬编码菜单编号[0m
+  [32m✓[0m 验证台没有写死的多级菜单导航（编号都从菜单文本现查）
+  [32m✓[0m interactive-test.sh 有 menu_idx（编号现查）
+  [32m✓[0m interactive-test.sh 有 menu_block（编号现查）
+  [32m✓[0m interactive-test.sh 子菜单编号在截出的块里查（不会被主菜单同名项带偏）
+  [32m✓[0m server-interactive-test.sh 有 menu_idx（编号现查）
+  [32m✓[0m server-interactive-test.sh 有 menu_block（编号现查）
+  [32m✓[0m server-interactive-test.sh 子菜单编号在截出的块里查（不会被主菜单同名项带偏）
+
+[36mmux 策略 (P0-1: 默认关 / 节点字段生效 / XHTTP 拒开)[0m
+  [32m✓[0m 节点 mux:false + 不给 --mux → 不写 mux（默认关，节点意图生效）
+  [32m✓[0m XHTTP 节点默认不写 mux
+  [32m✓[0m 节点 mux:true（非 XHTTP）→ 真的开（不能一刀切砍功能）
+  [32m✓[0m XHTTP + 节点 mux:true → 拒开（官方明确不建议同开）
+  [32m✓[0m 拒开时在 stderr 说明原因
+  [32m✓[0m --mux 显式开（覆盖节点的 mux:false）
+  [32m✓[0m --no-mux 显式关（覆盖节点的 mux:true）
+  [32m✓[0m 开 mux 时 stderr 给出风险提示
+  [32m✓[0m compat2 认定 XHTTP 下 mux 被拒（与实际一致）
+  [32m✓[0m compat2 认定非 XHTTP 会开
+  [32m✓[0m compat2 默认不开（与 genconfig 一致）
+  [32m✓[0m genconfig 与 compat2 的 mux 判据键集合一致（防漂移）
+  [32m✓[0m mihomo smux:{enabled:false} 不再被读成'要开 mux'（字典恒真的老坑）
+  [32m✓[0m mihomo smux:{enabled:true} 记进 smux 字段，不冒充 mux.cool
+
+[36mSS2022 PSK 与 batch 退出码 (P0-2)[0m
+  [32m✓[0m gen_psk 在 conf/lib/random.sh 里（被误删过一次）
+  [32m✓[0m Shadowsocks.sh 加载随机值库
+  [32m✓[0m gen_psk(aes-128-gcm) = 24 字符 / 16 字节
+  [32m✓[0m gen_psk(aes-256-gcm) = 44 字符 / 32 字节
+  [32m✓[0m gen_psk(chacha20) = 44 字符 / 32 字节
+  [32m✓[0m 4 个协议全失败时 batch 退出码非 0（不再掩盖失败）
+  [32m✓[0m 失败清单被打印
+  [32m✓[0m 批量收尾明确指出退出码非 0
+  [32m✓[0m 全部成功时 batch 退出码仍是 0
+
+[36m分享链接发布 (P0-3: 回环节点不得按公网 host:port 发布)[0m
+  [32m✓[0m 只绑回环 + 没有 nginx 档 → 不发布（死链的根因）
+  [32m✓[0m 拒发时说明原因（不是静默少一个节点）
+  [32m✓[0m 回环 + nginx 档 → 按前端域名:443 发布
+  [32m✓[0m 元数据拿回环端口当对外端口时给出提示
+  [32m✓[0m 公网节点按元数据发布（原有行为不变）
+  [32m✓[0m 元数据端口与片段端口不一致时提示（换端口没重建）
+  [32m✓[0m build_payload 老四元组接口未变（兼容旧调用方）
+  [32m✓[0m full=True 才多出 refused/notes/inconsistent（新增细分）
+
+[36m旧格式字段与新校验 (P0-4)[0m
+  [32m✓[0m ech:true（旧 bool）不再让生成失败
+  [32m✓[0m 跳过 ECH 时明确告知（不是静默丢）
+  [32m✓[0m bool 没有被写进 echConfigList（内核会拒收整份配置）
+  [32m✓[0m ech 是合法字符串时照常生成
+  [32m✓[0m ECHConfigList 原样下发
+  [32m✓[0m sni:true（同类旧格式）→ 明确报错，不照写
+  [32m✓[0m 类型不符时不落盘（旧配置得以保留）
+  [32m✓[0m 报错里点名是哪个字段
+  [32m✓[0m 旧写法（port 字符串 + alpn 数组）能正常生成
+  [32m✓[0m alpn 数组没有被 str() 成 ['h2'] 垃圾值
+  [32m✓[0m ws_ed 是数字字符串时不再 TypeError（旧文件常见）
+  [32m✓[0m ws_ed 数字字符串被正确用上
+  [32m✓[0m （跳过内核校验用例：本机没有 xray 二进制）
+
+[36m孤儿链已移除 (防回归)[0m
+  [32m✓[0m 已删除: VEVLRE.sh
+  [32m✓[0m 已删除: VEVLRE6.sh
+  [32m✓[0m 已删除: Conversion.sh
+  [32m✓[0m 已删除: ngcadall.sh
+  [32m✓[0m 已删除: nginx.sh
+  [32m✓[0m 已删除: caddy.sh
+  [32m✓[0m 已删除: conf/cconf.sh
+  [32m✓[0m 已删除: conf/nconf.sh
+  [32m✓[0m 没有现行脚本引用孤儿链 (.sh/.py 非注释行)
+
+[36m门禁自检 (没有静默跳过的检查)[0m
+  [32m✓[0m 门禁没有调用不存在的命令（没有检查被静默跳过）
+
+[36m═══ 结果: 756 通过, 0 失败 ═══[0m

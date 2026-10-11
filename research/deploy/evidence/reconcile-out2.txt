@@ -1,0 +1,169 @@
+[xray] HEAD=55c736afaaab6aafd59f34b7e99d7688ca5087b3
+[mihomo] HEAD=54672782a1c06d962ac498d372c81672b0d9f5e9
+[singbox] HEAD=2c209b0e017c26838bc7af5ba42849c0d341dd8c
+
+==============================================================================
+### xray  (repo HEAD 55c736af)
+==============================================================================
+  SAME          : 1
+  DIFFERS(stale): 0
+  LOCAL-CHANGE  : 0
+  RN-ONLY       : 0
+  REPO-ONLY     : 0
+  runtime/derived (informational): 109
+
+==============================================================================
+### mihomo  (repo HEAD 54672782)
+==============================================================================
+  SAME          : 0
+  DIFFERS(stale): 0
+  LOCAL-CHANGE  : 0
+  RN-ONLY       : 45
+  REPO-ONLY     : 50
+  runtime/derived (informational): 53
+
+  --- RN-ONLY (no counterpart at mapped repo path) ---
+    /root/catmi/mihomo/src/VERSION   sha=40e2ef3e664a0dc3 size=13
+    /root/catmi/mihomo/src/client.sh   sha=7ad2c93865c0b671 size=84648
+    /root/catmi/mihomo/src/conf/AnyTLS.sh   sha=afb22a4ff9f9a5b8 size=31673
+    /root/catmi/mihomo/src/conf/Reality.sh   sha=c495b847a4b06cdf size=24819
+    /root/catmi/mihomo/src/conf/TUIC.sh   sha=5a5797f456a8c888 size=22682
+    /root/catmi/mihomo/src/conf/Trojan.sh   sha=c211d3a2e0d2f018 size=42425
+    /root/catmi/mihomo/src/conf/VLESS.sh   sha=2c5496a9cafd17fd size=62650
+    /root/catmi/mihomo/src/conf/XRevise.sh   sha=034bbb790bfba810 size=8405
+    /root/catmi/mihomo/src/conf/all.sh   sha=2d4e9f7e6b462df6 size=113384
+    /root/catmi/mihomo/src/conf/hysteria2.sh   sha=b630209ad1a23189 size=37459
+    /root/catmi/mihomo/src/conf/nginx_apply.py   sha=2dfc01dd3f52560a size=24298
+    /root/catmi/mihomo/src/core_install.sh   sha=5bdfe85a798e1fba size=38470
+    /root/catmi/mihomo/src/env.sh   sha=fb14a25da8ee884d size=78839
+    /root/catmi/mihomo/src/lib/__pycache__/naming.cpython-313.pyc   sha=8b4e2f4ee6700de2 size=10836
+    /root/catmi/mihomo/src/lib/cdn.sh   sha=442a9957e87415a3 size=52274
+    /root/catmi/mihomo/src/lib/cert.sh   sha=df887f9dab3484e6 size=31641
+    /root/catmi/mihomo/src/lib/cert.sh.bak-pre-certsync-20261009-005359   sha=fed1efd08d696d62 size=21818
+    /root/catmi/mihomo/src/lib/cert_sync.sh   sha=d6f2d1fae286dd8b size=23781
+    /root/catmi/mihomo/src/lib/core_mgmt.sh   sha=345b011189ceb720 size=22138
+    /root/catmi/mihomo/src/lib/dl_route.sh   sha=c41e9dd57e61008b size=11471
+    /root/catmi/mihomo/src/lib/dns.sh   sha=ef6414a447259886 size=19359
+    /root/catmi/mihomo/src/lib/dns_edit.py   sha=087c6aba3d90f0c4 size=4241
+    /root/catmi/mihomo/src/lib/env.sh   sha=fb14a25da8ee884d size=78839
+    /root/catmi/mihomo/src/lib/envtool.py   sha=7c36318546fb4307 size=4151
+    /root/catmi/mihomo/src/lib/fw.sh   sha=467376c35d30af71 size=19156
+    /root/catmi/mihomo/src/lib/lan_dispatch.sh   sha=98b9bc241a5a5e8a size=7757
+    /root/catmi/mihomo/src/lib/manifest.txt   sha=3751e0005d2733f0 size=1119
+    /root/catmi/mihomo/src/lib/merge.py   sha=f9f430f1340eef06 size=13473
+    /root/catmi/mihomo/src/lib/naming.py   sha=26d1044ca4eec686 size=7159
+    /root/catmi/mihomo/src/lib/naming_migrate.py   sha=3ff7baea57fd6519 size=7151
+    /root/catmi/mihomo/src/lib/portcheck.sh   sha=5ec08781dbd0a44f size=4441
+    /root/catmi/mihomo/src/lib/preset.sh   sha=e7c52bc4f544964f size=13003
+    /root/catmi/mihomo/src/lib/rules_bind.sh   sha=a3917bafd7d9fbd6 size=10362
+    /root/catmi/mihomo/src/lib/server_extra.sh   sha=9c2f3b4fa9004beb size=43781
+    /root/catmi/mihomo/src/lib/simple_proxy.sh   sha=ed38e49de062fe28 size=5315
+    /root/catmi/mihomo/src/lib/ui.sh   sha=d949f025aa6a8f4a size=7373
+    /root/catmi/mihomo/src/lib/validate.py   sha=27e6c782270c857d size=35142
+    /root/catmi/mihomo/src/lib/webui.sh   sha=991f902bb6588f9e size=6159
+    /root/catmi/mihomo/src/manifest.txt   sha=3751e0005d2733f0 size=1119
+    /root/catmi/mihomo/src/server.sh   sha=bd4e6d4093f6a2d6 size=68863
+    /root/catmi/mihomo/src/share/build_sub.py   sha=7ce57bd1f661e1c8 size=10903
+    /root/catmi/mihomo/src/share/lan_config.py   sha=e3ce3ad67ecbb4bf size=5426
+    /root/catmi/mihomo/src/share/lan_server.py   sha=f0a325e3b9d15dc4 size=5563
+    /root/catmi/mihomo/src/share/share.sh   sha=9b24796b8ea6a9b9 size=42001
+    /root/catmi/mihomo/src/share/share_client.py   sha=db2fa87efe93b0b1 size=10350
+
+  --- REPO-ONLY (in HEAD's deployed subtree, absent on RN) ---
+    src/client.sh
+    src/conf/AnyTLS.sh
+    src/conf/Reality.sh
+    src/conf/TUIC.sh
+    src/conf/Trojan.sh
+    src/conf/VLESS.sh
+    src/conf/XRevise.sh
+    src/conf/all.sh
+    src/conf/hysteria2.sh
+    src/conf/nginx_apply.py
+    src/core_install.sh
+    src/lib/cdn.sh
+    src/lib/cert.sh
+    src/lib/cert_sync.sh
+    src/lib/core_mgmt.sh
+    src/lib/dl_route.sh
+    src/lib/dns.sh
+    src/lib/dns_edit.py
+    src/lib/env.sh
+    src/lib/envtool.py
+    src/lib/fw.sh
+    src/lib/lan_dispatch.sh
+    src/lib/merge.py
+    src/lib/naming.py
+    src/lib/naming_migrate.py
+    src/lib/nodecompat.py
+    src/lib/portcheck.sh
+    src/lib/preset.sh
+    src/lib/proxy_node_compat/__init__.py
+    src/lib/proxy_node_compat/__main__.py
+    src/lib/proxy_node_compat/cli.py
+    src/lib/proxy_node_compat/data/rules.json
+    src/lib/proxy_node_compat/engine.py
+    src/lib/proxy_node_compat/model.py
+    src/lib/proxy_node_compat/registry.py
+    src/lib/proxy_node_compat/uri.py
+    src/lib/rules_bind.sh
+    src/lib/server_extra.sh
+    src/lib/simple_proxy.sh
+    src/lib/ui.sh
+    src/lib/validate.py
+    src/lib/webui.sh
+    src/manifest.txt
+    src/server.sh
+    src/share/build_sub.py
+    src/share/lan_config.py
+    src/share/lan_server.py
+    src/share/link_check.py
+    src/share/share.sh
+    src/share/share_client.py
+
+==============================================================================
+### singbox  (repo HEAD 2c209b0e)
+==============================================================================
+  SAME          : 25
+  DIFFERS(stale): 8
+  LOCAL-CHANGE  : 0
+  RN-ONLY       : 0
+  REPO-ONLY     : 1
+  runtime/derived (informational): 77
+
+  --- DIFFERS from HEAD, but matches an OLD repo version (stale deploy) ---
+    src/conf/core.sh
+       RN : /root/catmi/sing-box/conf/core.sh  sha=06962c4f1d376cf1
+       HEAD:fc7bfbe0b91fd671
+       RN content == e32fb89 2026-10-01 17:45:53 +0800 v1.0.43
+    src/conf/hysteria2.sh
+       RN : /root/catmi/sing-box/conf/hysteria2.sh  sha=ca21a6e59e2d89d3
+       HEAD:04e0e0bd074e2c5b
+       RN content == 29243c0 2026-10-04 10:35:52 +0800 v1.0.83
+    src/conf/lib.sh
+       RN : /root/catmi/sing-box/conf/lib.sh  sha=ce3ff0cdd1b359df
+       HEAD:bed7d3ce621e9481
+       RN content == b13b27d 2026-10-09 19:16:21 +0800 修: 证书走真实证书目录, vmess 真证书不再跳过校验
+    src/conf/outbound_uri.py
+       RN : /root/catmi/sing-box/conf/outbound_uri.py  sha=15c877601b0f810b
+       HEAD:3404f42e8e1067e1
+       RN content == b76d230 2026-10-02 20:29:17 +0800 v1.0.60
+    src/conf/share.sh
+       RN : /root/catmi/sing-box/conf/share.sh  sha=6d492039b7e968f2
+       HEAD:613f8e9c705abcba
+       RN content == b9c8814 2026-10-09 19:18:57 +0800 改: 分享改走公共基础服务 proxy-share-service —— 与 mihomo/xray 共用一套存储
+    src/conf/uninstall.sh
+       RN : /root/catmi/sing-box/conf/uninstall.sh  sha=fdd013cdc9204421
+       HEAD:739afc1c5f68a044
+       RN content == 21df684 2026-10-01 23:49:36 +0800 v1.0.50
+    src/conf/vmess.sh
+       RN : /root/catmi/sing-box/conf/vmess.sh  sha=46ea084d3738f62b
+       HEAD:2b2157760414912b
+       RN content == b13b27d 2026-10-09 19:16:21 +0800 修: 证书走真实证书目录, vmess 真证书不再跳过校验
+    install.sh
+       RN : /root/catmi/sing-box/install.sh  sha=9be5a91f40d802e6
+       HEAD:d1a075e9f2f7cb2d
+       RN content == b9c8814 2026-10-09 19:18:57 +0800 改: 分享改走公共基础服务 proxy-share-service —— 与 mihomo/xray 共用一套存储
+
+  --- REPO-ONLY (in HEAD's deployed subtree, absent on RN) ---
+    src/conf/addr_family.py

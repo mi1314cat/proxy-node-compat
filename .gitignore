@@ -1,2 +1,9 @@
 __pycache__/
 *.pyc
+
+# 分发/验证期间的中转物：冻结快照 tarball 是**过程产物**，可由钉死的 commit 随时重放
+# （`git archive <commit> ...`），把几百 KB 的压缩包提交进仓库只会让 history 变脏。
+research/deploy/evidence/stage/
+
+# 真机抓回来的原始件里可能含临时实例数据
+research/**/evidence/**/tmp/

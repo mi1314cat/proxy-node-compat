@@ -1,0 +1,48 @@
+### 基线
+  CC 直连: gstatic=204/0.055131 egress=none   <-- 204 是直连兜底, 靠出口 IP 区分
+
+### 1) mihomo 客户端 (/root/catmi/mihomo-client/mihomo)
+  --- before: provider 导入 0 个节点 ---
+  --- after: provider 导入 0 个节点 ---
+
+### 2) sing-box 客户端 (/opt/sb-client/core/sing-box, 载荷经 to_sb.py 转换)
+  转换: [to_sb] 格式=share-uri 共=5 成功=5 跳过=0
+  --- before: 内核出站 5 个节点 ---
+    v-before-SS2022-02         http=204/0.368401   egress=104.28.195.192   OK  经代理(CF 出口)
+    v-before-TROJAN-03         http=204/0.837970   egress=104.28.195.192   OK  经代理(CF 出口)
+    v-before-hysteria-04       http=000/0.717384   egress=none             FAIL 连不上
+    v-before-vless-xhttp07     http=000/0.347643   egress=none             FAIL 连不上
+    v-before-vless-xhttp08     http=000/1.544426   egress=none             FAIL 连不上
+  转换: [to_sb] 格式=share-uri 共=5 成功=5 跳过=0
+  --- after: 内核出站 5 个节点 ---
+    v-after-🇺🇸 X-SS2022-02 http=204/0.362037   egress=104.28.195.192   OK  经代理(CF 出口)
+    v-after-🇺🇸 X-TROJAN-03 http=204/0.697759   egress=104.28.195.192   OK  经代理(CF 出口)
+    v-after-🇺🇸 X-hysteria-04 http=204/0.711113   egress=104.28.195.192   OK  经代理(CF 出口)
+    v-after-🇺🇸 X-vless-xhttp07 http=000/1.962530   egress=none             FAIL 连不上
+    v-after-🇺🇸 X-vless-xhttp08 http=204/0.727392   egress=104.28.195.192   OK  经代理(CF 出口)
+
+### 3) xbd / Xray 客户端 (Xray 26.3.27 + 仓库 HEAD Client/lib 解析 -> genconfig)
+  解析 5 个节点
+    [nomux,nomux,nomux] hysteria-04
+      hysteria-04              http=000/0.286139   egress=none             FAIL 连不上
+    [nomux,nomux,nomux] SS2022-02
+      SS2022-02                http=204/0.492876   egress=104.28.195.192   OK  经代理(CF 出口)
+    [nomux,nomux,nomux] TROJAN-03
+      TROJAN-03                http=204/1.670900   egress=104.28.195.192   OK  经代理(CF 出口)
+    [nomux,nomux,nomux] vless-xhttp07
+      vless-xhttp07            http=000/0.495362   egress=none             FAIL 连不上
+    [nomux,nomux,nomux] vless-xhttp08
+      vless-xhttp08            http=000/0.477854   egress=none             FAIL 连不上
+  解析 5 个节点
+    [nomux,nomux,nomux] 🇺🇸 X-hysteria-04
+      🇺🇸 X-hysteria-04   http=204/1.483377   egress=104.28.195.192   OK  经代理(CF 出口)
+    [nomux,nomux,nomux] 🇺🇸 X-SS2022-02
+      🇺🇸 X-SS2022-02     http=204/0.374687   egress=104.28.195.192   OK  经代理(CF 出口)
+    [nomux,nomux,nomux] 🇺🇸 X-TROJAN-03
+      🇺🇸 X-TROJAN-03     http=204/0.851008   egress=104.28.195.192   OK  经代理(CF 出口)
+    [nomux,nomux,nomux] 🇺🇸 X-vless-xhttp07
+      🇺🇸 X-vless-xhttp07 http=204/1.314021   egress=104.28.195.192   OK  经代理(CF 出口)
+    [nomux,nomux,nomux] 🇺🇸 X-vless-xhttp08
+      🇺🇸 X-vless-xhttp08 http=204/1.266141   egress=104.28.195.192   OK  经代理(CF 出口)
+
+### 残留进程

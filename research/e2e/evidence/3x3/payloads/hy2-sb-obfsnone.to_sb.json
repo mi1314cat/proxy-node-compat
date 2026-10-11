@@ -1,0 +1,16 @@
+[to_sb] 格式=share-uri 共=1 成功=1 跳过=0 
+{
+ "outbounds": [
+  {
+   "type": "hysteria2",
+   "tag": "e2e-rn-hysteria201-TLS",
+   "server": "107.173.154.178",
+   "server_port": 31001,
+   "password": "f00f6744246c7c55e0cb96954e56b7d0",
+   "tls": {
+    "enabled": true,
+    "server_name": "hxicc.catmicos.dpdns.org"
+   }
+  }
+ ]
+}

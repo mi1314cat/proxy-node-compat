@@ -1,0 +1,309 @@
+{
+ "outbounds": [
+  {
+   "type": "anytls",
+   "tag": "e2e-🇺🇸 mAnyTLS02-TLS",
+   "server": "107.173.154.178",
+   "server_port": 28725,
+   "password": "f537cd201a21c199f874f254f9ac6c8b",
+   "tls": {
+    "server_name": "hxicc.catmicos.dpdns.org",
+    "alpn": [
+     "h2",
+     "http/1.1"
+    ],
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    }
+   }
+  },
+  {
+   "type": "anytls",
+   "tag": "e2e-🇺🇸 mAnyTLS03-TLS",
+   "server": "107.173.154.178",
+   "server_port": 22812,
+   "password": "d3cc09aa867186e5887515fcc95d8628",
+   "tls": {
+    "server_name": "www.apple.com",
+    "insecure": true,
+    "alpn": [
+     "h2",
+     "http/1.1"
+    ],
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    }
+   }
+  },
+  {
+   "type": "anytls",
+   "tag": "e2e-🇺🇸 mAnyTLS01-TLS",
+   "server": "107.173.154.178",
+   "server_port": 25684,
+   "password": "0647a947-6f77-4a91-8df0-8ff9f2d5e720",
+   "tls": {
+    "server_name": "hxicc.catmicos.dpdns.org",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    }
+   }
+  },
+  {
+   "type": "hysteria2",
+   "tag": "e2e-🇺🇸 mHysteria201-TLS",
+   "server": "107.173.154.178",
+   "server_port": 25682,
+   "password": "0647a947-6f77-4a91-8df0-8ff9f2d5e720",
+   "tls": {
+    "server_name": "hxicc.catmicos.dpdns.org"
+   },
+   "up_mbps": 30
+  },
+  {
+   "type": "vless",
+   "tag": "e2e-🇺🇸 mVLESS01-REALITY",
+   "server": "107.173.154.178",
+   "server_port": 25669,
+   "tls": {
+    "server_name": "www.microsoft.com",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    },
+    "reality": {
+     "enabled": true,
+     "public_key": "uMcVRoEWeMAwPaj6e3jSVCZfbl-gj37MH9_XI9tL5wY",
+     "short_id": "58896ecc5f8bf710"
+    }
+   },
+   "uuid": "0647a947-6f77-4a91-8df0-8ff9f2d5e720",
+   "flow": "xtls-rprx-vision"
+  },
+  {
+   "type": "vless",
+   "tag": "e2e-🇺🇸 mVLESS02-REALITY-gRPC",
+   "server": "107.173.154.178",
+   "server_port": 25670,
+   "tls": {
+    "server_name": "www.microsoft.com",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    },
+    "reality": {
+     "enabled": true,
+     "public_key": "uMcVRoEWeMAwPaj6e3jSVCZfbl-gj37MH9_XI9tL5wY",
+     "short_id": "58896ecc5f8bf710"
+    }
+   },
+   "transport": {
+    "type": "grpc",
+    "service_name": "gs025a08f0"
+   },
+   "uuid": "0647a947-6f77-4a91-8df0-8ff9f2d5e720"
+  },
+  {
+   "type": "vless",
+   "tag": "e2e-🇺🇸 mVLESS03-REALITY-XHTTP",
+   "server": "107.173.154.178",
+   "server_port": 25671,
+   "tls": {
+    "server_name": "www.microsoft.com",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    },
+    "reality": {
+     "enabled": true,
+     "public_key": "uMcVRoEWeMAwPaj6e3jSVCZfbl-gj37MH9_XI9tL5wY",
+     "short_id": "58896ecc5f8bf710"
+    }
+   },
+   "uuid": "0647a947-6f77-4a91-8df0-8ff9f2d5e720"
+  },
+  {
+   "type": "trojan",
+   "tag": "e2e-🇺🇸 mTrojan05-CDN-gRPC",
+   "server": "hxicc.catmicos.dpdns.org",
+   "server_port": 443,
+   "password": "0647a947-6f77-4a91-8df0-8ff9f2d5e720",
+   "tls": {
+    "server_name": "hxicc.catmicos.dpdns.org",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    }
+   },
+   "transport": {
+    "type": "grpc",
+    "service_name": "cg0599db34"
+   }
+  },
+  {
+   "type": "trojan",
+   "tag": "e2e-🇺🇸 mTrojan04-CDN-WS",
+   "server": "hxicc.catmicos.dpdns.org",
+   "server_port": 443,
+   "password": "0647a947-6f77-4a91-8df0-8ff9f2d5e720",
+   "tls": {
+    "server_name": "hxicc.catmicos.dpdns.org",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    }
+   },
+   "transport": {
+    "type": "ws",
+    "path": "/cdnws-0ab96db5"
+   }
+  },
+  {
+   "type": "trojan",
+   "tag": "e2e-🇺🇸 mTrojan01-REALITY",
+   "server": "107.173.154.178",
+   "server_port": 25672,
+   "password": "0647a947-6f77-4a91-8df0-8ff9f2d5e720",
+   "tls": {
+    "server_name": "www.microsoft.com",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    },
+    "reality": {
+     "enabled": true,
+     "public_key": "uMcVRoEWeMAwPaj6e3jSVCZfbl-gj37MH9_XI9tL5wY",
+     "short_id": "58896ecc5f8bf710"
+    }
+   }
+  },
+  {
+   "type": "trojan",
+   "tag": "e2e-🇺🇸 mTrojan02-REALITY-gRPC",
+   "server": "107.173.154.178",
+   "server_port": 25673,
+   "password": "0647a947-6f77-4a91-8df0-8ff9f2d5e720",
+   "tls": {
+    "server_name": "www.microsoft.com",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    },
+    "reality": {
+     "enabled": true,
+     "public_key": "uMcVRoEWeMAwPaj6e3jSVCZfbl-gj37MH9_XI9tL5wY",
+     "short_id": "58896ecc5f8bf710"
+    }
+   },
+   "transport": {
+    "type": "grpc",
+    "service_name": "tg02286ead"
+   }
+  },
+  {
+   "type": "trojan",
+   "tag": "e2e-🇺🇸 mTrojan03-TLS",
+   "server": "107.173.154.178",
+   "server_port": 25674,
+   "password": "0647a947-6f77-4a91-8df0-8ff9f2d5e720",
+   "tls": {
+    "server_name": "hxicc.catmicos.dpdns.org"
+   }
+  },
+  {
+   "type": "tuic",
+   "tag": "e2e-🇺🇸 mTUIC01-TLS",
+   "server": "107.173.154.178",
+   "server_port": 25683,
+   "password": "0647a947-6f77-4a91-8df0-8ff9f2d5e720",
+   "tls": {
+    "server_name": "hxicc.catmicos.dpdns.org",
+    "alpn": [
+     "h3"
+    ]
+   },
+   "uuid": "0647a947-6f77-4a91-8df0-8ff9f2d5e720",
+   "congestion_control": "bbr"
+  },
+  {
+   "type": "vless",
+   "tag": "e2e-🇺🇸 mVLESS05-CDN-gRPC",
+   "server": "hxicc.catmicos.dpdns.org",
+   "server_port": 443,
+   "tls": {
+    "server_name": "hxicc.catmicos.dpdns.org",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    }
+   },
+   "transport": {
+    "type": "grpc",
+    "service_name": "cg0523759e"
+   },
+   "uuid": "0647a947-6f77-4a91-8df0-8ff9f2d5e720"
+  },
+  {
+   "type": "vless",
+   "tag": "e2e-🇺🇸 mVLESS04-CDN-WS",
+   "server": "hxicc.catmicos.dpdns.org",
+   "server_port": 443,
+   "tls": {
+    "server_name": "hxicc.catmicos.dpdns.org",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    }
+   },
+   "transport": {
+    "type": "ws",
+    "path": "/cdnws-7a34637f"
+   },
+   "uuid": "0647a947-6f77-4a91-8df0-8ff9f2d5e720"
+  },
+  {
+   "type": "vless",
+   "tag": "e2e-🇺🇸 mVLESS01-TLS-WS",
+   "server": "107.173.154.178",
+   "server_port": 25675,
+   "tls": {
+    "server_name": "hxicc.catmicos.dpdns.org"
+   },
+   "transport": {
+    "type": "ws",
+    "path": "/wss01"
+   },
+   "uuid": "0647a947-6f77-4a91-8df0-8ff9f2d5e720"
+  },
+  {
+   "type": "vless",
+   "tag": "e2e-🇺🇸 mVLESS03-TLS-XHTTP-CDN",
+   "server": "hxicc.catmicos.dpdns.org",
+   "server_port": 443,
+   "tls": {
+    "server_name": "hxicc.catmicos.dpdns.org",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    }
+   },
+   "uuid": "0647a947-6f77-4a91-8df0-8ff9f2d5e720"
+  },
+  {
+   "type": "vless",
+   "tag": "e2e-🇺🇸 mVLESS02-TLS-XHTTP",
+   "server": "107.173.154.178",
+   "server_port": 25676,
+   "tls": {
+    "server_name": "hxicc.catmicos.dpdns.org",
+    "utls": {
+     "enabled": true,
+     "fingerprint": "chrome"
+    }
+   },
+   "uuid": "0647a947-6f77-4a91-8df0-8ff9f2d5e720"
+  }
+ ]
+}

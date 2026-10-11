@@ -1,0 +1,790 @@
+Script started on 2026-10-10 05:22:56-07:00 [COMMAND="bash /root/xray-panel.sh" <not executed on terminal>]
+
+                       |\__/,|   (\
+                     _.|o o  |_   ) )
+       -------------(((---(((-------------------
+                   catmi.xrayls
+       -----------------------------------------
+
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [36mxrayls 管理脚本[0m
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+   服务状态   : [32m● 启动[0m
+   内核版本   : 26.3.27
+   节点数量   : 16
+
+ [2m节点[0m
+  [36m 1[0m) 添加节点        单协议 / 全协议一键生成 / 预置档位
+  [36m 2[0m) 节点管理        列出 / 查看 / 改名 / 删除 / 改端口
+  [36m 3[0m) 路由与出站      出站 / 分流规则 / 反向代理
+
+ [2m分享[0m
+  [36m 4[0m) 分享管理        生成 / 列表 / 启停 / 改次数 / 改有效期
+  [36m 5[0m) 分享服务        公共基础服务（安装 / 升级 / 状态）
+
+ [2m站点与证书[0m
+  [36m 6[0m) 证书管理        申请 / 续期 / 同步 / 信任链体检
+  [36m 7[0m) Nginx 站点管理  列出 / 校验 / 摘除 / CDN 回源
+
+ [2m内核与服务[0m
+  [36m 8[0m) 安装 / 更新内核  含回退到旧版本、卸载
+  [36m 9[0m) 服务与配置      查询状态 / 校验并重载 / 查看客户端配置
+
+ [2m维护[0m
+  [36m10[0m) DNS 管理        解析模式 / 加密 DNS / 防泄漏
+  [36m11[0m) 日志            实时 / 错误 / 清空 / 最近
+  [36m12[0m) 自检与体检      通用能力自检 / 端口体检
+  [36m 0[0m) 退出
+
+  [2m回车 = 退出；每一项都能单独跑: bash conf/<名字>.sh[0m
+  [36m请选择[0m: 请输入选项 [0-9]: 1
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [36m添加节点[0m
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [2m单协议[0m
+  [36m 1[0m) Tunnel
+  [36m 2[0m) Hysteria2
+  [36m 3[0m) SOCKS5（无加密，接其它内核/本机代理用）
+  [36m 4[0m) HTTP（无加密，同上）
+  [36m 5[0m) VLESS-ECN（tcp 传输 + ML-KEM-768）
+  [36m 6[0m) VLESS-xHTTP（TLS，走 CDN 首选）
+  [36m 7[0m) Reality（vision + ML-KEM-768，最高配置）
+  [36m 8[0m) Shadowsocks-2022（aes-256-gcm，最高配置）
+  [36m 9[0m) Trojan（REALITY 安全层，最高配置）
+
+ [2mArgo 隧道[0m
+  [36m10[0m) 固定 Argo（域名固定，推荐）
+  [36m11[0m) 临时 Argo（每次随机域名）
+
+ [2m批量与预置[0m
+  [36m12[0m) 全协议一键生成    自动分配端口，统一校验，只重载一次
+  [36m13[0m) 预置档位建节点    25 个预置（协议 × TLS × 传输）任选
+  [36m14[0m) 预置批量生成      一次生成多个（支持 vless:2 trojan:3）
+  [36m 0[0m) 返回主菜单
+
+  [36m请选择[0m: 6
+[35m[1m
+╔══════════════════════════════════════════════╗
+║ VLESS-XHTTP/WS-ECH-MLKEM 配置管理      ║
+╚══════════════════════════════════════════════╝
+[0m
+1) 查看所有配置
+2) 新增配置
+3) 删除配置
+4) 重建客户端文件
+5) 查看 Nginx 转发配置
+6) 校验配置并重启 xrayls
+0) 退出
+请选择: 2
+[35m[1m
+╔══════════════════════════════════════════════╗
+║ 新增 VLESS-XHTTP/WS-ECH-MLKEM 配置     ║
+╚══════════════════════════════════════════════╝
+[0m
+  传输方式 (二选一):
+  1) WS (WebSocket, CDN 最兼容, 推荐)
+  2) XHTTP (XHTTP+CDN, 抗识别更强)
+  选择 (默认1): 2
+  接入方式:
+  1) CDN 直连 (监听 0.0.0.0, Cloudflare 回源到端口, 最直接)
+  2) Nginx 转发 (监听 127.0.0.1, 走 nginx 路径匹配统一入口)
+  选择 (默认1): 1
+启用 ML-KEM-768 后量子加密 (vlessenc)? (Y/n): n
+  ECH 形态:
+  1) CDN-ECH (Cloudflare 边缘处理 ECH, 无需服务器密钥, 推荐)
+  2) 直连 ECH (Xray 原生 echServerKeys, 需 TLS1.3)
+  选择 (默认1): 1
+请输入监听端口 (默认: 42194): 8443
+[36m[Info][0m 检测服务器公网 IP...
+[36m[Info][0m 检测到 IP: 107.173.154.178
+使用此IP？(回车默认): 
+请输入 XHTTP 路径 (带尾斜杠) (默认: /aVCR3P0A): 
+[36m[Info][0m XHTTP 路径: /aVCR3P0A/ (mode: auto)
+[36m[Info][0m ML-KEM 已关闭 (decryption: none, 兼容所有 vless 客户端)
+  证书来源:
+  1) 已有证书 (自动检测: /root/catmi/cloudflare/certs / /root/catmi / Nginx 容器)
+  2) 手动输入证书路径
+  3) 自签证书 (内测/无域名兜底)
+  选择 (默认1): 2
+  证书 crt 路径: /home/web/certs/moontv.6896698.xyz_cert.pem
+  证书 key 路径: /home/web/certs/moontv.6896698.xyz_key.pem
+[32m[OK][0m  使用证书: moontv.6896698.xyz
+请输入访问域名 (客户端 server/sni 使用, 默认: moontv.6896698.xyz): 
+[36m[Info][0m CDN-ECH 模式: 请确认 Cloudflare zone 已为 moontv.6896698.xyz 开启 ECH
+[36m[Info][0m   (用独立的 Cloudflare 管理工具开启; 本脚本不再调 CF API)
+  是否将域名 moontv.6896698.xyz 的 DNS 绑定到本机 IP (107.173.154.178)？（y/N）
+n
+[OK] include 已确保: /root/catmi/xray/conf/vless-xhttp-*.json
+[36m[Info][0m CDN-ECH: 自动获取 Cloudflare ECHConfigList (96 字符)
+[36m[Info][0m 客户端 pin 自签证书 SHA256: 48165d74269bc097...
+[32m[OK][0m  客户端 JSON (xray): /root/catmi/xray/out/vless-xhttp_client-07.json
+[32m[OK][0m  客户端 YAML: /root/catmi/xray/out/vless-xhttp_client-07.yaml
+[32m[OK][0m  分享链接: /root/catmi/xray/out/vless-xhttp_share-07.txt
+[32m[OK][0m  Nginx 转发片段: /root/catmi/xray/out/vless-xhttp_nginx-07.conf
+[36m  ----- Nginx 配置片段 -----[0m
+# vless-xhttp-07 (XHTTP, 端口 8443)
+# 放入 nginx conf.d 站点 server{} 块内即可 (回源走 TLS)
+location /aVCR3P0A/ {
+    proxy_ssl_server_name on;
+    proxy_pass https://127.0.0.1:8443;
+    proxy_http_version 1.1;
+}
+[32m[OK][0m  VLESS 配置生成成功
+编号: 07
+传输: xhttp
+接入: cdn
+ECH: cdn
+监听: 0.0.0.0:8443
+UUID: 1fa7c981-16b4-4963-9ef6-9bb13ad25053
+Tag: vless-xhttp07
+XHTTP 路径: /aVCR3P0A/ (mode: auto)
+
+[33m[Warn][0m 请重启 xrayls 使配置生效: systemctl restart xrayls
+按回车继续...
+[35m[1m
+╔══════════════════════════════════════════════╗
+║ VLESS-XHTTP/WS-ECH-MLKEM 配置管理      ║
+╚══════════════════════════════════════════════╝
+[0m
+1) 查看所有配置
+2) 新增配置
+3) 删除配置
+4) 重建客户端文件
+5) 查看 Nginx 转发配置
+6) 校验配置并重启 xrayls
+0) 退出
+请选择: 0
+
+  按回车返回...
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [36m添加节点[0m
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [2m单协议[0m
+  [36m 1[0m) Tunnel
+  [36m 2[0m) Hysteria2
+  [36m 3[0m) SOCKS5（无加密，接其它内核/本机代理用）
+  [36m 4[0m) HTTP（无加密，同上）
+  [36m 5[0m) VLESS-ECN（tcp 传输 + ML-KEM-768）
+  [36m 6[0m) VLESS-xHTTP（TLS，走 CDN 首选）
+  [36m 7[0m) Reality（vision + ML-KEM-768，最高配置）
+  [36m 8[0m) Shadowsocks-2022（aes-256-gcm，最高配置）
+  [36m 9[0m) Trojan（REALITY 安全层，最高配置）
+
+ [2mArgo 隧道[0m
+  [36m10[0m) 固定 Argo（域名固定，推荐）
+  [36m11[0m) 临时 Argo（每次随机域名）
+
+ [2m批量与预置[0m
+  [36m12[0m) 全协议一键生成    自动分配端口，统一校验，只重载一次
+  [36m13[0m) 预置档位建节点    25 个预置（协议 × TLS × 传输）任选
+  [36m14[0m) 预置批量生成      一次生成多个（支持 vless:2 trojan:3）
+  [36m 0[0m) 返回主菜单
+
+  [36m请选择[0m: 6
+[35m[1m
+╔══════════════════════════════════════════════╗
+║ VLESS-XHTTP/WS-ECH-MLKEM 配置管理      ║
+╚══════════════════════════════════════════════╝
+[0m
+1) 查看所有配置
+2) 新增配置
+3) 删除配置
+4) 重建客户端文件
+5) 查看 Nginx 转发配置
+6) 校验配置并重启 xrayls
+0) 退出
+请选择: 2
+[35m[1m
+╔══════════════════════════════════════════════╗
+║ 新增 VLESS-XHTTP/WS-ECH-MLKEM 配置     ║
+╚══════════════════════════════════════════════╝
+[0m
+  传输方式 (二选一):
+  1) WS (WebSocket, CDN 最兼容, 推荐)
+  2) XHTTP (XHTTP+CDN, 抗识别更强)
+  选择 (默认1): 1
+  接入方式:
+  1) CDN 直连 (监听 0.0.0.0, Cloudflare 回源到端口, 最直接)
+  2) Nginx 转发 (监听 127.0.0.1, 走 nginx 路径匹配统一入口)
+  选择 (默认1): 1
+启用 ML-KEM-768 后量子加密 (vlessenc)? (Y/n): n
+  ECH 形态:
+  1) CDN-ECH (Cloudflare 边缘处理 ECH, 无需服务器密钥, 推荐)
+  2) 直连 ECH (Xray 原生 echServerKeys, 需 TLS1.3)
+  选择 (默认1): 2
+请输入监听端口 (默认: 19617): 29601
+[36m[Info][0m 检测服务器公网 IP...
+[36m[Info][0m 检测到 IP: 107.173.154.178
+使用此IP？(回车默认): 
+请输入 WS 路径 (默认: /8KLD3cNj): 
+[36m[Info][0m WS 路径: /8KLD3cNj
+[36m[Info][0m ML-KEM 已关闭 (decryption: none, 兼容所有 vless 客户端)
+  证书来源:
+  1) 已有证书 (自动检测: /root/catmi/cloudflare/certs / /root/catmi / Nginx 容器)
+  2) 手动输入证书路径
+  3) 自签证书 (内测/无域名兜底)
+  选择 (默认1): 2
+  证书 crt 路径: /home/web/certs/moontv.6896698.xyz_cert.pem
+  证书 key 路径: /home/web/certs/moontv.6896698.xyz_key.pem
+[32m[OK][0m  使用证书: moontv.6896698.xyz
+请输入访问域名 (客户端 server/sni 使用, 默认: moontv.6896698.xyz): 
+[36m[Info][0m 正在生成 ECH (Encrypted Client Hello) 密钥对...
+[32m[OK][0m  ECH 密钥生成成功 (serverName: moontv.6896698.xyz)
+  是否将域名 moontv.6896698.xyz 的 DNS 绑定到本机 IP (107.173.154.178)？（y/N）
+n
+[OK] include 已确保: /root/catmi/xray/conf/vless-xhttp-*.json
+[36m[Info][0m 客户端 pin 自签证书 SHA256: 48165d74269bc097...
+[32m[OK][0m  客户端 JSON (xray): /root/catmi/xray/out/vless-xhttp_client-08.json
+[32m[OK][0m  客户端 YAML: /root/catmi/xray/out/vless-xhttp_client-08.yaml
+[32m[OK][0m  分享链接: /root/catmi/xray/out/vless-xhttp_share-08.txt
+[32m[OK][0m  Nginx 转发片段: /root/catmi/xray/out/vless-xhttp_nginx-08.conf
+[36m  ----- Nginx 配置片段 -----[0m
+# vless-xhttp-08 (WS, 端口 29601)
+# 放入 nginx conf.d 站点 server{} 块内即可 (回源走 TLS + WebSocket 升级)
+location /8KLD3cNj {
+    proxy_ssl_server_name on;                 # 回源时 TLS SNI
+    proxy_pass https://127.0.0.1:29601; # https:// -> nginx 做 TLS 回源
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;      # WebSocket 升级 (map.conf 已备)
+    proxy_set_header Connection $connection_upgrade;
+}
+[32m[OK][0m  VLESS 配置生成成功
+编号: 08
+传输: ws
+接入: cdn
+ECH: direct
+监听: 0.0.0.0:29601
+UUID: 278502fc-8e95-4558-a6ae-bd8a39c500f9
+Tag: vless-xhttp08
+WS 路径: /8KLD3cNj
+
+[33m[Warn][0m 请重启 xrayls 使配置生效: systemctl restart xrayls
+按回车继续...
+[35m[1m
+╔══════════════════════════════════════════════╗
+║ VLESS-XHTTP/WS-ECH-MLKEM 配置管理      ║
+╚══════════════════════════════════════════════╝
+[0m
+1) 查看所有配置
+2) 新增配置
+3) 删除配置
+4) 重建客户端文件
+5) 查看 Nginx 转发配置
+6) 校验配置并重启 xrayls
+0) 退出
+请选择: 0
+
+  按回车返回...
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [36m添加节点[0m
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [2m单协议[0m
+  [36m 1[0m) Tunnel
+  [36m 2[0m) Hysteria2
+  [36m 3[0m) SOCKS5（无加密，接其它内核/本机代理用）
+  [36m 4[0m) HTTP（无加密，同上）
+  [36m 5[0m) VLESS-ECN（tcp 传输 + ML-KEM-768）
+  [36m 6[0m) VLESS-xHTTP（TLS，走 CDN 首选）
+  [36m 7[0m) Reality（vision + ML-KEM-768，最高配置）
+  [36m 8[0m) Shadowsocks-2022（aes-256-gcm，最高配置）
+  [36m 9[0m) Trojan（REALITY 安全层，最高配置）
+
+ [2mArgo 隧道[0m
+  [36m10[0m) 固定 Argo（域名固定，推荐）
+  [36m11[0m) 临时 Argo（每次随机域名）
+
+ [2m批量与预置[0m
+  [36m12[0m) 全协议一键生成    自动分配端口，统一校验，只重载一次
+  [36m13[0m) 预置档位建节点    25 个预置（协议 × TLS × 传输）任选
+  [36m14[0m) 预置批量生成      一次生成多个（支持 vless:2 trojan:3）
+  [36m 0[0m) 返回主菜单
+
+  [36m请选择[0m: 9
+[35m[1m
+╔══════════════════════════════════════════════╗
+║ Trojan 配置管理                        ║
+╚══════════════════════════════════════════════╝
+[0m
+1) 查看所有配置
+2) 新增配置（默认最高配置：Trojan + REALITY）
+3) 删除配置
+4) 查看客户端链接
+0) 返回主菜单
+请选择: 2
+[35m[1m
+╔══════════════════════════════════════════════╗
+║ 新增 Trojan 配置                       ║
+╚══════════════════════════════════════════════╝
+[0m
+请输入监听端口 (默认: 25716): 29602
+是否自定义 Trojan 密码？回车=自动生成(推荐): 
+
+安全层选配（默认最高配置：REALITY，最安全 / 最快 / 最隐蔽，无需证书）：
+  回车 = Trojan + REALITY（最高配置）
+  1) 关闭安全层（裸 Trojan，security none；仅限受控/内网链路，公网极易被识别）
+选择 (默认回车=REALITY): 
+[36m[Info][0m 正在检测/更新 Reality 伪装域名（domains.sh）...
+成功：已安全加载环境配置文件 /root/catmi/catmi.env
+请输入Reality伪装网址: 
+random_website: 开始现场验证候选 (池规模 62, 第一轮最多 20 个)...
+  [可用] elastic.co: TLS1.3+h2, TLS建连 0.053035s
+  [可用] openjdk.org: TLS1.3+h2, TLS建连 0.034928s
+  [可用] audio-ssl.itunes.apple.com: TLS1.3+h2, TLS建连 0.031492s
+  [可用] www.mysql.com: TLS1.3+h2, TLS建连 0.041752s
+random_website: 完成, 健康候选 4 个, 选定 audio-ssl.itunes.apple.com
+[36m[Info][0m 正在生成 Reality 密钥（conf/XRevise.sh）...
+[32m[Info][0m 正在生成 Reality 密钥对，请耐心等待...
+[32m[Info][0m UUID: bfae2733-780c-4742-a15e-de7b48520f76
+[32m[Info][0m UUID2: 05250f33-6ff1-4b3e-8ff6-04c383c50f21
+[32m[Info][0m WS_PATH1: /l0rjmtktrx
+[32m[Info][0m WS_PATH: /sk0iqb82hk
+[32m[Info][0m WS_PATH2: /a8ap2r4ege
+[32m[Info][0m short_id: b860a9f0
+请选择要使用的公网 IP 地址:
+1. IPv4: 107.173.154.178
+2. IPv6: 2001:470:c:cf:bf47:d1e0:cd4d:c6db
+请输入对应的数字选择 [默认1，若不可用则选择可用项]: 
+[32m[Info][0m 选定公网 IP: 107.173.154.178
+[32m[Info][0m 正在生成 ML-KEM（后量子加密 PQ）参数...
+[32m[Info][0m ML-KEM 服务端 decryption: mlkem768x25519plus.native.600s.LuBv-Jx3RbyUqFhsKUkZQysL1wIghUBeO7_Rz8Cgfu1LyD8ApbexPcF6PSujnLsEjC2XS6-ruh4jAqXibidNfg
+[32m[Info][0m ML-KEM 客户端 encryption: mlkem768x25519plus.native.0rtt.y0lOVLVAcbnJjgI0gWM4oown-moYasJOyewIbRJkvSlEZJCHFhS6omdv62uPhjwemxFKR9mqF3OFJiyEyYdw8wIemPyRJOFE5aJijjtRnQpTvkqTslN5BSKjAGxZspVmR7UADSBgpZeJMfA8WPWKvlYTW3iOHOpL5RIliaduGMLON9tK_uYUHpHAHWWErFWuxlsS9KNz01oYuFRM9PtbvMyt5dgV1kAqY9llzaDHQ7yRcXoZPrm8GnwNQsBP0ihPlmI7VpUfZtFY5EBbf3zP-9fBn_gnIagdFGwsbaZ5GdOe7XqXEHUzBFVXBfOehPG1lnFod0YViZNha9UdeeBWUHLHiSbF-uFe9uQ6sSWMDuEn4EQh38eLvUlwurxOyISgCZyegOIn8dKW8upJTku03DOOLCpt72wyGoUJnWw8pFK5cOXEqsCGR2U7nXZ46YCERSlIlSokZvEt2kqPfgcypBdCVJYdcLAiRuodmOyH3rtr7FOKNKWEjVkIT5aleww902VUmLyiB5uOKgrLKcIzuoK7w6ideYC4ToyN_PdjLkepXiF1SNOSrri0APUNSCfAJOZX7ld6-rSNv2ikrnPIXflcpldR7Wik1Oq05Fx50vInNFWJc_NUPmUqnEqpwABcXYgYpXZZjmEbT7uCTAVRoEWyyejMvaexXIdFc4ueoOqvCxK717Q0qxuZpsdzt1p4ItcHC2cewSCwjXZBZtwrehQxsDCgZnoyYdIpz1uuP0R6agEylyJ0SdpnqzCuBUEL1huqdDg45MNsOtWocKl6NoUrYcE4SfyNCIKBNZREqFKa0OJgOUmmRuBmngKPWQMNLQmuY5aBsUYZqGmL9cCNssxAoBmhy4KMJxgIyNREg_tOUsQMOdOS-gO-39hq8xp5pLV1UArC9jp3UjlIt6cBz7a-q8OYHuk3ywRmzhOlAftXgVNqN_u1uwt6iOetAEEAfBC48iHC9yy5vmUf0VK5A_nOX_Z6GZNZqWlZnPYZ-lrLMZlh1YM3M_RgeZtk_XfALSyTM2KBUQTQzWo8P7sZYMA6J2KVH4MtfkbAtqe_PiQ55uc-CuVvR5QVV1bMzsgeM-ozFrE0nKnMcfIELXof0IsDeVVb8yFtfSZdX3U1hPKkcHIvGEu0AdZ0Ihl-jielvNNKAml6GadhgpRP-pZy0hImPnp24uFbUNOmNjBdQdI1_XWslcZU--m3vbO21yioWiWzqGAwBswzZmULUmLM35PLaVq_0rI7i2ZcBcSBWBpHLBSQIBKTxTCEMWofbYqE8AGqoeuPTap2XVGZL_OzVFV0nbG8-ysT8CyTyoiY-BgzQpMjnCuHubDI8ulRcWha-Jh3VNKMS_IVPMVy3hlF9-E3FshyRTtyA_G8VRgrPFGP9gWXg9SRcBd0wCeSJbpjbfZqZnO8W2wh2YCAQiJmOGALgGIrAKCuIOxebuEcDqA7QiV98XPMD3h2PVrDTxao6FxTg2IyzKU_AgSAthVRaWOaFuUPiPKGzTZlSEmZbAIh6NLKIEBuOuoLXbC6iKtbv7ufuscWmKh7ge6kIO7LyzhnIXnyMz8d2O30bo_KFgU
+成功：已安全加载环境配置文件 /root/catmi/xray/install_info.env
+成功：已安全加载环境配置文件 /root/catmi/catmi.env
+伪装域名 (回车使用 domains.sh 优选的 audio-ssl.itunes.apple.com): 
+[32m[OK][0m  新增 Trojan 配置成功（默认最高配置）
+编号: 03
+监听: 0.0.0.0:29602
+安全层: REALITY（target=audio-ssl.itunes.apple.com:443 pbk=GiR4k0uVRh... sid=b860a9f0）
+密码: LV7CpzX9Jc8vWuhP0YV0
+Tag: TROJAN-03
+入站碎片: /root/catmi/xray/conf/trojan-03.json
+客户端文件(X内核): /root/catmi/xray/out/trojan-03.json
+客户端文件(M内核YAML): /root/catmi/xray/out/trojan-client-03.yaml
+分享链接: /root/catmi/xray/out/trojan-share-03.txt
+按回车继续...
+[35m[1m
+╔══════════════════════════════════════════════╗
+║ Trojan 配置管理                        ║
+╚══════════════════════════════════════════════╝
+[0m
+1) 查看所有配置
+2) 新增配置（默认最高配置：Trojan + REALITY）
+3) 删除配置
+4) 查看客户端链接
+0) 返回主菜单
+请选择: 0
+
+  按回车返回...
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [36m添加节点[0m
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [2m单协议[0m
+  [36m 1[0m) Tunnel
+  [36m 2[0m) Hysteria2
+  [36m 3[0m) SOCKS5（无加密，接其它内核/本机代理用）
+  [36m 4[0m) HTTP（无加密，同上）
+  [36m 5[0m) VLESS-ECN（tcp 传输 + ML-KEM-768）
+  [36m 6[0m) VLESS-xHTTP（TLS，走 CDN 首选）
+  [36m 7[0m) Reality（vision + ML-KEM-768，最高配置）
+  [36m 8[0m) Shadowsocks-2022（aes-256-gcm，最高配置）
+  [36m 9[0m) Trojan（REALITY 安全层，最高配置）
+
+ [2mArgo 隧道[0m
+  [36m10[0m) 固定 Argo（域名固定，推荐）
+  [36m11[0m) 临时 Argo（每次随机域名）
+
+ [2m批量与预置[0m
+  [36m12[0m) 全协议一键生成    自动分配端口，统一校验，只重载一次
+  [36m13[0m) 预置档位建节点    25 个预置（协议 × TLS × 传输）任选
+  [36m14[0m) 预置批量生成      一次生成多个（支持 vless:2 trojan:3）
+  [36m 0[0m) 返回主菜单
+
+  [36m请选择[0m: 8
+[35m[1m
+╔══════════════════════════════════════════════╗
+║ Shadowsocks-2022 配置管理              ║
+╚══════════════════════════════════════════════╝
+[0m
+1) 查看所有配置
+2) 新增配置（默认最高配置：aes-256-gcm + UDP 开启）
+3) 删除配置
+4) 查看客户端链接
+0) 返回主菜单
+请选择: 2
+[35m[1m
+╔══════════════════════════════════════════════╗
+║ 新增 Shadowsocks-2022 配置             ║
+╚══════════════════════════════════════════════╝
+[0m
+请输入监听端口 (默认: 18718): 29603
+
+默认使用最高配置：2022-blake3-aes-256-gcm（AES-NI 硬件加速，防重放+防探测）。
+可选：
+  1) 2022-blake3-aes-128-gcm      （16字节 PSK，老设备兼容性好）
+  2) 2022-blake3-chacha20-poly1305（无 AES 硬件加速设备用）
+  回车 = 使用最高配置 (aes-256-gcm)
+选择: 
+/tmp/.xray-panel.40fRso/conf_Shadowsocks.sh: line 232: gen_psk: command not found
+是否自定义 PSK？回车=自动生成(推荐): 
+[31m[Error][0m PSK 长度错误：2022-blake3-aes-256-gcm 需要 32 字节 (获得 0 字节)
+按回车继续...
+[35m[1m
+╔══════════════════════════════════════════════╗
+║ Shadowsocks-2022 配置管理              ║
+╚══════════════════════════════════════════════╝
+[0m
+1) 查看所有配置
+2) 新增配置（默认最高配置：aes-256-gcm + UDP 开启）
+3) 删除配置
+4) 查看客户端链接
+0) 返回主菜单
+请选择: 2
+[35m[1m
+╔══════════════════════════════════════════════╗
+║ 新增 Shadowsocks-2022 配置             ║
+╚══════════════════════════════════════════════╝
+[0m
+请输入监听端口 (默认: 36221): 29603
+
+默认使用最高配置：2022-blake3-aes-256-gcm（AES-NI 硬件加速，防重放+防探测）。
+可选：
+  1) 2022-blake3-aes-128-gcm      （16字节 PSK，老设备兼容性好）
+  2) 2022-blake3-chacha20-poly1305（无 AES 硬件加速设备用）
+  回车 = 使用最高配置 (aes-256-gcm)
+选择: 
+/tmp/.xray-panel.40fRso/conf_Shadowsocks.sh: line 232: gen_psk: command not found
+是否自定义 PSK？回车=自动生成(推荐): smzMYvuGFIM3YHksV1eAJNFzeWuR+Gg9qT3JwluUWTU=
+
+UDP 中继默认开启（SS2022 UDP 为 session 化中继）。
+不启用 UDP 请输入 1 (默认启用): 
+
+安全层选配：默认为裸 SS2022（所有客户端兼容）。
+  回车 = 裸 SS2022（推荐给需要 mihomo/ssr 等广泛兼容的场景）
+  1) 套 Reality 伪装（AnyReality：抗主动探测最强，需用支持Reality的客户端）
+选择 (默认回车=裸 SS2022): 
+[32m[OK][0m  新增 Shadowsocks-2022 配置成功（最高配置）
+编号: 02
+监听: 0.0.0.0:29603
+方法: 2022-blake3-aes-256-gcm
+PSK: smzMYvuGFI...(32 字节)
+UDP: 已开启 (session 化中继)
+安全层: 裸 SS2022（全部客户端兼容）
+Tag: SS2022-02
+入站碎片: /root/catmi/xray/conf/ss2022-02.json
+客户端文件(X内核): /root/catmi/xray/out/ss2022-02.json
+客户端文件(M内核YAML): /root/catmi/xray/out/ss2022-client-02.yaml
+分享链接: /root/catmi/xray/out/ss2022-share-02.txt
+按回车继续...
+[35m[1m
+╔══════════════════════════════════════════════╗
+║ Shadowsocks-2022 配置管理              ║
+╚══════════════════════════════════════════════╝
+[0m
+1) 查看所有配置
+2) 新增配置（默认最高配置：aes-256-gcm + UDP 开启）
+3) 删除配置
+4) 查看客户端链接
+0) 返回主菜单
+请选择: 0
+
+  按回车返回...
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [36m添加节点[0m
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [2m单协议[0m
+  [36m 1[0m) Tunnel
+  [36m 2[0m) Hysteria2
+  [36m 3[0m) SOCKS5（无加密，接其它内核/本机代理用）
+  [36m 4[0m) HTTP（无加密，同上）
+  [36m 5[0m) VLESS-ECN（tcp 传输 + ML-KEM-768）
+  [36m 6[0m) VLESS-xHTTP（TLS，走 CDN 首选）
+  [36m 7[0m) Reality（vision + ML-KEM-768，最高配置）
+  [36m 8[0m) Shadowsocks-2022（aes-256-gcm，最高配置）
+  [36m 9[0m) Trojan（REALITY 安全层，最高配置）
+
+ [2mArgo 隧道[0m
+  [36m10[0m) 固定 Argo（域名固定，推荐）
+  [36m11[0m) 临时 Argo（每次随机域名）
+
+ [2m批量与预置[0m
+  [36m12[0m) 全协议一键生成    自动分配端口，统一校验，只重载一次
+  [36m13[0m) 预置档位建节点    25 个预置（协议 × TLS × 传输）任选
+  [36m14[0m) 预置批量生成      一次生成多个（支持 vless:2 trojan:3）
+  [36m 0[0m) 返回主菜单
+
+  [36m请选择[0m: 2
+[35m[1m╔══════════════════════════════════════════════╗
+║ Hysteria2 管理面板                     ║
+╚══════════════════════════════════════════════╝
+[0m1) 查看配置
+2) 新增配置
+3) 删除配置
+0) 退出
+请选择: 2
+[35m[1m╔══════════════════════════════════════════════╗
+║ 新增 Hysteria2 配置                    ║
+╚══════════════════════════════════════════════╝
+[0m服务器 IP (默认: 107.173.154.178): 
+[36m[Info][0m 自动检测结果：
+  - 检测到 IPv4 + IPv6
+
+请选择监听地址：
+1) IPv4 (0.0.0.0)
+2) IPv6 (::)
+3) 自动推荐
+选择 (默认 1): 1
+请输入本地监听端口 (默认: 35585): 29604
+是否开启 UDP 端口跳跃? (默认: 否, y/N): n
+  证书方案：
+  1) 扫描本机已有证书 (ACME/nginx/CF Origin CA, CA可信)
+  2) 手动输入证书路径
+  3) 生成自签证书 (无需域名)
+  选择 (默认1): 2
+  证书 crt 路径: /home/web/certs/moontv.6896698.xyz_cert.pem
+  证书 key 路径: /home/web/certs/moontv.6896698.xyz_key.pem
+[32m[OK][0m  使用证书: moontv.6896698.xyz (CA可信真证书 crt=/home/web/certs/moontv.6896698.xyz_cert.pem key=/home/web/certs/moontv.6896698.xyz_key.pem)
+[32m[OK][0m  配置生成成功
+编号: 04
+端口: 29604
+UUID: 05615ce2-4bf4-4f4e-908e-c99a16a803e8
+域名: moontv.6896698.xyz
+证书: /home/web/certs/moontv.6896698.xyz_cert.pem CA可信真证书
+监听: 0.0.0.0
+服务端配置: /root/catmi/xray/conf/hysteria-04.json
+Xray客户端片段: /root/catmi/xray/out/hy2_client-04.xray.json
+mihomo客户端: /root/catmi/xray/out/hy2_client-04.yaml
+分享链接: /root/catmi/xray/out/hy2_share-04.txt
+hysteria2://05615ce2-4bf4-4f4e-908e-c99a16a803e8@107.173.154.178:29604?sni=moontv.6896698.xyz&insecure=0&alpn=h3&upmbps=50&downmbps=200#hysteria-04
+按回车继续...
+[35m[1m╔══════════════════════════════════════════════╗
+║ Hysteria2 管理面板                     ║
+╚══════════════════════════════════════════════╝
+[0m1) 查看配置
+2) 新增配置
+3) 删除配置
+0) 退出
+请选择: 0
+
+  按回车返回...
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [36m添加节点[0m
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [2m单协议[0m
+  [36m 1[0m) Tunnel
+  [36m 2[0m) Hysteria2
+  [36m 3[0m) SOCKS5（无加密，接其它内核/本机代理用）
+  [36m 4[0m) HTTP（无加密，同上）
+  [36m 5[0m) VLESS-ECN（tcp 传输 + ML-KEM-768）
+  [36m 6[0m) VLESS-xHTTP（TLS，走 CDN 首选）
+  [36m 7[0m) Reality（vision + ML-KEM-768，最高配置）
+  [36m 8[0m) Shadowsocks-2022（aes-256-gcm，最高配置）
+  [36m 9[0m) Trojan（REALITY 安全层，最高配置）
+
+ [2mArgo 隧道[0m
+  [36m10[0m) 固定 Argo（域名固定，推荐）
+  [36m11[0m) 临时 Argo（每次随机域名）
+
+ [2m批量与预置[0m
+  [36m12[0m) 全协议一键生成    自动分配端口，统一校验，只重载一次
+  [36m13[0m) 预置档位建节点    25 个预置（协议 × TLS × 传输）任选
+  [36m14[0m) 预置批量生成      一次生成多个（支持 vless:2 trojan:3）
+  [36m 0[0m) 返回主菜单
+
+  [36m请选择[0m: 0
+
+按回车键返回主菜单...4
+
+
+                       |\__/,|   (\
+                     _.|o o  |_   ) )
+       -------------(((---(((-------------------
+                   catmi.xrayls
+       -----------------------------------------
+
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [36mxrayls 管理脚本[0m
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+   服务状态   : [32m● 启动[0m
+   内核版本   : 26.3.27
+   节点数量   : 21
+
+ [2m节点[0m
+  [36m 1[0m) 添加节点        单协议 / 全协议一键生成 / 预置档位
+  [36m 2[0m) 节点管理        列出 / 查看 / 改名 / 删除 / 改端口
+  [36m 3[0m) 路由与出站      出站 / 分流规则 / 反向代理
+
+ [2m分享[0m
+  [36m 4[0m) 分享管理        生成 / 列表 / 启停 / 改次数 / 改有效期
+  [36m 5[0m) 分享服务        公共基础服务（安装 / 升级 / 状态）
+
+ [2m站点与证书[0m
+  [36m 6[0m) 证书管理        申请 / 续期 / 同步 / 信任链体检
+  [36m 7[0m) Nginx 站点管理  列出 / 校验 / 摘除 / CDN 回源
+
+ [2m内核与服务[0m
+  [36m 8[0m) 安装 / 更新内核  含回退到旧版本、卸载
+  [36m 9[0m) 服务与配置      查询状态 / 校验并重载 / 查看客户端配置
+
+ [2m维护[0m
+  [36m10[0m) DNS 管理        解析模式 / 加密 DNS / 防泄漏
+  [36m11[0m) 日志            实时 / 错误 / 清空 / 最近
+  [36m12[0m) 自检与体检      通用能力自检 / 端口体检
+  [36m 0[0m) 退出
+
+  [2m回车 = 退出；每一项都能单独跑: bash conf/<名字>.sh[0m
+  [36m请选择[0m: 请输入选项 [0-9]: 4
+
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [36m分享管理[0m
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+  [36m 1[0m) 生成分享链接    选节点 → 生成一条带令牌的订阅地址
+  [36m 2[0m) 分享列表        已发出的链接：次数 / 有效期 / 状态
+  [36m 3[0m) 启停 / 撤销     立刻失效，节点本身不受影响
+  [36m 4[0m) 改次数上限
+  [36m 5[0m) 改有效期
+  [36m 6[0m) 分享服务管理    公共基础服务（安装 / 状态）
+  [36m 0[0m) 返回
+
+  请选择: 1
+
+[36m=== 生成分享链接 ===[0m
+  [36m[--][0m 当前节点:
+TAG                 协议           端口      传输       加密         凭据
+hysteria-01         hysteria     15110   hysteria tls        2911aee8-0eaf-4b51-81ae-
+hysteria-02         hysteria     40784   hysteria tls        edd0b25c-b0b1-4504-a6ce-
+hysteria-03         hysteria     31879   hysteria tls        02f17c46-0a51-4fbc-b161-
+hysteria-04         hysteria     29604   hysteria tls        05615ce2-4bf4-4f4e-908e-
+VLESS-WS_01         vless        9998    ws       -          48fc355e-80af-4ed1-a48c-
+VMESS-WS_02         vmess        9999    ws       -          48fc355e-80af-4ed1-a48c-
+XHTTP_INBOUND_03    vless        9997    xhttp    -          48fc355e-80af-4ed1-a48c-
+REALITY_INBOUND_04  vless        19595   tcp      reality    48fc355e-80af-4ed1-a48c-
+REALITY-01          vless        50330   tcp      reality    4e6d1774-375b-4f39-a9b3-
+REALITY-03          vless        27474   tcp      reality    91426de8-b492-4249-ad6f-
+socks01             socks        33934   -        -          password
+SS2022-01           shadowsocks  39839   tcp      reality    cVzQIqSmq78RSjaOdKsb8Kn5
+SS2022-02           shadowsocks  29603   -        -          smzMYvuGFIM3YHksV1eAJNFz
+TROJAN-01           trojan       37944   tcp      reality    8nb23TSPeSQSazq4DS4U
+TROJAN-02           trojan       19212   tcp      reality    kgNVKjixgs4AhkgGP9C7
+TROJAN-03           trojan       29602   tcp      reality    LV7CpzX9Jc8vWuhP0YV0
+vless-xhttp01       vless        45630   xhttp    tls        760aaf87-22d1-45db-9505-
+vless-xhttp02       vless        31722   xhttp    tls        942cc897-3fae-4dc2-858f-
+vless-xhttp03       vless        41721   xhttp    tls        c8334fd2-1f5a-486d-86c0-
+vless-xhttp04       vless        22726   xhttp    tls        c521fd45-5cb8-406f-bc83-
+vless-xhttp05       vless        38066   xhttp    tls        c63c32e4-bdcf-49aa-8349-
+vless-xhttp06       vless        28936   xhttp    tls        33c32157-e21f-4f78-9072-
+vless-xhttp07       vless        8443    xhttp    tls        1fa7c981-16b4-4963-9ef6-
+vless-xhttp08       vless        29601   ws       tls        278502fc-8e95-4558-a6ae-
+
+  选择要分享的节点 (编号, 空格分隔; 留空=全部): 4 13 16 23 24
+  分享名称 [分享-[0m]: e2e-allproto
+  最多可拉取次数 [0=不限]: 0
+  有效期天数 [0=永久]: 0
+    无可分发内容 (片段没了? 缺对外地址?)
+  [31m[X][0m 生成订阅内容失败 (看上面对应原因)
+
+按回车键返回主菜单...
+
+
+                       |\__/,|   (\
+                     _.|o o  |_   ) )
+       -------------(((---(((-------------------
+                   catmi.xrayls
+       -----------------------------------------
+
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [36mxrayls 管理脚本[0m
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+   服务状态   : [32m● 启动[0m
+   内核版本   : 26.3.27
+   节点数量   : 21
+
+ [2m节点[0m
+  [36m 1[0m) 添加节点        单协议 / 全协议一键生成 / 预置档位
+  [36m 2[0m) 节点管理        列出 / 查看 / 改名 / 删除 / 改端口
+  [36m 3[0m) 路由与出站      出站 / 分流规则 / 反向代理
+
+ [2m分享[0m
+  [36m 4[0m) 分享管理        生成 / 列表 / 启停 / 改次数 / 改有效期
+  [36m 5[0m) 分享服务        公共基础服务（安装 / 升级 / 状态）
+
+ [2m站点与证书[0m
+  [36m 6[0m) 证书管理        申请 / 续期 / 同步 / 信任链体检
+  [36m 7[0m) Nginx 站点管理  列出 / 校验 / 摘除 / CDN 回源
+
+ [2m内核与服务[0m
+  [36m 8[0m) 安装 / 更新内核  含回退到旧版本、卸载
+  [36m 9[0m) 服务与配置      查询状态 / 校验并重载 / 查看客户端配置
+
+ [2m维护[0m
+  [36m10[0m) DNS 管理        解析模式 / 加密 DNS / 防泄漏
+  [36m11[0m) 日志            实时 / 错误 / 清空 / 最近
+  [36m12[0m) 自检与体检      通用能力自检 / 端口体检
+  [36m 0[0m) 退出
+
+  [2m回车 = 退出；每一项都能单独跑: bash conf/<名字>.sh[0m
+  [36m请选择[0m: 请输入选项 [0-9]: 4
+
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [36m分享管理[0m
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+  [36m 1[0m) 生成分享链接    选节点 → 生成一条带令牌的订阅地址
+  [36m 2[0m) 分享列表        已发出的链接：次数 / 有效期 / 状态
+  [36m 3[0m) 启停 / 撤销     立刻失效，节点本身不受影响
+  [36m 4[0m) 改次数上限
+  [36m 5[0m) 改有效期
+  [36m 6[0m) 分享服务管理    公共基础服务（安装 / 状态）
+  [36m 0[0m) 返回
+
+  请选择: 1
+
+[36m=== 生成分享链接 ===[0m
+  [36m[--][0m 当前节点:
+TAG                 协议           端口      传输       加密         凭据
+hysteria-01         hysteria     15110   hysteria tls        2911aee8-0eaf-4b51-81ae-
+hysteria-02         hysteria     40784   hysteria tls        edd0b25c-b0b1-4504-a6ce-
+hysteria-03         hysteria     31879   hysteria tls        02f17c46-0a51-4fbc-b161-
+hysteria-04         hysteria     29604   hysteria tls        05615ce2-4bf4-4f4e-908e-
+VLESS-WS_01         vless        9998    ws       -          48fc355e-80af-4ed1-a48c-
+VMESS-WS_02         vmess        9999    ws       -          48fc355e-80af-4ed1-a48c-
+XHTTP_INBOUND_03    vless        9997    xhttp    -          48fc355e-80af-4ed1-a48c-
+REALITY_INBOUND_04  vless        19595   tcp      reality    48fc355e-80af-4ed1-a48c-
+REALITY-01          vless        50330   tcp      reality    4e6d1774-375b-4f39-a9b3-
+REALITY-03          vless        27474   tcp      reality    91426de8-b492-4249-ad6f-
+socks01             socks        33934   -        -          password
+SS2022-01           shadowsocks  39839   tcp      reality    cVzQIqSmq78RSjaOdKsb8Kn5
+SS2022-02           shadowsocks  29603   -        -          smzMYvuGFIM3YHksV1eAJNFz
+TROJAN-01           trojan       37944   tcp      reality    8nb23TSPeSQSazq4DS4U
+TROJAN-02           trojan       19212   tcp      reality    kgNVKjixgs4AhkgGP9C7
+TROJAN-03           trojan       29602   tcp      reality    LV7CpzX9Jc8vWuhP0YV0
+vless-xhttp01       vless        45630   xhttp    tls        760aaf87-22d1-45db-9505-
+vless-xhttp02       vless        31722   xhttp    tls        942cc897-3fae-4dc2-858f-
+vless-xhttp03       vless        41721   xhttp    tls        c8334fd2-1f5a-486d-86c0-
+vless-xhttp04       vless        22726   xhttp    tls        c521fd45-5cb8-406f-bc83-
+vless-xhttp05       vless        38066   xhttp    tls        c63c32e4-bdcf-49aa-8349-
+vless-xhttp06       vless        28936   xhttp    tls        33c32157-e21f-4f78-9072-
+vless-xhttp07       vless        8443    xhttp    tls        1fa7c981-16b4-4963-9ef6-
+vless-xhttp08       vless        29601   ws       tls        278502fc-8e95-4558-a6ae-
+
+  选择要分享的节点 (编号, 空格分隔; 留空=全部): 4 13 16 23 24
+  分享名称 [分享-[0m]: e2e-allproto
+  最多可拉取次数 [0=不限]: 0
+  有效期天数 [0=永久]: 0
+  [32m[OK][0m 分享已生成
+
+    [32mhttp://107.173.154.178:9443/share/f64f61ce35e42b39a5f928d1c6d15ae5[0m
+
+    节点: hysteria-04 SS2022-02 TROJAN-03 vless-xhttp07 vless-xhttp08
+    [2m次数: 不限[0m   [2m有效期: 永久 天[0m
+
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+ [36m分享管理[0m
+[36m────────────────────────────────────────────────────────────────────────────────[0m
+  [36m 1[0m) 生成分享链接    选节点 → 生成一条带令牌的订阅地址
+  [36m 2[0m) 分享列表        已发出的链接：次数 / 有效期 / 状态
+  [36m 3[0m) 启停 / 撤销     立刻失效，节点本身不受影响
+  [36m 4[0m) 改次数上限
+  [36m 5[0m) 改有效期
+  [36m 6[0m) 分享服务管理    公共基础服务（安装 / 状态）
+  [36m 0[0m) 返回
+
+  请选择: 

@@ -1,5 +1,19 @@
 # 三家互通 · SB(sing-box) 侧实施与真机验收报告
 
+> ---
+>
+> ## ⚠ 部署状态更正（2026-10-11 复核）
+>
+> 1. 本报告的"真机验收"跑在 **RN/CC 上的隔离副本**里，不是 RN 的生产部署路径。
+>    复核证据：`conf/interop.py`、`conf/link_guard.py`、`conf/uri_express.py`
+>    当时在 RN `/root/catmi/sing-box/conf/` 里**都不存在**，部署内容与时间戳
+>    停在上一轮对账分发的 `2c209b0`（2026-10-10 08:55 PDT）。
+> 2. 测试用的带声明分享由**真公共服务 `:9443`** 发出，所以结论对**代码 + 真服务**
+>    成立；对「**已部署**」不成立。
+>
+> 3. 本轮已把仓库 HEAD 逐字节分发到 RN 并在**部署态**重跑验收 —— 见 `three-way-interop-sb-deployed.md`。
+
+
 > 日期：2026-10-10/11 ｜ 实施对象：`sing-box-core`（服务端 `src/conf/` + 客户端 `src/client/`）
 > 设计依据：`docs/three-way-interop.md`（X 侧同一份规范）｜ 参照实现：`xray--core` 分支
 > `feat/three-way-interop`（`conf/lib/interop.py` / `conf/lib/native.py` / `Client/lib/interop.py`，

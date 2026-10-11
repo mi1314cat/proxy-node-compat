@@ -1,0 +1,194 @@
+[xray] HEAD=55c736afaaab6aafd59f34b7e99d7688ca5087b3
+[mihomo] HEAD=54672782a1c06d962ac498d372c81672b0d9f5e9
+[singbox] HEAD=2c209b0e017c26838bc7af5ba42849c0d341dd8c
+
+==============================================================================
+### xray  (repo HEAD 55c736af)
+==============================================================================
+  SAME          : 1
+  DIFFERS(stale): 0
+  LOCAL-CHANGE  : 0
+  RN-ONLY       : 0
+  REPO-ONLY     : 50
+  runtime/derived (informational): 109
+
+  --- REPO-ONLY (in HEAD's deployed subtree, absent on RN) ---
+    conf/GDargo.sh
+    conf/Reality.sh
+    conf/Shadowsocks.sh
+    conf/Trojan.sh
+    conf/XRevise.sh
+    conf/batch.sh
+    conf/cert.sh
+    conf/dns.sh
+    conf/fd/legacy/README.md
+    conf/fd/legacy/client-reverse.sh
+    conf/fd/legacy/server-reverse.sh
+    conf/fd/xrayclient-reverse.sh
+    conf/fd/xrayserver-reverse.sh
+    conf/http.sh
+    conf/hysteria2.sh
+    conf/lib/addr.sh
+    conf/lib/cert.sh
+    conf/lib/deploy.py
+    conf/lib/dns_edit.py
+    conf/lib/fetch.sh
+    conf/lib/naming.py
+    conf/lib/naming.sh
+    conf/lib/nginx_apply.py
+    conf/lib/node_build.py
+    conf/lib/nodes.py
+    conf/lib/ports.sh
+    conf/lib/preset.sh
+    conf/lib/print.sh
+    conf/lib/random.sh
+    conf/lib/read.sh
+    conf/lib/service.sh
+    conf/lib/share_meta.py
+    conf/lib/share_payload.py
+    conf/lib/token_store.py
+    conf/lib/verify.sh
+    conf/logs.sh
+    conf/lsargo.sh
+    conf/mknode.sh
+    conf/nginx_site.sh
+    conf/node.sh
+    conf/outbound.sh
+    conf/share.sh
+    conf/share_client.py
+    conf/share_service.sh
+    conf/sock5.sh
+    conf/split.sh
+    conf/tunnel.sh
+    conf/verify.sh
+    conf/vlessecn.sh
+    conf/vlessxhttpecn.sh
+
+==============================================================================
+### mihomo  (repo HEAD 54672782)
+==============================================================================
+  SAME          : 28
+  DIFFERS(stale): 13
+  LOCAL-CHANGE  : 0
+  RN-ONLY       : 4
+  REPO-ONLY     : 10
+  runtime/derived (informational): 53
+
+  --- DIFFERS from HEAD, but matches an OLD repo version (stale deploy) ---
+    src/VERSION
+       RN : /root/catmi/mihomo/src/VERSION  sha=40e2ef3e664a0dc3
+       HEAD:a4a1611a542d14cf
+       RN content == 6c7a0dd 2026-10-09 20:06:19 +0800 chore: 更新版本号 2d4a088c71b2
+    src/client.sh
+       RN : /root/catmi/mihomo/src/client.sh  sha=7ad2c93865c0b671
+       HEAD:6fb9e291aeb5d06d
+       RN content == d5319a8 2026-10-09 18:48:48 +0800 fix: "清空全部节点"不再吊销分享 + 客户端同名订阅自动改名时崩溃
+    src/conf/TUIC.sh
+       RN : /root/catmi/mihomo/src/conf/TUIC.sh  sha=5a5797f456a8c888
+       HEAD:3604d761116b52b0
+       RN content == 874013b 2026-10-09 16:39:51 +0800 fix(cert): skip-cert-verify 展开成 falsetrue + 校验补一道证书落位
+    src/conf/all.sh
+       RN : /root/catmi/mihomo/src/conf/all.sh  sha=2d4e9f7e6b462df6
+       HEAD:300debc72ba085d3
+       RN content == 49172b2 2026-10-09 18:36:35 +0800 feat(share): 节点变更后刷新分享内容 + 安装时接入公共分享服务
+    src/conf/hysteria2.sh
+       RN : /root/catmi/mihomo/src/conf/hysteria2.sh  sha=b630209ad1a23189
+       HEAD:431d5ecd8bd9c160
+       RN content == 152bf55 2026-10-08 13:23:27 +0800 chore: 更新面板版本号
+    src/core_install.sh
+       RN : /root/catmi/mihomo/src/core_install.sh  sha=5bdfe85a798e1fba
+       HEAD:be6c9baeed27c5f5
+       RN content == 16788b0 2026-10-09 18:30:27 +0800 feat(share): 安装 M 时检查公共分享服务 (检查→不存在才装→启动)
+    src/lib/core_mgmt.sh
+       RN : /root/catmi/mihomo/src/lib/core_mgmt.sh  sha=345b011189ceb720
+       HEAD:0ee6387560f7c98a
+       RN content == faf6d52 2026-10-09 18:29:09 +0800 feat(share): M 接入公共分享服务, 分享存储与生命周期外置
+    src/lib/env.sh
+       RN : /root/catmi/mihomo/src/lib/env.sh  sha=fb14a25da8ee884d
+       HEAD:849fda650d5dcd87
+       RN content == 33958f3 2026-10-10 12:23:41 +0800 feat(命名): 已有节点也能补上旗帜 —— 面板一键迁移（幂等）
+    src/lib/naming.py
+       RN : /root/catmi/mihomo/src/lib/naming.py  sha=26d1044ca4eec686
+       HEAD:c94280d9d7136f5d
+       RN content == 79eb489 2026-10-10 12:12:18 +0800 feat(命名): 节点名带上地区旗帜 —— 多台服务器在客户端里一眼分得开
+    src/manifest.txt
+       RN : /root/catmi/mihomo/src/manifest.txt  sha=3751e0005d2733f0
+       HEAD:defe74ba4a5258b0
+       RN content == faf6d52 2026-10-09 18:29:09 +0800 feat(share): M 接入公共分享服务, 分享存储与生命周期外置
+    src/server.sh
+       RN : /root/catmi/mihomo/src/server.sh  sha=bd4e6d4093f6a2d6
+       HEAD:5367e54bcbeeaa20
+       RN content == 33958f3 2026-10-10 12:23:41 +0800 feat(命名): 已有节点也能补上旗帜 —— 面板一键迁移（幂等）
+    src/share/build_sub.py
+       RN : /root/catmi/mihomo/src/share/build_sub.py  sha=7ce57bd1f661e1c8
+       HEAD:d13fecbe015a087d
+       RN content == 152bf55 2026-10-08 13:23:27 +0800 chore: 更新面板版本号
+    src/share/lan_config.py
+       RN : /root/catmi/mihomo/src/share/lan_config.py  sha=e3ce3ad67ecbb4bf
+       HEAD:6c846ef57966464b
+       RN content == faf6d52 2026-10-09 18:29:09 +0800 feat(share): M 接入公共分享服务, 分享存储与生命周期外置
+
+  --- RN-ONLY (no counterpart at mapped repo path) ---
+    /root/catmi/mihomo/src/env.sh   sha=fb14a25da8ee884d size=78839
+    /root/catmi/mihomo/src/lib/__pycache__/naming.cpython-313.pyc   sha=8b4e2f4ee6700de2 size=10836
+    /root/catmi/mihomo/src/lib/cert.sh.bak-pre-certsync-20261009-005359   sha=fed1efd08d696d62 size=21818
+    /root/catmi/mihomo/src/lib/manifest.txt   sha=3751e0005d2733f0 size=1119
+
+  --- REPO-ONLY (in HEAD's deployed subtree, absent on RN) ---
+    src/lib/nodecompat.py
+    src/lib/proxy_node_compat/__init__.py
+    src/lib/proxy_node_compat/__main__.py
+    src/lib/proxy_node_compat/cli.py
+    src/lib/proxy_node_compat/data/rules.json
+    src/lib/proxy_node_compat/engine.py
+    src/lib/proxy_node_compat/model.py
+    src/lib/proxy_node_compat/registry.py
+    src/lib/proxy_node_compat/uri.py
+    src/share/link_check.py
+
+==============================================================================
+### singbox  (repo HEAD 2c209b0e)
+==============================================================================
+  SAME          : 25
+  DIFFERS(stale): 8
+  LOCAL-CHANGE  : 0
+  RN-ONLY       : 0
+  REPO-ONLY     : 1
+  runtime/derived (informational): 77
+
+  --- DIFFERS from HEAD, but matches an OLD repo version (stale deploy) ---
+    src/conf/core.sh
+       RN : /root/catmi/sing-box/conf/core.sh  sha=06962c4f1d376cf1
+       HEAD:fc7bfbe0b91fd671
+       RN content == e32fb89 2026-10-01 17:45:53 +0800 v1.0.43
+    src/conf/hysteria2.sh
+       RN : /root/catmi/sing-box/conf/hysteria2.sh  sha=ca21a6e59e2d89d3
+       HEAD:04e0e0bd074e2c5b
+       RN content == 29243c0 2026-10-04 10:35:52 +0800 v1.0.83
+    src/conf/lib.sh
+       RN : /root/catmi/sing-box/conf/lib.sh  sha=ce3ff0cdd1b359df
+       HEAD:bed7d3ce621e9481
+       RN content == b13b27d 2026-10-09 19:16:21 +0800 修: 证书走真实证书目录, vmess 真证书不再跳过校验
+    src/conf/outbound_uri.py
+       RN : /root/catmi/sing-box/conf/outbound_uri.py  sha=15c877601b0f810b
+       HEAD:3404f42e8e1067e1
+       RN content == b76d230 2026-10-02 20:29:17 +0800 v1.0.60
+    src/conf/share.sh
+       RN : /root/catmi/sing-box/conf/share.sh  sha=6d492039b7e968f2
+       HEAD:613f8e9c705abcba
+       RN content == b9c8814 2026-10-09 19:18:57 +0800 改: 分享改走公共基础服务 proxy-share-service —— 与 mihomo/xray 共用一套存储
+    src/conf/uninstall.sh
+       RN : /root/catmi/sing-box/conf/uninstall.sh  sha=fdd013cdc9204421
+       HEAD:739afc1c5f68a044
+       RN content == 21df684 2026-10-01 23:49:36 +0800 v1.0.50
+    src/conf/vmess.sh
+       RN : /root/catmi/sing-box/conf/vmess.sh  sha=46ea084d3738f62b
+       HEAD:2b2157760414912b
+       RN content == b13b27d 2026-10-09 19:16:21 +0800 修: 证书走真实证书目录, vmess 真证书不再跳过校验
+    install.sh
+       RN : /root/catmi/sing-box/install.sh  sha=9be5a91f40d802e6
+       HEAD:d1a075e9f2f7cb2d
+       RN content == b9c8814 2026-10-09 19:18:57 +0800 改: 分享改走公共基础服务 proxy-share-service —— 与 mihomo/xray 共用一套存储
+
+  --- REPO-ONLY (in HEAD's deployed subtree, absent on RN) ---
+    src/conf/addr_family.py

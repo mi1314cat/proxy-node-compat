@@ -1,0 +1,24 @@
+### share subscription raw (base64)
+aHlzdGVyaWEyOi8vMDU2MTVjZTItNGJmNC00ZjRlLTkwOGUtYzk5YTE2YTgwM2U4QDEwNy4xNzMuMTU0LjE3ODoyOTYwND9zbmk9MTA3LjE3My4xNTQuMTc4Jmluc2VjdXJlPTAjaHlzdGVyaWEtMDQKc3M6Ly9NakF5TWkxaWJHRnJaVE10WVdWekxUSTFOaTFuWTIwNmMyMTZUVmwyZFVkR1NVMHpXVWhyYzFZeFpVRktUa1o2WlZkMVVpdEhaemx4VkROS2QyeDFWVmRVVlQwQDEwNy4xNzMuMTU0LjE3ODoyOTYwMyNTUzIwMjItMDIKdHJvamFuOi8vTFY3Q3B6WDlKYzh2V3VoUDBZVjBAMTA3LjE3My4xNTQuMTc4OjI5NjAyP3NlY3VyaXR5PXJlYWxpdHkmdHlwZT10Y3Amc25pPWF1ZGlvLXNzbC5pdHVuZXMuYXBwbGUuY29tJmZwPWNocm9tZSZzaWQ9Yjg2MGE5ZjAmcGJrPUdpUjRrMHVWUmhLRVdsZkQ5b1JqanYtQzBTVHJwNU0wdVAza1JJVDJwZ1UjVFJPSkFOLTAzCnZsZXNzOi8vMWZhN2M5ODEtMTZiNC00OTYzLTllZjYtOWJiMTNhZDI1MDUzQDEwNy4xNzMuMTU0LjE3ODo4NDQzP2VuY3J5cHRpb249bm9uZSZzZWN1cml0eT10bHMmdHlwZT14aHR0cCZwYXRoPSUyRmFWQ1IzUDBBJTJGI3ZsZXNzLXhodHRwMDcKdmxlc3M6Ly8yNzg1MDJmYy04ZTk1LTQ1NTgtYTZhZS1iZDhhMzljNTAwZjlAMTA3LjE3My4xNTQuMTc4OjI5NjAxP2VuY3J5cHRpb249bm9uZSZzZWN1cml0eT10bHMmdHlwZT13cyZwYXRoPSUyRjhLTEQzY05qI3ZsZXNzLXhodHRwMDg=
+### decoded payload
+hysteria2://05615ce2-4bf4-4f4e-908e-c99a16a803e8@107.173.154.178:29604?sni=107.173.154.178&insecure=0#hysteria-04
+ss://MjAyMi1ibGFrZTMtYWVzLTI1Ni1nY206c216TVl2dUdGSU0zWUhrc1YxZUFKTkZ6ZVd1UitHZzlxVDNKd2x1VVdUVT0@107.173.154.178:29603#SS2022-02
+trojan://LV7CpzX9Jc8vWuhP0YV0@107.173.154.178:29602?security=reality&type=tcp&sni=audio-ssl.itunes.apple.com&fp=chrome&sid=b860a9f0&pbk=GiR4k0uVRhKEWlfD9oRjjv-C0STrp5M0uP3kRIT2pgU#TROJAN-03
+vless://1fa7c981-16b4-4963-9ef6-9bb13ad25053@107.173.154.178:8443?encryption=none&security=tls&type=xhttp&path=%2FaVCR3P0A%2F#vless-xhttp07
+vless://278502fc-8e95-4558-a6ae-bd8a39c500f9@107.173.154.178:29601?encryption=none&security=tls&type=ws&path=%2F8KLD3cNj#vless-xhttp08
+### per-node generator share files
+--- vless-xhttp_share-07.txt
+vless://1fa7c981-16b4-4963-9ef6-9bb13ad25053@moontv.6896698.xyz:443?encryption=none&security=tls&sni=moontv.6896698.xyz&type=xhttp&path=/aVCR3P0A/&ech=cloudflare-ech.com%2Bhttps%3A%2F%2Fdns.alidns.com%2Fdns-query#vless-xhttp-07
+
+--- vless-xhttp_share-08.txt
+vless://278502fc-8e95-4558-a6ae-bd8a39c500f9@107.173.154.178:29601?encryption=none&security=tls&sni=moontv.6896698.xyz&type=ws&path=/8KLD3cNj&ech=AGX%2BDQBhAAAgACA%2FrOgHBypsWc%2FLDY%2FWZjmK8Gm5jpe876iY7AKFphHdAgAkAAEAAQABAAIAAQADAAIAAQACAAIAAgADAAMAAQADAAIAAwADABJtb29udHYuNjg5NjY5OC54eXoAAA%3D%3D#vless-xhttp-08
+
+--- trojan-share-03.txt
+trojan://LV7CpzX9Jc8vWuhP0YV0@107.173.154.178:29602?security=reality&sni=audio-ssl.itunes.apple.com&type=tcp&fp=chrome&pbk=GiR4k0uVRhKEWlfD9oRjjv-C0STrp5M0uP3kRIT2pgU&sid=b860a9f0#Trojan-03
+
+--- ss2022-share-02.txt
+ss://MjAyMi1ibGFrZTMtYWVzLTI1Ni1nY206c216TVl2dUdGSU0zWUhrc1YxZUFKTkZ6ZVd1UitHZzlxVDNKd2x1VVdUVT0@107.173.154.178:29603#SS2022-02
+
+--- hy2_share-04.txt
+hysteria2://05615ce2-4bf4-4f4e-908e-c99a16a803e8@107.173.154.178:29604?sni=moontv.6896698.xyz&insecure=0&alpn=h3&upmbps=50&downmbps=200#hysteria-04
+

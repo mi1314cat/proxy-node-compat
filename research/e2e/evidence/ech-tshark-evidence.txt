@@ -1,0 +1,22 @@
+=== CH ext types
+52	1	moontv.6896698.xyz	6682,35,10,11,65037,27,17613,43,65281,23,16,13,18,45,0,5,51,39578
+=== ECH ext body
+                Type: encrypted_client_hello (65037)
+                Length: 186
+                Client Hello type: Outer Client Hello (0)
+                Cipher Suite: HKDF-SHA256/AES-128-GCM
+                    KDF Id: HKDF-SHA256 (1)
+                    AEAD Id: AES-128-GCM (1)
+                Config Id: 0
+                Enc length: 32
+                Enc: 4e27ad5d603302a6acccd04c74498bce1d7863587edbd9898abe50f0d60a5d04
+                Payload length: 144
+                Payload […]: 5338bd7b3454b43ebdbc7b7ac6fcfd330e6e8f03ec5b884cffe6e256ccc60bfbd5d18040db97d18108e92268e006bb1919ba380af40304bbc608dc450c1540ddb43acb75f8fc07dec750fc22fe57f04b395f28a0532936fdeca805430dd6436cae52d3daa6f56f5ebcaf421df935b7ae
+=== SNI line
+            Extension: server_name (len=23) name=moontv.6896698.xyz
+=== ServerHello ext types
+8	0	43,51
+54	1	43,51
+=== fe0d counts (CH stream / SH)
+CH stream fe0d count: 1
+SH fe0d count: 0

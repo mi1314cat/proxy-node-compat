@@ -36,6 +36,12 @@
 - 修法：链接里**不要写** `obfs=none`（不写即无混淆）；SB 侧照 X 的做法删掉该参数。
 - UNKNOWN：非 mihomo 客户端（如 sing-box）遇到 `obfs=none` 是否同样失败。
 
+> **口径更正（2026-10-10，实测）**：`obfs=none` **不是"三家同等严重"** ——
+> 它对 **mihomo 是硬失败**（`missing obfs password` → provider **0 节点**，同订阅好节点全丢），
+> 对 **sing-box / xray 是静默忽略**（当没写 obfs，节点照常用；SB 自家分享内容是 JSON，不受影响）。
+> 受害面 = "把 URI 链接喂给 mihomo 订阅"的场景。SB 侧已修（生成侧不再写无效 obfs，
+> 导入侧容忍老链接），详见 `sb-share-fixes.md`。xray 内核单测仍为 UNKNOWN。
+
 ## 参照实现（SB 值得直接抄的一条）
 
 公网 CA 不写 pin，SB 的判据一句话：

@@ -1,5 +1,24 @@
 # 三家互通 · X 侧实施与真机验收报告
 
+> ---
+>
+> ## ⚠ 部署状态更正（2026-10-11 复核）
+>
+> 1. 本报告原写「提交 `da5fff0` → `32f65ef` → `be4ec8e`，**已推到 `main`**」——
+>    **与事实不符**。三条提交当时在本地分支 `feat/three-way-interop` 上；
+>    `main` 与 `origin/main` 都还停在 `55c736a`，**一个字节都没推**。
+>    （本轮复核已把它 fast-forward 合入 `main` = `be4ec8e`，仍未 push。）
+> 2. §4 的"真机验证"跑在 **RN/CC 上的隔离副本**里：RN 侧是 `/tmp/tw-rn/**` 的独立
+>    服务实例（`:19481` / `:19482`）与独立数据目录，CC 侧是 `/tmp/xbd-m` 的客户端副本。
+>    当时 RN `/root/conf/` 里是 `55c736a` 的 50 个文件 —— `conf/lib/interop.py` 与
+>    `conf/lib/native.py` **在部署路径上根本不存在**（`find /root -name interop.py`
+>    当时返回空）。
+>    真公共服务 `:9443`、真内核二进制、真节点确实是真件，所以结论对**代码**成立；
+>    对「**已部署**」不成立。
+
+> 3. 本轮已把仓库 HEAD 逐字节分发到 RN 并在**部署态**重跑验收 —— 见 `three-way-interop-x-deployed.md`。
+
+
 > 日期：2026-10-10/11 ｜ 实施对象：`mi1314cat/xray--core`（服务端 `conf/` + 客户端 `Client/`）
 > 设计依据：`docs/three-way-interop.md`（本次新增）
 > 门禁：`bash tools/check_libs.sh` → **782 通过 / 0 失败**（改前基线 756/0，即 `origin/main` = `55c736a`）

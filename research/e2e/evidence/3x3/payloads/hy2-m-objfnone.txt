@@ -1,0 +1,1 @@
+hysteria2://a2c318238c743fb6021d99c6e7939acd@107.173.154.178:21168?sni=hxicc.catmicos.dpdns.org&insecure=0&alpn=h3&upmbps=50&downmbps=200&obfs=none#HY2-01

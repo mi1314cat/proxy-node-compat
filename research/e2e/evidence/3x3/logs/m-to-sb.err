@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/opt/sb-client/share-state/to_sb.py", line 599, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/opt/sb-client/share-state/to_sb.py", line 590, in main
+    obs, rep = convert(data, prefix)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/sb-client/share-state/to_sb.py", line 520, in convert
+    return _from_clash_list(lst, prefix, rep)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/sb-client/share-state/to_sb.py", line 567, in _from_clash_list
+    _note("不支持的 clash type: %s" % (d.get("type") if isinstance(d, dict) else "?"))
+    ^^^^^
+NameError: name '_note' is not defined

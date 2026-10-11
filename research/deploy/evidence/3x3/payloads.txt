@@ -1,0 +1,131 @@
+######## provider=xray ########
+{
+    "provider": "xray",
+    "count": 1,
+    "shares": [
+        {
+            "token": "f64f61ce35e42b39a5f928d1c6d15ae5",
+            "provider": "xray",
+            "type": "node",
+            "meta": {
+                "name": "e2e-allproto",
+                "tags": [
+                    "hysteria-04",
+                    "SS2022-02",
+                    "TROJAN-03",
+                    "vless-xhttp07",
+                    "vless-xhttp08"
+                ],
+                "payload_schema": 2
+            },
+            "created_at": 1791636424,
+            "expires_at": 0,
+            "max_uses": 0,
+            "used_count": 19,
+            "last_used_at": 1791648483,
+            "enabled": true,
+            "state": "active",
+            "content_type": "text/yaml; charset=utf-8",
+            "content_encoding": "utf-8",
+            "filename": "",
+            "content_bytes": 1472,
+            "content_sha256": "2bebe127e2f31c04aeed7506bf455ec40775ad320a86f7ba9fd7c0c77287eb3f",
+            "url_path": "/share/f64f61ce35e42b39a5f928d1c6d15ae5",
+            "url": ""
+        }
+    ]
+}
+######## provider=mihomo ########
+{
+    "provider": "mihomo",
+    "count": 2,
+    "shares": [
+        {
+            "token": "af94379eddc318e1b5e949ba183c1968",
+            "provider": "mihomo",
+            "type": "node",
+            "meta": {
+                "tag": "all"
+            },
+            "created_at": 1791648201,
+            "expires_at": 0,
+            "max_uses": 0,
+            "used_count": 4,
+            "last_used_at": 1791648489,
+            "enabled": true,
+            "state": "active",
+            "content_type": "text/yaml; charset=utf-8",
+            "content_encoding": "utf-8",
+            "filename": "",
+            "content_bytes": 6312,
+            "content_sha256": "08d847fe84a274b05593ed08502e1b2c4fd50162c67276cf1d47eb04fd5fc88a",
+            "url_path": "/share/af94379eddc318e1b5e949ba183c1968",
+            "url": ""
+        },
+        {
+            "token": "ec23e4cb8196d688053de91240e52dae",
+            "provider": "mihomo",
+            "type": "node",
+            "meta": {
+                "tag": "all"
+            },
+            "created_at": 1791541206,
+            "expires_at": 1791516793,
+            "max_uses": 1,
+            "used_count": 1,
+            "last_used_at": 0,
+            "enabled": false,
+            "state": "disabled",
+            "content_type": "text/yaml; charset=utf-8",
+            "content_encoding": "utf-8",
+            "filename": "",
+            "content_bytes": 6312,
+            "content_sha256": "08d847fe84a274b05593ed08502e1b2c4fd50162c67276cf1d47eb04fd5fc88a",
+            "url_path": "/share/ec23e4cb8196d688053de91240e52dae",
+            "url": ""
+        }
+    ]
+}
+######## provider=sing-box ########
+{
+    "provider": "sing-box",
+    "count": 1,
+    "shares": [
+        {
+            "token": "42037847b9011bc9c6c7ebcbeafacbcb",
+            "provider": "sing-box",
+            "type": "node",
+            "meta": {
+                "tag": "all"
+            },
+            "created_at": 1791648202,
+            "expires_at": 0,
+            "max_uses": 0,
+            "used_count": 4,
+            "last_used_at": 1791648496,
+            "enabled": true,
+            "state": "active",
+            "content_type": "text/yaml; charset=utf-8",
+            "content_encoding": "utf-8",
+            "filename": "",
+            "content_bytes": 7360,
+            "content_sha256": "3c3e63c4ed07237ef563a03ab5e822904a68290da52f697614fb28474840de2a",
+            "url_path": "/share/42037847b9011bc9c6c7ebcbeafacbcb",
+            "url": ""
+        }
+    ]
+}
+
+######## X share decoded (post-refresh) ########
+hysteria2://05615ce2-4bf4-4f4e-908e-c99a16a803e8@107.173.154.178:29604?sni=moontv.6896698.xyz&insecure=0&alpn=h3&up=50&down=200&upmbps=50&downmbps=200#%F0%9F%87%BA%F0%9F%87%B8%20X-hysteria-04
+ss://MjAyMi1ibGFrZTMtYWVzLTI1Ni1nY206c216TVl2dUdGSU0zWUhrc1YxZUFKTkZ6ZVd1UitHZzlxVDNKd2x1VVdUVT0@107.173.154.178:29603#%F0%9F%87%BA%F0%9F%87%B8%20X-SS2022-02
+trojan://LV7CpzX9Jc8vWuhP0YV0@107.173.154.178:29602?security=reality&type=tcp&sni=audio-ssl.itunes.apple.com&fp=chrome&sid=b860a9f0&pbk=GiR4k0uVRhKEWlfD9oRjjv-C0STrp5M0uP3kRIT2pgU#%F0%9F%87%BA%F0%9F%87%B8%20X-TROJAN-03
+vless://1fa7c981-16b4-4963-9ef6-9bb13ad25053@107.173.154.178:8443?encryption=none&security=tls&type=xhttp&sni=moontv.6896698.xyz&path=%2FaVCR3P0A%2F#%F0%9F%87%BA%F0%9F%87%B8%20X-vless-xhttp07
+vless://278502fc-8e95-4558-a6ae-bd8a39c500f9@107.173.154.178:29601?encryption=none&security=tls&type=ws&sni=moontv.6896698.xyz&ech=AGX%2BDQBhAAAgACA%2FrOgHBypsWc%2FLDY%2FWZjmK8Gm5jpe876iY7AKFphHdAgAkAAEAAQABAAIAAQADAAIAAQACAAIAAgADAAMAAQADAAIAAwADABJtb29udHYuNjg5NjY5OC54eXoAAA%3D%3D&path=%2F8KLD3cNj#%F0%9F%87%BA%F0%9F%87%B8%20X-vless-xhttp08
+######## X share raw sha ########
+2bebe127e2f31c04aeed7506bf455ec40775ad320a86f7ba9fd7c0c77287eb3f  -
+
+######## SB share hy2/vmess links (post --fix) ########
+hysteria2://f00f6744246c7c55e0cb96954e56b7d0@107.173.154.178:31001?sni=hxicc.catmicos.dpdns.org&alpn=h3#🇺🇸 rn hysteria201-TLS
+vmess://eyJhZGQiOiJoeGljYy5jYXRtaWNvcy5kcGRucy5vcmciLCJwb3J0IjoiNDQzIiwidXVpZCI6IjQ4YWYyOGVhLTNjZDAtNDc1Ny1hZGM5LTgxNWE3YjFjMWUzNiIsImFpZCI6IjAiLCJuZXQiOiJ3cyIsInBhdGgiOiIvY2JhMzExYjUiLCJob3N0IjoiaHhpY2MuY2F0bWljb3MuZHBkbnMub3JnIiwic2VjdXJpdHkiOiJhdXRvIiwidGxzIjoidGxzIiwic25pIjoiaHhpY2MuY2F0bWljb3MuZHBkbnMub3JnIiwiYWxwbiI6Imh0dHAvMS4xIn0=#🇺🇸 rn vmess01-TLS-CDN
+vless://d35b8824-0803-44c9-823b-d283a6ba3b52@107.173.154.178:31011?encryption=aes-128-gcm&security=reality&sni=python.org&fp=chrome&pbk=tnXodgtAkqwGSZBIQu-O9hRj1VsFG4PwMriVzy0cHwA&sid=a3baeab74472c469&type=ws&path=/7025f50c&host=#🇺🇸 rn vmess02-REALITY

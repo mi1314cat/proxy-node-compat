@@ -78,14 +78,26 @@ Runtime Support       该版本内核运行时是否真的生效（可能静默�
 | `docs/examples/` | **14 个真实案例**验收（含"版本边界未知 → UNKNOWN"） |
 | `docs/06-oss-landscape.md` | Phase 1.5：开源生态调研与架构再定位 |
 | `docs/07-version-and-failure-model.md` | Phase 1：版本维度与失败模式模型 |
+| `docs/three-way-interop.md` | **三家互通规范**：在订阅地址上声明内核；同内核走原生、跨内核走"普通话"URI |
+| `docs/interop-conformance.md` | **三家互通 · 协议一致性**：公共语料 + 跨实现比对台 + 已抓到过的真实漂移 |
 | `research/` | Phase 1 研究：三家官方文档与源码能力清单 |
 | `research/empirical/` | 真内核实测证据（配置校验 + 语义回环） |
+| `research/integration/` | 三个内核接入 compat / 三家互通的实施与真机验收报告 |
+| `research/deploy/` | RN 三内核「仓库 HEAD 受控分发 + 全链路验证」记录 |
+
+### 工具
+
+| 文件 | 用途 |
+|---|---|
+| `tools/probe/` | 真机探针（配置校验 + 语义回环），能自动识别六类失败模式 |
+| `tools/interop-vectors.json` | 三家互通的**协议公共语料**（24 条向量 × 入参形态） |
+| `tools/interop-conformance.py` | 跨实现一致性台：同一批向量喂给 X/M/SB 五份实现，比对决策 / 参数名 / 交叉可读性 |
+| `tools/grid-audit.py` | 九宫格中立复核：声明合法性 + "带声明 vs 裸地址逐字节相同"惰性现测 + 载荷形态 |
 
 ## 状态
 
-Phase 1（研究）✅ ｜ Phase 2/3（设计）✅ ｜ **Phase 4A–4D（实现）✅**（26 个测试通过）。
+Phase 1（研究）✅ ｜ Phase 2/3（设计）✅ ｜ Phase 4A–4D（实现）✅ ｜
+**三家互通（声明 / 决策 / 回退）✅ 已在三个内核落地并真机验收**。
 
-零第三方依赖，可完全离线判断；尚未接入三个内核项目（方案见 phase4-report §8）。
-
-接入方式（Phase 7 之后才讨论）：三个客户端各自只告诉 compat「我是哪个 Kernel、哪个 Version」，
-把节点交给 compat，拿到结果后自行决定 UI 行为。
+零第三方依赖，可完全离线判断。三个内核各自只告诉 compat「我是哪个 Kernel、哪个发行版、
+哪个 Version」，把节点交给 compat，拿到结果后自行决定 UI 行为；**compat 不生成配置**。

@@ -1,5 +1,20 @@
 # 三家互通 · M 侧实施与真机验收报告
 
+> ---
+>
+> ## ⚠ 部署状态更正（2026-10-11 复核）
+>
+> 1. 本报告的"真机验收"跑在 **RN/CC 上的隔离副本**里，不是 RN 的生产部署路径。
+>    复核证据：`src/lib/interop.py` 与 `src/share/build_uri.py` 当时在 RN 上
+>    **不存在**（`find /root -name build_uri.py` 返回空），`/root/catmi/mihomo/src/`
+>    的内容与时间戳都停在上一轮对账分发的 `54672782`（2026-10-10 08:58 PDT）。
+>    报告 §8 自己也写了"未写生产路径"。
+> 2. 测试用的那条带声明分享确实是**真公共服务 `:9443`** 发的（代码路径真跑过），
+>    所以结论对**代码 + 真服务**成立；对「**已部署**」不成立。
+>
+> 3. 本轮已把仓库 HEAD 逐字节分发到 RN 并在**部署态**重跑验收 —— 见 `three-way-interop-m-deployed.md`。
+
+
 > 日期：2026-10-11 ｜ 实施对象：`mihomo--core`（服务端 `src/share/` + 客户端 `src/client.sh`）
 > 设计依据：`docs/three-way-interop.md`（用户拍板方案）／参照实现：`xray--core`（`feat/three-way-interop`）
 > 门禁：`bash tools/check_all.sh` → **20/20 全绿**（改前基线 19/19；新增 `tools/check_interop.sh` 39 断言）

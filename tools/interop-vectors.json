@@ -1,0 +1,195 @@
+{
+  "_comment": [
+    "三家互通 · 协议一致性语料（唯一真源）。",
+    "",
+    "这份语料是**协议**的一部分，不是某个内核的测试数据：X / M / SB 各自独立实现了",
+    "同一份「声明 / 决策」协议（独立是刻意的，代价是会漂移），这张表就是它们的公共判据。",
+    "",
+    "占位符（由执行方替换成自己的词表值）:",
+    "  {{K}}     本机内核名（小写，词表 xray|sing-box|mihomo）",
+    "  {{KUP}}   同上，全大写（验 normalize）",
+    "  {{D}}     本机发行版标签（例如 xray / upstream / sing-box）",
+    "  {{DUP}}   同上，全大写",
+    "  {{OTHER}} 另一个内核名（验跨内核）",
+    "  {{U}}     原生取件地址（http(s)，按 query 值转义后代入）",
+    "  {{UUP}}   同上，但 scheme 写成大写 HTTPS",
+    "  {{FTP}}   不是 http(s) 的地址",
+    "",
+    "want 只写**家族**（native / uri:<为什么>），不写实现文案 —— 文案允许多几个字，",
+    "判据是「该不该拿原生」。reason 家族与 interop.py 的 R_* 常量一一对应。"
+  ],
+  "schema": 1,
+  "kernels": [
+    "xray",
+    "sing-box",
+    "mihomo"
+  ],
+  "uri_schemes": [
+    "vless",
+    "vmess",
+    "trojan",
+    "ss",
+    "ssr",
+    "hysteria2",
+    "hy2",
+    "hysteria",
+    "tuic",
+    "anytls",
+    "naive",
+    "shadowtls",
+    "socks",
+    "http",
+    "https",
+    "wireguard",
+    "ssh"
+  ],
+  "vectors": [
+    {
+      "name": "无声明",
+      "query": "",
+      "want": "uri:none"
+    },
+    {
+      "name": "有地址但无查询串",
+      "query": "{{U}}",
+      "want": "uri:none"
+    },
+    {
+      "name": "同内核同发行版",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&version=1&formats=uri,{{D}}&url-{{D}}={{U}}",
+      "want": "native"
+    },
+    {
+      "name": "同内核同发行版(无 version 参数)",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}={{U}}",
+      "want": "native",
+      "as_bare_query": true
+    },
+    {
+      "name": "url 值未编码的裸查询串",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}=http://h:9443/share/n",
+      "want": "native",
+      "as_bare_query": true
+    },
+    {
+      "name": "规范版本=2(不认识)",
+      "query": "interop=2&kernel={{K}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}={{U}}",
+      "want": "uri:schema"
+    },
+    {
+      "name": "规范版本非数字",
+      "query": "interop=x&kernel={{K}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}={{U}}",
+      "want": "uri:schema"
+    },
+    {
+      "name": "内核不在词表",
+      "query": "interop=1&kernel=nonsense&distribution={{D}}&formats=uri,{{D}}&url-{{D}}={{U}}",
+      "want": "uri:kernel"
+    },
+    {
+      "name": "缺 kernel",
+      "query": "interop=1&distribution={{D}}&formats=uri,{{D}}&url-{{D}}={{U}}",
+      "want": "uri:kernel"
+    },
+    {
+      "name": "跨内核",
+      "query": "interop=1&kernel={{OTHER}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}={{U}}",
+      "want": "uri:cross"
+    },
+    {
+      "name": "发行版不在 formats",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&formats=uri&url-{{D}}={{U}}",
+      "want": "uri:dist"
+    },
+    {
+      "name": "发行版在 formats 但无地址",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&formats=uri,{{D}}",
+      "want": "uri:nourl"
+    },
+    {
+      "name": "原生地址不是 http(s)",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}={{FTP}}",
+      "want": "uri:badurl"
+    },
+    {
+      "name": "原生地址只有 scheme",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}=https:",
+      "want": "uri:badurl"
+    },
+    {
+      "name": "formats 里多一个别的格式",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&formats=uri,{{D}},other&url-{{D}}={{U}}",
+      "want": "native"
+    },
+    {
+      "name": "大写内核名",
+      "query": "interop=1&kernel={{KUP}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}={{U}}",
+      "want": "native"
+    },
+    {
+      "name": "内核名带前后空白",
+      "query": "interop=1&kernel=%20{{K}}%20&distribution={{D}}&formats=uri,{{D}}&url-{{D}}={{U}}",
+      "want": "native"
+    },
+    {
+      "name": "发行版/参数名大小写混写",
+      "query": "INTEROP=1&KERNEL={{KUP}}&DISTRIBUTION={{DUP}}&FORMATS=uri,{{DUP}}&URL-{{DUP}}={{U}}",
+      "want": "native"
+    },
+    {
+      "name": "原生地址 scheme 大写",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}={{UUP}}",
+      "want": "native"
+    },
+    {
+      "name": "片段里放同名声明(不算, 仅完整地址)",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}={{U}}#kernel={{OTHER}}",
+      "want": "native",
+      "forms": [
+        "full-url"
+      ],
+      "_note": "只在 full-url 形态下成立: \"片段\"这个概念只有完整地址才有。裸查询串里 `#` 不是分隔符，它属于最后一个参数的值 —— 那是查询串本身的语法，不是实现缺陷。"
+    },
+    {
+      "name": "重复参数取第一个",
+      "query": "interop=1&kernel={{OTHER}}&kernel={{K}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}={{U}}",
+      "want": "uri:cross"
+    },
+    {
+      "name": "formats 为空",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&formats=&url-{{D}}={{U}}",
+      "want": "uri:dist"
+    },
+    {
+      "name": "多出不认识的参数",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}={{U}}&whatever=1&ssid=2",
+      "want": "native"
+    },
+    {
+      "name": "声明里带 '?' 的原生地址",
+      "query": "interop=1&kernel={{K}}&distribution={{D}}&formats=uri,{{D}}&url-{{D}}=http%3A%2F%2Fh%3A9443%2Fshare%2Fn%3Fx%3D1%26y%3D2",
+      "want": "native"
+    }
+  ],
+  "declaration_equivalence": {
+    "_comment": "build_declaration+declaration_query 之后，各实现归一化出的参数名集合必须相同，且交叉可读（同内核 A 的声明 B 能读成 native）。",
+    "kernel": "{{K}}",
+    "distribution": "dist-self",
+    "version": "9.9.9",
+    "formats": [
+      "uri",
+      "dist-self"
+    ],
+    "urls": {
+      "dist-self": "https://example.invalid/native"
+    },
+    "must_param_names": [
+      "interop",
+      "kernel",
+      "distribution",
+      "version",
+      "formats",
+      "url-dist-self"
+    ]
+  }
+}
