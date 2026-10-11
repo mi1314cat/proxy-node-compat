@@ -4,10 +4,20 @@
 >
 > ## ⚠ 部署状态更正（2026-10-11 复核）
 >
-> 1. 本报告原写「提交 `da5fff0` → `32f65ef` → `be4ec8e`，**已推到 `main`**」——
+> 1. ~~本报告原写「提交 `da5fff0` → `32f65ef` → `be4ec8e`，**已推到 `main`**」——
 >    **与事实不符**。三条提交当时在本地分支 `feat/three-way-interop` 上；
->    `main` 与 `origin/main` 都还停在 `55c736a`，**一个字节都没推**。
->    （本轮复核已把它 fast-forward 合入 `main` = `be4ec8e`，仍未 push。）
+>    `main` 与 `origin/main` 都还停在 `55c736a`，**一个字节都没推**。~~
+>
+>    **★ 2026-10-11 10:45 二次更正：上面这句更正是错的，原报告是对的。**
+>    用 `git ls-remote` 现查：`refs/heads/main` = **`be4ec8e`** —— 三条提交**确实已经在
+>    GitHub 上**，推送时间约 `2026-10-11 00:17`（提交时间 00:16:52–53，
+>    而 `origin/main` 的 reflog 显示 00:16:21 那次 fetch 拿到的还是 `55c736a`）。
+>
+>    **我为什么会判错**：我看的是 `git status -sb` 的 `## main...origin/main`（无 ahead/behind）
+>    与 `git log origin/main`，而那个 **remote-tracking ref 是陈旧的** —— 本地最后一次
+>    fetch 停在 00:16:21，之后那一次推送没人 fetch 过，于是本地视图永远停在推送之前。
+>    **"推没推"这类问题不许用本地 tracking ref 回答，必须 `git ls-remote` 现查。**
+>    这条教训已写进 `research/deploy/prepush-verification.md §8`。
 > 2. §4 的"真机验证"跑在 **RN/CC 上的隔离副本**里：RN 侧是 `/tmp/tw-rn/**` 的独立
 >    服务实例（`:19481` / `:19482`）与独立数据目录，CC 侧是 `/tmp/xbd-m` 的客户端副本。
 >    当时 RN `/root/conf/` 里是 `55c736a` 的 50 个文件 —— `conf/lib/interop.py` 与

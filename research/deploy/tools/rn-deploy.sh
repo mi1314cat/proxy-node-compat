@@ -91,6 +91,14 @@ cp -a "$STAGE/dist-x/conf/." /root/conf/ && ok "X  conf/ → /root/conf/"
 cp -a "$STAGE/dist-x/xray-panel.sh" /root/xray-panel.sh && chmod +x /root/xray-panel.sh && ok "X  xray-panel.sh"
 cp -a "$STAGE/dist-m/src/." /root/catmi/mihomo/src/ && ok "M  src/ → /root/catmi/mihomo/src/"
 cp -a "$STAGE/dist-sb/src/conf/." /root/catmi/sing-box/conf/ && ok "SB conf/ → /root/catmi/sing-box/conf/"
+# ★ 跨目录依赖：服务端 conf/share.sh 的发布链要 import compat2（conf/uri_express.py:49），
+#   而 compat2.py 与 lib/proxy_node_compat/ 在仓库里属 **src/client/**，不在 src/conf/。
+#   只按目录分发会漏掉它们 —— 症状是 conf/share.sh create-all 报
+#   `ModuleNotFoundError: No module named 'compat2'` 并"拒绝静默发布"（真机实测）。
+cp -a "$STAGE/dist-sb/src/client/compat2.py" /root/catmi/sing-box/conf/compat2.py \
+  && ok "SB conf/compat2.py（来自 src/client/）"
+cp -a "$STAGE/dist-sb/src/client/lib/." /root/catmi/sing-box/conf/lib/ \
+  && ok "SB conf/lib/（含 proxy_node_compat/）"
 cp -a "$STAGE/dist-sb/src/sing-box.sh" /root/catmi/sing-box/sing-box.sh && ok "SB sing-box.sh"
 cp -a "$STAGE/dist-sb/install.sh" /root/catmi/sing-box/install.sh && ok "SB install.sh"
 chmod +x /root/conf/*.sh /root/conf/lib/*.sh /root/catmi/mihomo/src/*.sh /root/catmi/mihomo/src/lib/*.sh \
@@ -113,7 +121,10 @@ verify() {              # $1=源目录 $2=目标目录 $3=名字
 }
 verify "$STAGE/dist-x/conf"      /root/conf                "X/conf/"
 verify "$STAGE/dist-m/src"       /root/catmi/mihomo/src    "M/src/"
-verify "$STAGE/dist-sb/src/conf" /root/catmi/sing-box/conf "SB/conf/"
+verify "$STAGE/dist-sb/src/conf"   /root/catmi/sing-box/conf   "SB/conf/"
+verify "$STAGE/dist-sb/src/client/lib" /root/catmi/sing-box/conf/lib "SB/conf/lib/"
+cmp -s "$STAGE/dist-sb/src/client/compat2.py" /root/catmi/sing-box/conf/compat2.py \
+  && ok "SB conf/compat2.py 逐字节一致" || bad "SB conf/compat2.py 不一致"
 cmp -s "$STAGE/dist-x/xray-panel.sh" /root/xray-panel.sh && ok "xray-panel.sh 逐字节一致" || bad "xray-panel.sh 不一致"
 
 # ---------------------------------------------------------------- 5. 服务未动

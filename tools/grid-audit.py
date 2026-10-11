@@ -59,6 +59,28 @@ def parse_decl(url: str) -> dict:
     return {"base": base, "decl": flat, "query": flat}
 
 
+def resolve_ref(ref: str, base: str) -> str:
+    """把 `url-<fmt>` 的相对引用按**主地址的 scheme://netloc** 拼成绝对地址。
+
+    契约（2026-10-11，三家逐条相同）：只认"**单个 `/` 开头且原样末段非空**"。
+    `//other.host/x`（协议相对）、`/share/`、`../x`、`x/y` 一律**原样返回** ——
+    不许猜、不许 urljoin。拼不出来就让下游按 `bad-native-url` 处理。
+
+    ★ 判据必须看**原样**末段：先 `rstrip("/")` 再看末段的话，`/share/` 会变成
+      "末段=share" 被判成合法路径，拼出 `http://h:9443/share/` 这条**看起来合法**的死链
+      （X 侧第一版就是这么错的，门禁当场红）。
+    """
+    if not ref.startswith("/") or ref.startswith("//"):
+        return ref
+    last = ref.rsplit("/", 1)[-1]
+    if not last:
+        return ref
+    u = urllib.parse.urlsplit(base)
+    if not u.scheme or not u.netloc:
+        return ref
+    return "%s://%s%s" % (u.scheme, u.netloc, ref)
+
+
 def check_decl(name: str, url: str) -> tuple[list[str], dict]:
     """→ (问题列表, 归一化后的声明)。问题为空 = 合法。"""
     bad: list[str] = []
@@ -103,15 +125,19 @@ def check_decl(name: str, url: str) -> tuple[list[str], dict]:
     for f in fmts:
         if f == "uri":
             continue
-        u = d.get("url-%s" % f, "")
-        if not u:
+        raw = d.get("url-%s" % f, "")
+        if not raw:
             bad.append("声明了格式 %s 却没给 url-%s" % (f, f))
             print("   \033[31m✗\033[0m 声明了 %s 却没有 url-%s" % (f, f))
-        elif not re.match(r"^https?://", u):
-            bad.append("url-%s 不是 http(s): %r" % (f, u))
-            print("   \033[31m✗\033[0m url-%s 不是 http(s): %r" % (f, u))
+            continue
+        u = resolve_ref(raw, p["base"])
+        rel = "" if u == raw else "  （相对引用，按主地址 origin 拼成绝对地址）"
+        if not re.match(r"^https?://", u):
+            bad.append("url-%s 不是可用的 http(s) 地址: %r" % (f, u))
+            print("   \033[31m✗\033[0m url-%s 不是可用的 http(s) 地址: %r" % (f, u))
         else:
-            print("   \033[32m✓\033[0m url-%s = %s" % (f, u))
+            print("   \033[32m✓\033[0m url-%s = %s%s" % (f, u, rel))
+        d["url-%s" % f] = u
     if dist and fmts and dist not in fmts:
         # 不是错误：fork 的客户端本来就不该拿原生。但要看得见。
         print("   \033[33m!\033[0m distribution=%s 不在 formats 里 —— 同内核同发行版的客户端也拿不到原生" % dist)
@@ -141,14 +167,28 @@ def body_kind(body: bytes) -> str:
                 return "base64(URI 列表, %d 行)" % len(lines)
         except Exception:                                     # noqa: BLE001
             pass
-    lines = [x for x in s.splitlines() if x.strip()]
-    if lines and all(any(x.startswith(sc + "://") for sc in URI_SCHEMES) for x in lines):
-        return "URI 列表(%d 行, 明文)" % len(lines)
+    # 明文 URI 列表：允许 `#` 注释行与空行（**但要把注释数报出来** ——
+    # "普通话"如果三家各带各的方言，第三方解析器的容忍度就是个必须验证的前提，
+    # 而不是可以假设的东西）。
+    body = [x for x in s.splitlines() if x.strip() and not x.lstrip().startswith("#")]
+    comments = sum(1 for x in s.splitlines() if x.strip().startswith("#"))
+    if body and all(any(x.startswith(sc + "://") for sc in URI_SCHEMES) for x in body):
+        return "URI 列表(%d 行, 明文%s)" % (
+            len(body), ", 另有 %d 行 # 注释" % comments if comments else "")
     try:
         obj = json.loads(s)
         if isinstance(obj, dict) and "outbounds" in obj:
-            return "sing-box JSON(outbounds=%d%s)" % (
-                len(obj["outbounds"]),
+            ob = obj["outbounds"] or []
+            # Xray 的出站用 `protocol`；sing-box 用 `type`。两家都叫 outbounds，
+            # 不区分的话会把 Xray 原生产物报成 sing-box —— 这正是"看起来像"的坑。
+            if ob and isinstance(ob[0], dict) and "protocol" in ob[0]:
+                fam = "Xray JSON"
+            elif ob and isinstance(ob[0], dict) and "type" in ob[0]:
+                fam = "sing-box JSON"
+            else:
+                fam = "outbounds JSON(家族不明)"
+            return "%s(outbounds=%d%s)" % (
+                fam, len(ob),
                 ", interop=%s/kernel=%s" % (obj.get("interop"), obj.get("kernel"))
                 if "interop" in obj else "")
         if isinstance(obj, dict) and "proxies" in obj:

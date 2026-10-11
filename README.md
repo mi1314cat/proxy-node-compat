@@ -80,6 +80,7 @@ Runtime Support       该版本内核运行时是否真的生效（可能静默�
 | `docs/07-version-and-failure-model.md` | Phase 1：版本维度与失败模式模型 |
 | `docs/three-way-interop.md` | **三家互通规范**：在订阅地址上声明内核；同内核走原生、跨内核走"普通话"URI |
 | `docs/interop-conformance.md` | **三家互通 · 协议一致性**：公共语料 + 跨实现比对台 + 已抓到过的真实漂移 |
+| `docs/08-translation-scope.md` | **翻译能力的范围与推迟**（需求溯源：原始想法是「判定 + 翻译」，本轮只做判定，以及将来要加翻译的前置条件） |
 | `research/` | Phase 1 研究：三家官方文档与源码能力清单 |
 | `research/empirical/` | 真内核实测证据（配置校验 + 语义回环） |
 | `research/integration/` | 三个内核接入 compat / 三家互通的实施与真机验收报告 |
