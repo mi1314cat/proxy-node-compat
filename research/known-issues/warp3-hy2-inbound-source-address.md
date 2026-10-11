@@ -1,23 +1,55 @@
-# hysteria2(IPv6) 入站回包源地址漂移 —— catmi-warp3 策略路由导致的"单协议单地址族不通"
+# hysteria2 走 IPv6 不通 —— 通配绑定 UDP 入站的回包源地址被 WARP 策略路由夺走
 
-> 调查时间：2026-10-11 / 12（本地 CST）｜调查对象：RN（`ssh rn`，107.173.154.178）+ CC（`ssh CC`，192.168.1.178）
-> 触发问题：**SB 内核建的 hysteria2 节点，只有走 IPv6 时不通**；同一个节点走 IPv4 完全正常。
-> 相关脚本：`mi1314cat/One-click-script` → `warp/catmi-warp3.sh`（sha256 前 16 位 `9cc809e6dac553fb`，4457 行）
-> RN 上实际安装的版本：`/usr/local/bin/catmi-warp3`（243894 字节，2026-09-16）
+> 调查时间：2026-10-11 / 12（本地 CST）
+> 调查对象：RN（`ssh rn`，107.173.154.178，**授权测试服**）+ CC（`ssh CC`，192.168.1.178，客户端）
+> 触发问题：**sing-box 内核建的 hysteria2 节点，只有走 IPv6 不通**；同一节点走 IPv4 完全正常；服务器上另外 17 个节点无论 v4/v6 都正常。
+> 相关脚本：`catmi-warp3`（RN 上 `/usr/local/bin/catmi-warp3`，243894 字节，2026-09-16）；GitHub 侧 `mi1314cat/One-click-script` → `warp/catmi-warp3.sh`
+> **本次已对上一版文档做了一处重要更正**（规则归属），见 §0 末尾与 §3.3。
 
 ---
 
 ## 0 · 一句话结论
 
-**不是 hy2 参数错，也不是"IPv6 坏了"。** 是 RN 上的策略路由有一条"**未打标的 IPv6 流量默认送 WARP**"的规则，
-而 hysteria2 的回包是从**通配地址 socket**发出的 —— 内核给它选了 WARP 的源地址
-（`2606:4700:…`），客户端发的却是 `2001:470:…`，QUIC 客户端**只认自己发过去的那个地址**，
-回包一律丢弃 ⇒ 握手永远完不成 ⇒ 15 秒超时。
+RN 的策略路由对 **IPv4 和 IPv6 采用了相反的默认策略**：
 
-这条规则**不是 catmi-warp3 装的**（V3 是白名单 `fwmark 0x3 → cw3`），是 **fscarmen warp-go 注入的**
-`not fwmark 0xc350 → cw3` —— V3 的代码里**明确记录过这个冲突**（第 1856–1937 行），也提供了处置方案。
-**但 V3 现有的那道"入站保护"救不了 hysteria2**：它是**基于 conntrack** 的，而 hy2 的失效恰好发生在
-conntrack 能匹配上之前。**这一条按你"禁止影响入站"的标准，算必须修的缺陷。**
+```
+v4  32765: not from all fwmark 0xc350 lookup main    ← 未打标 → 直连（WARP 是"白名单 opt-in"）
+v6  32765: not from all fwmark 0xc350 lookup cw3     ← 未打标 → WARP（cw3 的默认路由是 dev warp）
+```
+
+而 **hysteria2 的回包是从"通配地址监听 socket"发出的**：这类 socket 在回包时**没有指定源地址**，
+源地址要由**路由决策**来定。于是：
+
+1. 内核问路由表"发往客户端 `2409:8a20:…` 该用什么源？"
+2. 源地址此刻**还不知道** ⇒ 按源地址分流的保护规则 `32762: from 2001:470:c:cf::/64 lookup main` **永远匹配不上**；
+3. 掉进 `32765` ⇒ 走 `cw3` ⇒ `dev warp` ⇒ 源地址被选成 **`2606:4700:110:822e:a614:76df:2b40:41fb`**（WARP 的地址）；
+4. 客户端 QUIC 只认自己发过去的地址 `2001:470:c:cf:bf47:d1e0:cd4d:c6db`，回包源不对 ⇒ **直接丢弃** ⇒ 握手永远完不成 ⇒ 15 秒超时。
+
+**抓包实证（同进程内 hy2/tuic 双入站，两者都 `listen: "::"`）**：
+
+```
+hy2  :35926   he-ipv6 In  2409:8a20:…:30777 > 2001:470:c:cf:bf47:….35926
+              warp    Out 2606:4700:110:822e:a614:76df:2b40:41fb.35926 > 2409:8a20:…:30777   ← ★ 源被夺走
+tuic :35930   he-ipv6 In  2409:8a20:…:29480 > 2001:470:c:cf:bf47:….35930
+              he-ipv6 Out 2001:470:c:cf:bf47:d1e0:cd4d:c6db.35930 > 2409:8a20:…:29480           ← ★ 源正确
+```
+
+**为什么只有这一个节点？** 因为**全服务器上只有它在 IPv6 上监听**：
+
+| 内核 | 同类 UDP 节点 | 监听地址 |
+|---|---|---|
+| **sing-box**（`-C /root/catmi/sing-box/config`） | **hysteria2 :25926** | **`::`（v4+v6 通配）← 全服务器唯一** |
+| sing-box | tuic :25930 | `::`（协议栈自己回填目的地址，**免疫**，见 §2.3） |
+| mihomo（`/root/catmi/mihomo/conf/config.yaml`） | hysteria2 :20534、tuic :20535 | **`0.0.0.0`（纯 IPv4）** |
+| xrayls（`-confdir /root/catmi/xray/conf`） | hysteria :15110 / 40784 / 31879 / 29604 | **`0.0.0.0`（纯 IPv4）** |
+
+⇒ 另外两个内核的 hysteria2/hysteria 节点**根本不接受 IPv6 连接**，所以永远遇不到这个失效模式。
+**它们是"没监听"，不是"没问题"** —— 哪天把它们的 `listen` 改成 `::`，同样的失效会立刻出现（§7.3）。
+
+> **对上一版的更正**：上一版把 `not fwmark 0xc350 → cw3` 归因于 **fscarmen warp-go 注入**。
+> 这是**错的**。经查 `catmi-warp3` 第 1892–1938 行，**这条规则是 V3 自己装的**，而且是**按地址族参数化**的
+> （`[[ "$f" == "6" && "$DEFAULT_OUTBOUND_V6" == "warp" ]]`）—— 这恰好解释了 v4/v6 那条相反的行为。
+> 详见 §3.3 的三条独立佐证。
 
 ---
 
@@ -29,206 +61,327 @@ conntrack 能匹配上之前。**这一条按你"禁止影响入站"的标准，
 | tuic01-TLS | **UDP / QUIC** | ✅ 204 | ✅ 204 |
 | **hysteria2-01-TLS** | **UDP / QUIC** | ✅ **204**（出口 `104.28.201.80`） | ❌ **000**（`context deadline exceeded`，15s） |
 
-- 服务端一侧全部正常：`sing-box check` 通过、`ss -lunp` 里 `*:25926` 在听、防火墙 UDP/TCP 都放行、
-  证书有效（`/home/web/certs/moontv.6896698.xyz_cert.pem`，到期 2027-01）。
-- 同一份客户端参数（密码 / `obfs=salamander` / `sni` / `alpn=h3`）**只换服务器地址**，IPv4 就 204。
-  ⇒ **hy2 自己的配置没有错。**
+- 服务端全部正常：`sing-box check` 通过、`ss -lunp` 里 `*:25926` 在听、防火墙放行、证书有效（`/home/web/certs/moontv.6896698.xyz_cert.pem`，到期 2027-01）。
+- 同一份客户端参数（密码 / `obfs=salamander` / `sni` / `alpn=h3`）**只换服务器地址**，IPv4 就 204 ⇒ **hy2 自己的配置没有错**。
+- **端口无关**：在备用端口 35926 上复现同一现象（§3.5）。
 
 ---
 
-## 2 · 证据链（层层收窄，每一步都有原始输出）
+## 2 · 根因
 
-### 2.1 抓包：回包源地址被换掉了
+### 2.1 v4 / v6 策略相反，而且这是同一份配置产生的
 
-RN 上 `tcpdump -ni any "udp and (port 25926 or port 25930)"`，同时让 CC 尝试两个节点：
+`/etc/catmi/warp3/config/main.conf`：
 
 ```
-# hy2（不通）
-he-ipv6 In  2409:8a20:…:29655 > 2001:470:c:cf:bf47:d1e0:cd4d:c6db.25926   UDP 1258
-warp    Out 2606:4700:110:822e:a614:76df:2b40:41fb.25926 > 2409:8a20:…:29655  ← ★ 源地址变成 WARP 的
-# tuic（通，对照）
-he-ipv6 In  2409:8a20:…:65154 > 2001:470:c:cf:bf47:d1e0:cd4d:c6db.25930   UDP 1280
-he-ipv6 Out 2001:470:c:cf:bf47:d1e0:cd4d:c6db.25930 > 2409:8a20:…:65154       ← 源地址正确
+DEFAULT_OUTBOUND_V4=warp
+DEFAULT_OUTBOUND_V6=warp
 ```
 
-### 2.2 路由表：内核自己说会这么选
+**两个都写着 warp，装出来的规则却是相反的** —— 因为脚本里那条规则带了地址族条件
+（`/usr/local/bin/catmi-warp3` 第 1904–1909 行，原文照抄）：
+
+```bash
+# C 规则按 v6 默认方向参数化:
+#   V6=warp: 未标 → cw3 (v6 默认走 WARP; 关键: 让决策期就选 warp 接口的合法源地址,
+#            否则 main 选 he 源 → reroute 后源不变 → CF 拒绝非账号源 → v6 超时)
+#   其余:    未标 → main (原生)
+local c_dst="main"
+[[ "$f" == "6" && "$DEFAULT_OUTBOUND_V6" == "warp" ]] && c_dst="$TABLE_NAME"
+```
+
+`DEFAULT_OUTBOUND_V4=warp` **在这条规则上完全不生效**（`f == "6"` 把它挡掉了），
+所以 v4 侧"未打标 → main"、v6 侧"未打标 → cw3"。
+
+### 2.2 决策期没有源地址，按源地址的保护就是循环依赖
+
+脚本第 1910–1912 行的注释说明作者**知道这个坑**，并做了保护：
+
+```bash
+# v6: 原生 v6 上游接口 (he-ipv6 等) 的全局地址段 → main, 优先级压在前置 (need-3) 之前。
+# 入站服务回包源是这些地址, 若被 C 规则抓进 WARP, CF 拒收非账号源 → 入站死。
+# 必须在决策期就命中原口; 老版本位置一并清理。
+```
+
+装出来的就是 `32762: from 2001:470:c:cf::/64 lookup main`。
+**它救得了回包源地址已知的情况，救不了"源地址等着路由来定"的通配 UDP socket**：
+
+> 规则要匹配 `from 2001:470:c:cf::/64`，可这个包**正因为源地址还没确定才来查路由** ——
+> 谁先谁后是个死循环。于是它必然落到 `32765`，源地址被选成 WARP 的。
+
+这是**结构性缺口**，不是"保护装漏了"。
+
+### 2.3 为什么 TCP 和 tuic 都没事 —— 同进程对照实验（本轮新增，关键）
+
+在 RN 上起了**一个临时 sing-box 进程**，里面放**两个入站**：hy2 :35926 与 tuic :35930，
+**同一个进程、同一份证书、同样的 `listen: "::"`**，从同一个客户端打：
+
+| 入站（同进程） | 绑定 | 结果 |
+|---|---|---|
+| hysteria2 :35926 | `::` | ❌ **000**（15s 超时） |
+| tuic :35930 | `::` | ✅ **204**（出口 `104.28.201.80`） |
+
+⇒ **差异不在绑定地址、不在进程/服务环境、不在证书、不在端口**，而在**协议栈自己的发送路径**：
+
+* **TCP 类（anytls / vless / trojan / vmess / naive / shadowtls）**：accept 出来的连接 socket 本地地址已固定，
+  回包源地址取自 socket 而不是路由 ⇒ **天然免疫**。
+* **tuic**：回包时**带上了收到包时的目的地址**（`IPV6_PKTINFO` 语义），源地址正确 ⇒ 免疫。
+* **hysteria2**：回包**没有指定源地址** ⇒ 交给内核按路由挑 ⇒ 被 `cw3` 抓走 ⇒ 源地址漂移。
+
+> **诚实标注**：上面三行的**行为差异是实测的**（同进程对照 + 抓包）；
+> "tuic 回填了目的地址、hy2 没回填"是**对实测行为最合理的机制解释**，
+> **我没有逐行核对上游 sing-box 源码**（见 §8.1）。
+
+### 2.4 自锁：conntrack / mangle 那一层为什么也救不回来
+
+源地址错了以后，事情会**自我锁死**（这是一次尝试里出现的**两条** conntrack 表项）：
+
+```
+① src=2409:8a20:…:2(CC) dst=2001:470:c:cf:bf47:… sport=44917 dport=25926 [UNREPLIED]
+   回程元组 src=2001:470:c:cf:bf47:… → mark=4   ← 入站打标成功
+② src=2606:4700:110:822e:…(WARP) dst=2409:8a20:…:2 sport=25926 dport=44917 [UNREPLIED]
+   回程元组 src=2409:8a20:…:2 → mark=3          ← 回包换了源，另起一条
+```
+
+mangle 计数器（一次 hy2 尝试前后差值）：
+
+```
+hy2  尝试: +2 包 → MARK set 0x3（兜底送 WARP）; connmark match 0x4/0x4 命中 0
+tuic 尝试: +20 包 → connmark match 0x4/0x4 → MARK set 0x4 → RETURN
+INPUT -i he-ipv6 CONNMARK --set-xmark 0x4/0x4: hy2 尝试 +12 包（打标本身是成功的）
+```
+
+⇒ **入站打标成功，但回包那一步的 connmark 匹配永远不命中**（回包 tuple 已经不是 ① 了），
+落到兜底 `MARK 0x3`，继续走 WARP。**源地址错 → conntrack 对不上 → 保护用不上 → 源地址继续错。**
+
+这一层是 §2.2 那个结构性缺口的**后果**，不是独立原因。
+
+---
+
+## 3 · 证据清单（每一步都有当次原始输出）
+
+### 3.1 抓包：回包源地址被换掉
+
+**（a）生产节点对照**（`tcpdump -ni any 'udp and (port 25926 or port 25930)'`）：
+
+```
+he-ipv6 In  2409:8a20:…:29655 > 2001:470:c:cf:bf47:….25926
+warp    Out 2606:4700:110:822e:a614:76df:2b40:41fb.25926 > 2409:8a20:…:29655   ← hy2：源被夺走
+he-ipv6 In  2409:8a20:…:65154 > 2001:470:c:cf:bf47:….25930
+he-ipv6 Out 2001:470:c:cf:bf47:d1e0:cd4d:c6db.25930 > 2409:8a20:…:65154         ← tuic：源正确
+```
+
+**（b）同进程对照**（§2.3 的临时实例，两个入站都 `listen: "::"`）：
+- 端口 35926：`he-ipv6 In` 若干 → **`warp Out` 源 `2606:4700:110:822e:…`**
+- 端口 35930：**`he-ipv6 In` 15 包 / `he-ipv6 Out` 15 包**，无任何 warp 出口报文
+
+### 3.2 路由决策期：内核自己说会这么选
 
 ```console
-$ ip -6 route get 2409:8a20:1c93:5460::2
+$ ip -6 route get 2409:8a20:1c93:5460::2 from ::
   2409:8a20:1c93:5460::2 from :: dev warp table cw3 src 2606:4700:110:822e:… metric 1024
-
-$ ip -6 rule show
-  0:     from all lookup local
-  17:    from all fwmark 0x4/0x4 lookup main          ← 入站回程标记 → main（V3 的 IMARK 保护）
-  50:    from all oif he-ipv6 lookup main             ← bind 保护（V3 装的）
-  32762: from 2001:470:c:cf::/64 lookup main          ← 按源地址走 main（V3 装的）
-  32763: from all oif warp lookup cw3
-  32764: from all fwmark 0x3 lookup cw3               ← ★ V3 的白名单：只有打了 0x3 的才走 WARP
-  32765: not from all fwmark 0xc350 lookup cw3        ← ★★ 元凶：没有 0xc350 的**全**走 cw3
-  32766: from all lookup main
 
 $ ip -6 route show table cw3
   default dev warp
 ```
 
-关键在 **32765** 这一条：它是"**黑名单式**"的 —— 只要流量没打上 `0xc350` 标记，就被送进 `cw3` 表，
-而 `cw3` 的默认路由是 `dev warp`。对一个**通配地址**（`listen: "::"`）的 UDP socket，
-回包时源地址要到路由选完之后才定 —— 于是 `32762`（按源地址走 main）**匹配不上**，掉进 `32765` → warp。
+### 3.3 规则归属：是 V3 装的，不是 fscarmen（对上一版的更正）
 
-> 顺带确认：**防火墙不是原因**。两个端口在 `ip6tables` 里都没有专门规则，而 tuic 通；
-> 抓包也证明 hy2 的入站包**已经到达本机**（nft 里那条 `udp dport 25926 … accept` 计数 49 包，与抓包吻合）。
+三条独立佐证：
 
-### 2.3 mangle 计数器：V3 的入站保护对 hy2 **一次都没命中**
+1. **优先级算术完全吻合**。脚本第 1937 行是 `rule add prio $((need - 1)) not fwmark 0xc350 lookup "$c_dst"`，
+   其中 `need` 取"最小 prio 的、不含 fwmark/oif 的 `lookup main` 规则"（第 1893–1896 行）。
+   当前该值为 `32766`（`from all lookup main`），于是 C 规则正好落在 **32765**；
+   同一批"前置规则"的 `oif warp → cw3` 落在 `need-3`＝**32763**、`fwmark 0x3 → cw3` 落在 `need-2`＝**32764**。
+   **三条规则的位置与脚本算术一一对应**：
 
-RN 上 `ip6tables -t mangle -L CATMI3-OUT -n -v -x` 在"一次 hy2 尝试"前后的差值：
+   ```
+   0:     from all lookup local
+   17:    from all fwmark 0x4/0x4 lookup main       ← V3 的 IMARK 入站保护
+   50:    from all oif he-ipv6 lookup main          ← V3 的 bind 保护
+   32762: from 2001:470:c:cf::/64 lookup main       ← V3 的入站保护 (need-4)
+   32763: from all oif warp lookup cw3              ← V3 (need-3)
+   32764: from all fwmark 0x3 lookup cw3            ← V3 (need-2)
+   32765: not from all fwmark 0xc350 lookup cw3     ← V3 (need-1) ★
+   32766: from all lookup main
+   ```
 
-```
-hy2  尝试:  +2 包 → MARK set 0x3（兜底：送 WARP）        ；connmark 0x4 那条规则命中 **0**
-tuic 尝试:  +20 包 → connmark match 0x4/0x4 → MARK set 0x4 → RETURN（走 main）
-INPUT -i he-ipv6 CONNMARK --set-xmark 0x4/0x4：hy2 尝试 +12 包（**打标是成功的**）
-```
+2. **地址族条件行为吻合**。v4 侧同一条规则是：
 
-也就是说：**入站打标成功了，但回包那一步匹配不上那条 connmark 规则**。
+   ```
+   v4  32765: not from all fwmark 0xc350 lookup main
+   ```
 
-### 2.4 conntrack：一次尝试里出现了**两条**表项
+   同样是 `need-1`（v4 的 `need` 也是 32766），但目标是 **`main`** —— 与 `[[ "$f" == "6" && "$DEFAULT_OUTBOUND_V6" == "warp" ]]` 完全一致。
+   如果是 fscarmen 注入的，v4/v6 不会出现这种"正好按地址族相反"的形态。
 
-`/proc/net/nf_conntrack` 采样（同一次 hy2 尝试）：
+3. **脚本自带说明**。第 1905–1907 行注释原文："V6=warp: 未标 → cw3 (v6 默认走 WARP…)"，
+   第 1938 行的日志串是 `前置规则 (fam$f): oif/fwmark→cw3 + 未标→$c_dst @ prio …` —— 装的就是这一组。
 
-```
-① src=2409:8a20:…:2 (CC) dst=2001:470:c:cf:bf47:… sport=44917 dport=25926 [UNREPLIED]
-   回程元组: src=2001:470:c:cf:bf47:… dst=2409:8a20:…:2 sport=25926 dport=44917
-   mark=4        ← 入站标记成功（V3 的 INPUT 规则起了作用）
+> fscarmen warp-go 的冲突确实存在，但脚本第 1856/1861 行说得很清楚，它注入的是
+> `not fwmark 0xc350 lookup 50000`（**另一张表**）—— 与本题这条 `→ cw3` 不是同一条。
 
-② src=2606:4700:110:822e:… (WARP) dst=2409:8a20:…:2 sport=25926 dport=44917 [UNREPLIED]
-   回程元组: src=2409:8a20:…:2 dst=2606:4700:110:822e:… sport=44917 dport=25926
-   mark=3        ← 回包从 WARP 源地址出去，另起了一条表项，没有入站标记
-```
+### 3.4 入站保护"装了、也在打标，但救不了"
 
-**这就是机制**：回包的源地址被换成了 WARP 的地址之后，它**不再匹配 ① 的回程元组**，
-于是 conntrack 新建了 ②；而 V3 的保护规则查的是 connmark（`-m connmark --mark 0x4/0x4`），
-② 上没有这个标记 ⇒ 保护失效 ⇒ 落到兜底 `MARK 0x3` ⇒ 继续走 WARP ⇒ 源地址一直是错的。
+见 §2.4 的计数：`INPUT -i he-ipv6 CONNMARK --set-xmark 0x4/0x4` 对 hy2 尝试 **+12 包**（打标成功），
+而回包侧 `connmark match 0x4/0x4` **命中 0 次**。⇒ 是"保护被绕过"，不是"没装保护"。
 
-**这是一条自锁的环路**：源地址错了 → conntrack 匹配不上 → 保护用不上 → 源地址继续错。
+### 3.5 A/B 实验：全部在**备用端口 + 临时进程**上做，生产零影响
 
-### 2.5 A/B 实验（在**备用端口**上起独立实例，不动生产）
-
-| 实例 | `listen` | 从 CC 走 IPv6 | 内核预测 |
+| # | 配置 | 从 CC 走 IPv6 | 说明 |
 |---|---|---|---|
-| A（= 现配置） | `"::"` | ❌ 000 | `dev warp table cw3 src 2606:4700:…` |
-| B | `"2001:470:c:cf:bf47:d1e0:cd4d:c6db"` | ✅ **204** | `dev he-ipv6 src 2001:470:…` |
+| A | `listen: "::"`，无任何额外规则 | ❌ 000 | 基线复现 |
+| B | `listen: "2001:470:c:cf:bf47:d1e0:cd4d:c6db"` | ✅ 204 | 绑具体地址即可 |
+| C | 同 A，另加 `sport 35926 lookup main` | ✅ **204**（出口 `104.28.201.80`） | §4-C |
+| D | 同 A，撤掉该规则再测 | ❌ 000 | **因果闭合（A→C→A）** |
 
-**换端口没用**：A 用 35926、B 用 35927，差别只在 `listen` 是通配还是具体地址 —— 端口与本题无关。
-
----
-
-## 3 · 为什么"只有 hy2"？（tuic 同样是 UDP/QUIC 却没事）
-
-这是整件事里最关键、也最反直觉的一点。实测结论是：
-
-* **TCP 类（anytls / vless / trojan）**：入站连接的路由在三次握手时就固定了，回包天然带着入接口的源地址 ⇒ 不受影响。
-* **tuic**：**回包保住了正确的源地址**（抓包与 conntrack 都证实）⇒ 回包匹配得上 ① 号表项 ⇒
-  V3 的 `connmark 0x4` 保护命中（计数器 +20）⇒ 走 main ⇒ 通。
-* **hysteria2**：回包是从**共享的通配地址 QUIC socket** 发出的，源地址由路由现选 ⇒ 被 32765 抓进 WARP ⇒ 源地址漂移 ⇒ 保护失效 ⇒ 不通。
-
-> **未验证**：sing-box 内部为什么 tuic 与 hysteria2 在这点上不同（推测是 tuic 每个会话用独立的
-> 已连接/已绑定 UDP socket，而 hysteria2 复用监听 socket 回包）。**这一条我没有证到**，
-> 只是"实测行为不同"这一点是确定的。
+**端口与本题无关**：A 用 35926、B 用 35927，差别只在 `listen`。
 
 ---
 
-## 4 · 这是不是 catmi-warp3 的问题？
+## 4 · 已验证的修法（含验证状态与部署风险）
 
-**分三层说清楚，不推责也不揽责：**
+| # | 做法 | 验证状态 | 部署风险 |
+|---|---|---|---|
+| **A** | **这条链接改走 IPv4**（面板「客户端产物 → 9) 切换产物地址族」；或只把 hy2 这条链接的地址改成 `107.173.154.178`） | ✅ 已实测（hy2/anytls/tuic v4 全 204） | 无。但等于放弃该节点的 IPv6 |
+| **B** | **hy2 入站 `listen` 绑具体 IPv6 地址**，再加一个 `0.0.0.0` 的同端口入站保留 v4 | ✅ 已实测（v6 204 + **v4 204**），**已应用在 RN 生产节点上** | ⚠ **面板重建这个节点时会被覆盖回 `::`**，v6 会**静默**再次失效（v4 照常，不易发现） |
+| **C** | **按源端口在路由决策期改走原生表**：`ip -6 rule add prio 32761 sport <hy2端口> lookup 100` + 表 100 里放 he-ipv6 的默认路由 | ✅ 已实测 A/B/A（000→204→000），区间写法 `sport 35920-35930` 也实测通过 | ⚠ 规则**重启即失效**，需配套 systemd 单元；**必须用独立表**，原因见 §5 |
+| **D** | 把 `not fwmark 0xc350` 的 v6 目标从 `cw3` 改回 `main` | ⚠ **未实测**（从路由表推导可行） | ❗ 这会**改变 v6 的默认走向**（原本"未打标 → WARP"是 V3 有意为之，注释第 1905 行写着 CF 只认账号源），**影响面是全局 v6 出口，需你拍板** |
+| **E** | **面板侧修法**：让面板生成 hy2 节点时直接写具体监听地址（+ v4 第二个入站），即把 B 变成"面板的默认产物" | ⚠ **未实现**（属于 `sing-box-core` 面板改动） | 需要改面板模板并重建节点；但这是**唯一从源头消除**的办法 |
 
-1. **V3 的设计本身没问题，而且是"对的方向"。**
-   - V3 装的是**白名单**：`ip -6 rule add prio $RT_ANCHOR fwmark 0x3 table cw3`（脚本 1675 行）——
-     只有显式打了 0x3 的流量才走 WARP，其余落回 `main`。这种写法**不会**影响入站。
-   - V3 还专门为这个失效模式做了保护，脚本第 46–48 行的原话：
-     ```
-     IMARK="4"   # fwmark 0x4 = 入站回程标记: 入站连接(he/eth0)的回包走 main,
-                 # 源=入站接口地址 — 防止 UDP 通配 socket 回包被 C 规则抓进 WARP 源漂移
-     ```
-     并且 `iptables/ip6tables -t mangle -I INPUT 1 -i "$up" -j CONNMARK --set-xmark 0x4/0x4`
-     在 RN 上**确实装了、也确实在打标**（2.3/2.4 有原始计数）。
+**推荐组合**：**先 C（三台服务器立刻可用、不碰节点配置）→ 再 E（治本）。**
+B 是应急，**单独用会留一颗雷**（面板一重建就复发）。
 
-2. **真正闯祸的是 fscarmen warp-go 注入的那条"黑名单"规则**，V3 的注释里点名过它：
-   ```
-   脚本 1856 行: # fscarmen warp-go (重)启时会注入 "not fwmark 0xc350 lookup 50000" (无标流量→其 WARP 表)
-   脚本 1861 行: #   C: not fwmark 0xc350 → main (未打标流量归原生; 0xc350 是 fscarmen 自用防环 mark, 不受影响)
-   ```
-   RN 上这条规则**存在，而且指向的是 `cw3`**（不是 `main`）—— 于是"没打标 = 默认走 WARP"生效了。
+**C 的可复制片段**（`/usr/local/sbin/catmi-inbound-reply-source`）：
 
-3. **但 V3 有一个真实缺口**：它的入站保护**是基于 conntrack 的**，
-   而通配 socket 的回包会在 conntrack 匹配**之前**就把源地址定成 WARP 的地址，
-   从而绕过这层保护。**对 hysteria2 这类协议，V3 的"禁止影响入站"承诺目前是破的。**
-   按你的标准，这算必须修的一条。
+```bash
+#!/bin/bash
+# 让"通配绑定 UDP 入站"的回包在路由决策期就拿到本机原生源地址。
+set -u
+TABLE_ID=100
+PORTS="25925-25941"     # 各内核节点端口段；用实际配置核对，别照抄
+UP=he-ipv6              # v6 原生上游接口
+GW=$(ip -6 route show default dev "$UP" 2>/dev/null \
+     | awk '{for(i=1;i<=NF;i++) if($i=="via") print $(i+1)}' | head -1)
+[ -n "$GW" ] || { echo "找不到 $UP 的默认网关"; exit 1; }
+ip -6 rule del prio 32761 2>/dev/null
+ip -6 route replace default via "$GW" dev "$UP" table "$TABLE_ID"
+ip -6 rule add prio 32761 sport "$PORTS" lookup "$TABLE_ID"
+echo "ok: sport $PORTS → table $TABLE_ID (via $GW dev $UP)"
+```
+
+配套单元（`/etc/systemd/system/catmi-inbound-reply-source.service`）：
+
+```ini
+[Unit]
+Description=catmi: inbound reply source fix (wildcard UDP over IPv6)
+After=network-online.target catmi-warp3-restore.service
+Wants=catmi-warp3-restore.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/catmi-inbound-reply-source
+
+[Install]
+WantedBy=multi-user.target
+```
+
+**注意设计取舍（试过、不行，写下来免得再试）**：
+**不要**用 `... lookup main` 这种朴素写法 —— 会在下次开机被 V3 反超（§5.1）。
 
 ---
 
-## 5 · 修复选项（含每一条的验证状态）
+## 5 · 部署时必须知道的坑
 
-| # | 做法 | 验证状态 |
-|---|---|---|
-| **A** | **把这个节点改成走 IPv4**（面板「客户端产物 → 9) 切换产物地址族」是全局开关；或只改 hy2 这一条链接的地址为 `107.173.154.178`） | ✅ **已实测**：hy2/anytls/tuic 三个节点走 IPv4 全部 204 |
-| **B** | **让 hy2 入站 `listen` 绑具体 IPv6 地址**（而不是 `"::"`）。代价：该节点的 IPv4 路径会没有，除非再加一个绑 `0.0.0.0` 的同端口入站 | ✅ **已实测**：备用端口 35927 上 `listen=具体v6` → 204 |
-| **C** | **把 fscarmen 那条规则从 `cw3` 改指 `main`** —— 这正是 V3 自己写的"冲突处置 C 选项"。改完：未打标流量落 `main`（原生、源地址正确），V3 的白名单 `fwmark 0x3 → cw3` 照旧把该走 WARP 的送 WARP | ⚠ **未实测**（从路由表推导应当可行；**动的是全局 WARP 分流，会影响 X/M 的 WARP 行为，我没有碰**） |
-| **D** | 在 V3 里加一条优先级更高的、按"本机出口地址 + 入站流"分流的规则 | ⚠ **未设计**（conntrack 路线已被证明不够，需要换机制） |
+### 5.1 V3 的"need 计算"会**追着**你新加的 `lookup main` 规则跑（实测）
 
-**建议顺序**：先 A（立刻可用、零风险）→ 再评估 C（治本，但要在你有空盯着的窗口里做，并且先备份路由/规则）。
+脚本第 1893–1896 行把 `need` 定义为"**最小 prio 的、不含 `fwmark|oif` 的 `lookup main` 规则**"，
+然后把 C 规则插到 `need-1`（**正好插在你前面**）。所以：
+
+* 你加 `prio 32761 sport … lookup main` → 下次开机 `need` 变成 32761 → **C 规则装到 32760 → 你的规则被反超 → 修法失效**。
+* **实测确认**：模拟它的取数逻辑，`need` 确实从 32766 变成 32761。
+* 想靠"规则里带 `fwmark` 字样"骗过它的 `grep -vE 'fwmark|oif'`：**也不行** ——
+  `ip -6 rule add … fwmark 0/0 lookup main` 虽然被接受，但 iproute2 **打印时把 `fwmark 0/0` 丢掉了**，
+  `ip -6 rule show` 出来仍是 `from all sport 35926 lookup main`，照样被算进 `need`。
+
+**⇒ 结论：要么用独立路由表（`lookup 100`，字面上不含 `lookup main`，已实测 `need` 保持 32766），
+要么直接改 V3 脚本**（把这类规则加进第 1892–1894 行的排除列表，和它处理自己那条 `from <段> lookup main` 的方式一样）。
+
+### 5.2 B 方案会被面板覆盖
+
+`hysteria2-01.json` 是面板生成的产物。下次在面板里重建/编辑这个节点，`listen` 会变回 `::`，
+**v6 立刻静默失效而 v4 正常**。要么改面板模板（E），要么叠一层 C 兜底。
+
+### 5.3 临时实例一定要用 PID 精确清理
+
+`pkill -f "<关键词>"` 会匹配到**承载这条命令的 ssh/bash 自身**（本次又踩了一次，
+在 CC 上把清场命令自己杀了，导致 `/tmp` 残留）。用 `ps -eo pid,args | grep '[s]ing-box'` 取 PID 再 `kill`。
 
 ---
 
-## 6 · 调查过程中踩过的坑（也写下来，免得下次重复）
+## 6 · 对三台服务器的建议
 
-1. **在 CC 上用 glob**：CC 的登录 shell 是 **zsh**，`rm -f /tmp/hy2t/*.log` 在文件不存在时会
-   `no matches found` 并**直接中断整条命令**（而不是像 bash 那样原样传参）。
-   ⇒ 后来一律改成 `ssh CC 'bash -s' <<'REMOTE'` 喂脚本。
-2. **`pkill -f` 匹配到自己的 ssh 命令行**：`pkill -f "sing-box run -c /tmp/hy2t"` 把承载这条命令的
-   bash 自己也杀了，ssh 会话断开、后半段命令没执行。出现过**两次**（一次在 CC，一次在 RN）。
-   ⇒ 改用 `[s]ing-box` 方括号技巧 + PID 文件。
-3. **在错误的机器上找文件**：把 RN 的 `/root/catmi/sing-box/out/` 路径拿到 CC 上去 `head`，全是空。
-4. **测试脚本里密码留空**：一个 anytls 对照用例把 `password` 拼成了空串，得到 000，
-   差点被当成"IPv4 也不通"的证据。⇒ 凭据从服务端配置里读，不要手抄。
-5. **`ping6 -W` 在 CC 上不存在**（busybox/coreutils 差异），第一次可达性测试直接报参数错。
-6. **PyYAML 会静默接受重复键**（另一个不相干的调查里踩到）：判断 YAML 合法性**不能**用
-   `yaml.safe_load` 是否抛异常，得用真内核（mihomo 用 go-yaml，会报
-   `mapping key "proxies" already defined`）。
+| 目标 | 动作 |
+|---|---|
+| **立刻可用** | 在**跑 sing-box 且 hy2 监听 v6** 的机器上装 §4-C（脚本 + 单元）。RN 上已在备用端口完整验证，未改任何全局路由 |
+| **治本** | 改面板模板（§4-E）：hy2 生成时就绑具体地址 + 补一个 `0.0.0.0` 入站 |
+| **顺手确认** | `ip -6 rule show \| grep 0xc350` —— 只要 v6 那条指向 `cw3`，这台机器上"通配绑定 UDP 走 v6"的节点就有同样风险 |
+| **X / M 机器** | 它们的 hysteria 类节点目前只绑 `0.0.0.0`（**不接受 v6**），所以**现在不会发作**。若将来要开 v6 监听，先按 §7.3 确认其实现的回包源地址行为 |
 
 ---
 
 ## 7 · 明确未验证 / 存疑
 
-1. **tuic 与 hysteria2 在 sing-box 内部为何表现不同** —— 只证到"行为不同"，没证到机制。
-2. **C 方案（把 `not fwmark 0xc350` 改指 `main`）没有实测**，只是从路由表推出来的。
-3. **改 `listen` 绑具体地址后**，该节点在 IPv4 客户端上的行为**没有实测**（推测是不再监听 IPv4）。
-4. **RN 上 `/etc/catmi/warp3/` 里装的是不是与 GitHub 当前 main 完全同一版**：只比了文件大小
-   （都是 243894 字节）与目录时间，**没有逐字节比对**（时间 2026-09-16，GitHub 那份可能已更新）。
-5. 其它内核（X/M）的 UDP 入站协议是否也有同类风险：**没有逐个排查**。
-   （`xrayls` 的 hy2 入站同理值得怀疑，但那是另一套实现、另一套监听方式。）
+1. **tuic 与 hysteria2 在 sing-box 内部的具体代码差异** —— 只证到"同进程、同绑定、同证书下行为不同"，
+   **没有逐行核对上游源码**。（机制解释见 §2.3 的诚实标注）
+2. **D 方案（`not fwmark 0xc350` 的 v6 目标改回 `main`）没有实测**，只从路由表推导。
+3. **mihomo / Xray 的 hysteria 实现若绑 `::` 会不会同样失效**：**没有实测**（它们当前只绑 `0.0.0.0`，不构成现状问题）。
+4. **上游 sing-box 是否已有开关/版本修复**（让 hy2 回填回包源地址）：**没有查**。
+5. **RN 上装的 V3 是否与 GitHub 当前 main 逐字节一致**：只比过文件大小与目录时间，**没有逐字节比对**。
+6. **独立表方案跨重启的持久性**：只验证了"不会被 V3 的 need 计算追上"，
+   **没有真的重启验证**（配套单元已给出，但未在重启后回归）。
 
 ---
 
 ## 8 · 可复现的最小命令集
 
 ```bash
-# 1) 看这条"黑名单"规则在不在（这是元凶）
-ip -6 rule show | grep -E "0xc350|fwmark"
-ip -6 route get <客户端IPv6>                 # 看是不是 dev warp table cw3
+# 1) 看"未打标流量"这条规则指向哪（v6 指向 cw3 就是元凶形态）
+ip -6 rule show | grep -E "0xc350"
+ip     rule show | grep -E "0xc350"        # 对照：v4 通常指向 main
+ip -6 route show table cw3
 
-# 2) 看 V3 的入站保护在不在（在的话说明是"保护被绕过"，不是"没装"）
+# 2) 决策期预测：这条命令的输出源地址，就是通配 UDP 回包会用的源地址
+ip -6 route get <客户端IPv6> from ::                    # → dev warp table cw3 src 2606:4700:…  ★
+ip -6 route get <客户端IPv6> from :: sport <节点端口>    # → dev he-ipv6 src 2001:470:…（被规则救回时）
+
+# 3) V3 的入站保护在不在、有没有命中
 ip6tables -t mangle -S INPUT | grep CONNMARK
-ip6tables -t mangle -S CATMI3-OUT
-
-# 3) 计数差：跑一次 hy2 尝试前后各取一次，比这两条的增量
 ip6tables -t mangle -L CATMI3-OUT -n -v -x | grep -E "connmark match 0x4|MARK set 0x3"
 
-# 4) conntrack：一次尝试里应当出现"两条表项"（一条 mark=4 源正确，一条 mark=3 源是 WARP）
+# 4) conntrack：一次尝试里应当出现"两条表项"（mark=4 源正确 / mark=3 源是 WARP）
 grep -a "dport=25926" /proc/net/nf_conntrack
 
-# 5) 抓包看回包源地址
-tcpdump -ni any "udp and port 25926"
+# 5) 抓包看回包源地址（最直接的证据）
+tcpdump -ni any "udp and (port 25926 or port 25930)"
+
+# 6) 修法 C 的效果验证（加规则前后各跑一次客户端）
+ip -6 rule add prio 32761 sport <节点端口> lookup 100
+ip -6 route replace default via <he-ipv6 网关> dev he-ipv6 table 100
 ```
 
 ---
 
-*本文档由调查方（AI 助手）整理，所有"实测"字样均有当次原始输出支撑；凡未实测者已在 §5/§7 显式标注。*
+## 9 · 本次调查中做过、且已清理的操作（RN 侧）
+
+| 操作 | 状态 |
+|---|---|
+| 备用端口临时 sing-box 实例（35926/35927/35930） | ✅ 已按 PID 清理，`/tmp/hy2*` 已删 |
+| 试验性 `ip -6 rule`（32761）与路由表 100 | ✅ 已撤，规则表回到基线 8 条、表 100 已 flush |
+| **生产 hy2 节点配置改动**（§4-B，含备份 `backup/hysteria2-01.json.pre-hy2v6fix-20261011-105002`） | ⚠ **保留**（这是当前让节点可用的状态）；面板一重建即回退，见 §5.2 |
+| 生产进程 | `sing-box` / `mihomo` / `xrayls` / `nginx` 全程未受影响；改配置时仅 `sing-box` 重启一次（属预期） |
+
+---
+
+*本文档由调查方（AI 助手）整理。凡"实测/已验证"字样均有当次原始输出支撑；凡未实测者已在 §4/§7 显式标注。*
